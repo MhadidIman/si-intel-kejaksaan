@@ -1,0 +1,145 @@
+<?php
+
+namespace App\Livewire\Jms;
+
+use Livewire\Component;
+use Livewire\WithPagination;
+use Livewire\WithFileUploads;
+use Livewire\Attributes\Layout;
+use App\Models\JmsActivity;
+use Illuminate\Support\Facades\Storage;
+
+class JmsIndex extends Component
+{
+    use WithPagination, WithFileUploads;
+
+    // Form Variables
+    public $nama_sekolah, $tanggal_kegiatan, $materi, $jumlah_siswa, $nama_jaksa, $keterangan;
+    public $foto_kegiatan, $foto_lama;
+    public $jms_id;
+
+    // UI Variables
+    public $isEditMode = false;
+    public $showForm = false;
+    public $search = '';
+
+    protected $rules = [
+        'nama_sekolah' => 'required',
+        'tanggal_kegiatan' => 'required|date',
+        'materi' => 'required',
+        'jumlah_siswa' => 'required|integer',
+        'foto_kegiatan' => 'nullable|image|max:5120', // Max 5MB
+    ];
+
+    #[Layout('layouts.app')]
+    public function render()
+    {
+        return view('livewire.jms.jms-index', [
+            'activities' => JmsActivity::where('nama_sekolah', 'like', '%' . $this->search . '%')
+                ->orWhere('materi', 'like', '%' . $this->search . '%')
+                ->orderBy('tanggal_kegiatan', 'desc')
+                ->paginate(9) // Kita pakai Grid Layout (3x3)
+        ]);
+    }
+
+    public function create()
+    {
+        $this->resetInputFields();
+        $this->showForm = true;
+        $this->isEditMode = false;
+    }
+
+    public function store()
+    {
+        $this->validate();
+
+        $path = null;
+        if ($this->foto_kegiatan) {
+            $path = $this->foto_kegiatan->store('jms-photos', 'public');
+        }
+
+        JmsActivity::create([
+            'nama_sekolah' => $this->nama_sekolah,
+            'tanggal_kegiatan' => $this->tanggal_kegiatan,
+            'materi' => $this->materi,
+            'jumlah_siswa' => $this->jumlah_siswa,
+            'nama_jaksa' => $this->nama_jaksa,
+            'keterangan' => $this->keterangan,
+            'foto_kegiatan' => $path,
+        ]);
+
+        session()->flash('message', 'Laporan JMS berhasil disimpan.');
+        $this->closeModal();
+    }
+
+    public function edit($id)
+    {
+        $data = JmsActivity::findOrFail($id);
+        $this->jms_id = $id;
+        $this->nama_sekolah = $data->nama_sekolah;
+        $this->tanggal_kegiatan = $data->tanggal_kegiatan->format('Y-m-d');
+        $this->materi = $data->materi;
+        $this->jumlah_siswa = $data->jumlah_siswa;
+        $this->nama_jaksa = $data->nama_jaksa;
+        $this->keterangan = $data->keterangan;
+        $this->foto_lama = $data->foto_kegiatan;
+
+        $this->showForm = true;
+        $this->isEditMode = true;
+    }
+
+    public function update()
+    {
+        $this->validate();
+        $data = JmsActivity::find($this->jms_id);
+
+        $path = $data->foto_kegiatan;
+        if ($this->foto_kegiatan) {
+            if ($data->foto_kegiatan && Storage::disk('public')->exists($data->foto_kegiatan)) {
+                Storage::disk('public')->delete($data->foto_kegiatan);
+            }
+            $path = $this->foto_kegiatan->store('jms-photos', 'public');
+        }
+
+        $data->update([
+            'nama_sekolah' => $this->nama_sekolah,
+            'tanggal_kegiatan' => $this->tanggal_kegiatan,
+            'materi' => $this->materi,
+            'jumlah_siswa' => $this->jumlah_siswa,
+            'nama_jaksa' => $this->nama_jaksa,
+            'keterangan' => $this->keterangan,
+            'foto_kegiatan' => $path,
+        ]);
+
+        session()->flash('message', 'Data JMS diperbarui.');
+        $this->closeModal();
+    }
+
+    public function delete($id)
+    {
+        $data = JmsActivity::find($id);
+        if ($data->foto_kegiatan && Storage::disk('public')->exists($data->foto_kegiatan)) {
+            Storage::disk('public')->delete($data->foto_kegiatan);
+        }
+        $data->delete();
+        session()->flash('message', 'Data dihapus.');
+    }
+
+    public function closeModal()
+    {
+        $this->showForm = false;
+        $this->resetInputFields();
+    }
+
+    private function resetInputFields()
+    {
+        $this->nama_sekolah = '';
+        $this->tanggal_kegiatan = '';
+        $this->materi = '';
+        $this->jumlah_siswa = 0;
+        $this->nama_jaksa = '';
+        $this->keterangan = '';
+        $this->foto_kegiatan = null;
+        $this->foto_lama = null;
+    }
+}
