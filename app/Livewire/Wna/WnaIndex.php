@@ -39,7 +39,7 @@ class WnaIndex extends Component
             'wnas' => Wna::where('nama_lengkap', 'like', '%' . $this->search . '%')
                 ->orWhere('nomor_paspor', 'like', '%' . $this->search . '%')
                 ->orWhere('kebangsaan', 'like', '%' . $this->search . '%')
-                ->orderBy('masa_berlaku_izin_tinggal', 'asc') // Urutkan dari yg mau expired
+                ->orderBy('masa_berlaku_izin_tinggal', 'asc')
                 ->paginate(10)
         ]);
     }
@@ -64,7 +64,8 @@ class WnaIndex extends Component
             'nama_lengkap' => $this->nama_lengkap,
             'nomor_paspor' => $this->nomor_paspor,
             'kebangsaan' => $this->kebangsaan,
-            'tanggal_tiba' => $this->tanggal_tiba,
+            // PERBAIKAN: Gunakan operator ternary untuk ubah string kosong jadi NULL
+            'tanggal_tiba' => $this->tanggal_tiba ?: null,
             'masa_berlaku_izin_tinggal' => $this->masa_berlaku_izin_tinggal,
             'tujuan_kunjungan' => $this->tujuan_kunjungan,
             'sponsor' => $this->sponsor,
@@ -111,7 +112,8 @@ class WnaIndex extends Component
             'nama_lengkap' => $this->nama_lengkap,
             'nomor_paspor' => $this->nomor_paspor,
             'kebangsaan' => $this->kebangsaan,
-            'tanggal_tiba' => $this->tanggal_tiba,
+            // PERBAIKAN: Gunakan operator ternary disini juga
+            'tanggal_tiba' => $this->tanggal_tiba ?: null,
             'masa_berlaku_izin_tinggal' => $this->masa_berlaku_izin_tinggal,
             'tujuan_kunjungan' => $this->tujuan_kunjungan,
             'sponsor' => $this->sponsor,

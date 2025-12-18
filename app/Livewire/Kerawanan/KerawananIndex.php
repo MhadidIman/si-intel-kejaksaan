@@ -11,11 +11,9 @@ class KerawananIndex extends Component
 {
     use WithPagination;
 
-    // Form Variables
     public $kecamatan, $desa, $jenis_ancaman, $tokoh_kunci, $deskripsi_singkat, $tingkat_rawan = 'rendah';
     public $kerawanan_id;
 
-    // UI Variables
     public $isEditMode = false;
     public $showForm = false;
     public $search = '';
@@ -30,13 +28,10 @@ class KerawananIndex extends Component
     #[Layout('layouts.app')]
     public function render()
     {
-        // Urutkan berdasarkan tingkat kerawanan (Tinggi duluan biar warning)
         return view('livewire.kerawanan.kerawanan-index', [
-            'data_peta' => Kerawanan::where('kecamatan', 'like', '%' . $this->search . '%')
-                ->orWhere('desa', 'like', '%' . $this->search . '%')
-                ->orWhere('jenis_ancaman', 'like', '%' . $this->search . '%')
+            'kerawanans' => Kerawanan::where('kecamatan', 'like', '%' . $this->search . '%') // <-- Nama variabel harus 'kerawanans'
                 ->orderByRaw("FIELD(tingkat_rawan, 'tinggi', 'sedang', 'rendah')")
-                ->paginate(12) // Grid layout butuh banyak item
+                ->paginate(12)
         ]);
     }
 
@@ -50,7 +45,6 @@ class KerawananIndex extends Component
     public function store()
     {
         $this->validate();
-
         Kerawanan::create([
             'kecamatan' => $this->kecamatan,
             'desa' => $this->desa,
@@ -59,7 +53,6 @@ class KerawananIndex extends Component
             'deskripsi_singkat' => $this->deskripsi_singkat,
             'tingkat_rawan' => $this->tingkat_rawan,
         ]);
-
         session()->flash('message', 'Data Peta Kerawanan ditambahkan.');
         $this->closeModal();
     }
@@ -74,7 +67,6 @@ class KerawananIndex extends Component
         $this->tokoh_kunci = $data->tokoh_kunci;
         $this->deskripsi_singkat = $data->deskripsi_singkat;
         $this->tingkat_rawan = $data->tingkat_rawan;
-
         $this->showForm = true;
         $this->isEditMode = true;
     }
@@ -82,7 +74,6 @@ class KerawananIndex extends Component
     public function update()
     {
         $this->validate();
-
         $data = Kerawanan::find($this->kerawanan_id);
         $data->update([
             'kecamatan' => $this->kecamatan,
@@ -92,7 +83,6 @@ class KerawananIndex extends Component
             'deskripsi_singkat' => $this->deskripsi_singkat,
             'tingkat_rawan' => $this->tingkat_rawan,
         ]);
-
         session()->flash('message', 'Data diperbarui.');
         $this->closeModal();
     }

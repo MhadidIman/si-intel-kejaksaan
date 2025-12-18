@@ -11,40 +11,33 @@ class LapinharIndex extends Component
 {
     use WithPagination;
 
-    // Variables untuk Form
+    // Sesuaikan dengan Model Lapinhar
     public $nomor_surat, $tanggal_surat, $sumber_informasi, $bidang, $peristiwa, $pendapat, $status = 'rahasia';
     public $lapinhar_id;
 
-    // Variables untuk UI
     public $isEditMode = false;
     public $showForm = false;
     public $search = '';
 
-    // Validasi
     protected $rules = [
-        'nomor_surat' => 'required',
         'tanggal_surat' => 'required|date',
-        'sumber_informasi' => 'required',
         'bidang' => 'required',
         'peristiwa' => 'required',
-        'pendapat' => 'required',
-        'status' => 'required',
+        'pendapat' => 'required', // Wajib diisi sesuai model
     ];
 
     #[Layout('layouts.app')]
     public function render()
     {
-        $data = Lapinhar::where('peristiwa', 'like', '%' . $this->search . '%')
-            ->orWhere('nomor_surat', 'like', '%' . $this->search . '%')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
         return view('livewire.lapinhar.lapinhar-index', [
-            'lapinhars' => $data
+            // Variabel ini harus bernama 'lapinhars' agar cocok dengan View
+            'lapinhars' => Lapinhar::where('peristiwa', 'like', '%' . $this->search . '%')
+                ->orWhere('bidang', 'like', '%' . $this->search . '%')
+                ->orderBy('tanggal_surat', 'desc')
+                ->paginate(10)
         ]);
     }
 
-    // Tampilkan Form Tambah
     public function create()
     {
         $this->resetInputFields();
@@ -52,7 +45,6 @@ class LapinharIndex extends Component
         $this->isEditMode = false;
     }
 
-    // Simpan Data Baru
     public function store()
     {
         $this->validate();
@@ -67,11 +59,10 @@ class LapinharIndex extends Component
             'status' => $this->status,
         ]);
 
-        session()->flash('message', 'Data Lapinhar berhasil ditambahkan.');
+        session()->flash('message', 'Lapinhar berhasil disimpan.');
         $this->closeModal();
     }
 
-    // Ambil Data untuk Edit
     public function edit($id)
     {
         $data = Lapinhar::findOrFail($id);
@@ -88,7 +79,6 @@ class LapinharIndex extends Component
         $this->isEditMode = true;
     }
 
-    // Update Data
     public function update()
     {
         $this->validate();
@@ -104,18 +94,16 @@ class LapinharIndex extends Component
             'status' => $this->status,
         ]);
 
-        session()->flash('message', 'Data berhasil diperbarui.');
+        session()->flash('message', 'Lapinhar diperbarui.');
         $this->closeModal();
     }
 
-    // Hapus Data
     public function delete($id)
     {
         Lapinhar::find($id)->delete();
-        session()->flash('message', 'Data berhasil dihapus.');
+        session()->flash('message', 'Data dihapus.');
     }
 
-    // Tutup Form & Reset
     public function closeModal()
     {
         $this->showForm = false;

@@ -14,11 +14,12 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <style>
+            /* Loading Bar Emas */
             #nprogress .bar {
                 background: #F59E0B !important;
-                /* Gold */
                 height: 3px !important;
                 z-index: 9999;
+                box-shadow: 0 0 10px #F59E0B, 0 0 5px #F59E0B;
             }
 
             #nprogress .spinner-icon {
@@ -26,26 +27,59 @@
                 border-left-color: #F59E0B !important;
             }
 
+            /* Scrollbar Hijau */
+            ::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            ::-webkit-scrollbar-track {
+                background: #0f172a;
+                /* Slate 900 */
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: #10B981;
+                /* Emerald 500 */
+                border-radius: 4px;
+            }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #059669;
+            }
+
             html {
                 scrollbar-gutter: stable;
+            }
+
+            [x-cloak] {
+                display: none !important;
             }
         </style>
 </head>
 
-<body class="font-sans antialiased bg-slate-50 text-gray-900 relative">
+<body class="font-sans antialiased text-gray-100 relative">
 
-    <div class="fixed inset-0 -z-10 h-full w-full bg-slate-50 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px]">
-        <div class="absolute left-0 right-0 top-0 -z-10 m-auto h-[350px] w-[350px] rounded-full bg-emerald-500 opacity-10 blur-[120px]"></div>
+    <div class="fixed inset-0 -z-10 h-full w-full bg-slate-900">
+        <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop"
+            alt="Background Intel"
+            class="h-full w-full object-cover opacity-40">
+
+        <div class="absolute inset-0 bg-gradient-to-br from-slate-900/80 via-emerald-950/80 to-slate-900/80"></div>
+
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-yellow-500/20 rounded-full mix-blend-screen filter blur-[100px] animate-pulse"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald-500/20 rounded-full mix-blend-screen filter blur-[100px]"></div>
     </div>
 
     <div class="min-h-screen flex flex-col relative">
 
-        <div class="sticky top-0 z-50 shadow-sm">
+        @persist('navigation')
+        <div class="sticky top-0 z-50 shadow-2xl shadow-black/20">
             <livewire:layout.navigation />
         </div>
+        @endpersist
 
         @if (isset($header))
-        <header class="bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100 relative z-10">
+        <header class="bg-white/10 backdrop-blur-md shadow-sm border-b border-white/10 relative z-10">
             <div class="max-w-screen-2xl mx-auto py-6 px-4 sm:px-6 lg:px-10">
                 {{ $header }}
             </div>
@@ -56,13 +90,15 @@
             {{ $slot }}
         </main>
 
-        <footer class="bg-white/50 border-t border-gray-200 mt-auto py-6 backdrop-blur-sm">
-            <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400">
+        <footer class="bg-black/20 border-t border-white/5 mt-auto py-6 backdrop-blur-sm text-gray-400">
+            <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 flex flex-col md:flex-row justify-between items-center text-xs">
                 <div>
                     &copy; {{ date('Y') }} Kejaksaan Republik Indonesia.
                 </div>
-                <div>
-                    Satya Adhi Wicaksana
+                <div class="flex gap-4 font-semibold tracking-widest uppercase text-gray-500">
+                    <span>Divisi Intelijen</span>
+                    <span>•</span>
+                    <span>Satya Adhi Wicaksana</span>
                 </div>
             </div>
         </footer>

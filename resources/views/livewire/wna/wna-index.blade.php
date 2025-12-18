@@ -1,160 +1,209 @@
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+<div class="py-8">
+    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10">
+
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+            <div>
+                <h2 class="text-3xl font-black text-white tracking-tight">Pengawasan Orang Asing</h2>
+                <p class="text-sm text-blue-400 mt-1">Data Warga Negara Asing & Izin Tinggal.</p>
+            </div>
+            @if(!$showForm)
+            <button wire:click="create" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-blue-900/50 transition border border-blue-500/50 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                <span>Input WNA Baru</span>
+            </button>
+            @endif
+        </div>
 
         @if (session()->has('message'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
-            {{ session('message') }}
+        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
+            class="bg-blue-900/80 backdrop-blur-sm border-l-4 border-blue-500 text-blue-100 px-4 py-3 rounded shadow-lg mb-6 flex items-center justify-between">
+            <span>{{ session('message') }}</span>
+            <button @click="show = false" class="text-blue-400 hover:text-white">&times;</button>
         </div>
         @endif
 
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 text-gray-900">
+        @if($showForm)
+        <div class="bg-gray-900/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/10 overflow-hidden mb-8 relative p-8">
+            <h3 class="font-bold text-white text-lg mb-6 border-b border-white/10 pb-4">Form Data WNA</h3>
 
-                <div class="flex justify-between items-center mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-4">
                     <div>
-                        <h2 class="text-2xl font-bold text-gray-800">Pengawasan Orang Asing (WNA)</h2>
-                        <p class="text-xs text-gray-500">Data TIMPORA</p>
+                        <label class="block text-sm font-bold text-gray-300 mb-1">Nama Lengkap</label>
+                        <input wire:model="nama_lengkap" type="text" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-blue-500 transition shadow-inner">
+                        @error('nama_lengkap') <span class="text-red-400 text-xs">{{ $message }}</span> @enderror
                     </div>
 
-                    @if(!$showForm)
-                    <button wire:click="create" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow">
-                        + Input WNA
-                    </button>
-                    @endif
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-300 mb-1">Kebangsaan</label>
+                            <input wire:model="kebangsaan" type="text" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-blue-500 transition">
+                            @error('kebangsaan') <span class="text-red-400 text-xs">{{ $message }}</span> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-300 mb-1">Nomor Paspor</label>
+                            <input wire:model="nomor_paspor" type="text" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-blue-500 transition">
+                            @error('nomor_paspor') <span class="text-red-400 text-xs">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-300 mb-1">Tanggal Tiba</label>
+                            <input wire:model="tanggal_tiba" type="date" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-blue-500 transition">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-300 mb-1">Izin Tinggal s/d</label>
+                            <input wire:model="masa_berlaku_izin_tinggal" type="date" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-blue-500 transition">
+                            @error('masa_berlaku_izin_tinggal') <span class="text-red-400 text-xs">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
                 </div>
 
-                @if($showForm)
-                <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-300 mb-1">Tujuan Kunjungan</label>
+                        <input wire:model="tujuan_kunjungan" type="text" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-blue-500 transition" placeholder="Wisata / Kerja / Kunjungan">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-300 mb-1">Sponsor / Penjamin</label>
+                        <input wire:model="sponsor" type="text" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-blue-500 transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-300 mb-1">Alamat Menginap</label>
+                        <textarea wire:model="alamat_menginap" rows="2" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-blue-500 transition"></textarea>
+                        @error('alamat_menginap') <span class="text-red-400 text-xs">{{ $message }}</span> @enderror
+                    </div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Nama Lengkap (Sesuai Paspor)</label>
-                            <input wire:model="nama_lengkap" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                            @error('nama_lengkap') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Nomor Paspor</label>
-                            <input wire:model="nomor_paspor" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm uppercase">
-                            @error('nomor_paspor') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Kebangsaan</label>
-                            <input wire:model="kebangsaan" type="text" placeholder="Contoh: China, USA, India" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                        </div>
-
-                        <div class="p-3 bg-yellow-50 rounded border border-yellow-200">
-                            <label class="block text-sm font-bold text-yellow-800">Berlaku Sampai (Expired Date)</label>
-                            <input wire:model="masa_berlaku_izin_tinggal" type="date" class="mt-1 block w-full rounded-md border-yellow-400 shadow-sm">
-                            @error('masa_berlaku_izin_tinggal') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Tujuan Kunjungan</label>
-                            <select wire:model="tujuan_kunjungan" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                                <option value="">Pilih...</option>
-                                <option value="Wisata">Wisata</option>
-                                <option value="Bekerja (TKA)">Bekerja (TKA)</option>
-                                <option value="Sosial Budaya">Sosial Budaya</option>
-                                <option value="Keluarga">Kunjungan Keluarga</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Sponsor / Penjamin</label>
-                            <input wire:model="sponsor" type="text" placeholder="Nama PT atau Perorangan" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                        </div>
-                        <div class="col-span-1 md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">Alamat Menginap</label>
-                            <textarea wire:model="alamat_menginap" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
-                        </div>
-
-                        <div class="col-span-1 md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Foto Paspor / Dokumen</label>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-300 mb-1">Foto / Dokumen (Paspor/KITAS)</label>
+                        <div class="flex items-center gap-4">
                             @if ($foto_dokumen)
-                            <img src="{{ $foto_dokumen->temporaryUrl() }}" class="h-24 rounded border mb-2">
+                            <img src="{{ $foto_dokumen->temporaryUrl() }}" class="w-16 h-16 object-cover rounded-lg border border-white/20">
                             @elseif ($foto_lama)
-                            <img src="{{ asset('storage/'.$foto_lama) }}" class="h-24 rounded border mb-2">
+                            <img src="{{ asset('storage/' . $foto_lama) }}" class="w-16 h-16 object-cover rounded-lg border border-white/20">
+                            @else
+                            <div class="w-16 h-16 bg-white/5 rounded-lg border border-white/10 flex items-center justify-center text-gray-500 text-xs">No Img</div>
                             @endif
-                            <input wire:model="foto_dokumen" type="file" class="text-sm">
+
+                            <input wire:model="foto_dokumen" type="file" class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-500 transition cursor-pointer">
                         </div>
-                    </div>
-
-                    <div class="flex justify-end mt-6 space-x-2">
-                        <button wire:click="closeModal" class="bg-gray-500 text-white px-4 py-2 rounded">Batal</button>
-                        <button wire:click="{{ $isEditMode ? 'update' : 'store' }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
-                            Simpan Data
-                        </button>
+                        <div wire:loading wire:target="foto_dokumen" class="text-xs text-yellow-400 mt-1">Mengupload...</div>
+                        @error('foto_dokumen') <span class="text-red-400 text-xs">{{ $message }}</span> @enderror
                     </div>
                 </div>
-                @endif
+            </div>
 
-                @if(!$showForm)
-                <div class="mb-4">
-                    <input wire:model.live="search" type="text" placeholder="Cari Nama / Paspor / Negara..." class="w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-
-                <div class="overflow-x-auto border rounded-lg shadow-sm">
-                    <table class="w-full text-sm text-left text-gray-500">
-                        <thead class="bg-gray-100 text-gray-700 uppercase">
-                            <tr>
-                                <th class="px-4 py-3">Nama / Kebangsaan</th>
-                                <th class="px-4 py-3">Paspor</th>
-                                <th class="px-4 py-3">Sponsor & Tujuan</th>
-                                <th class="px-4 py-3">Izin Tinggal</th>
-                                <th class="px-4 py-3">Foto</th>
-                                <th class="px-4 py-3 text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($wnas as $wna)
-                            <tr class="border-b hover:bg-gray-50 {{ $wna->is_overstay ? 'bg-red-50' : 'bg-white' }}">
-                                <td class="px-4 py-3">
-                                    <div class="font-bold text-gray-900">{{ $wna->nama_lengkap }}</div>
-                                    <div class="text-xs">{{ $wna->kebangsaan }}</div>
-                                </td>
-                                <td class="px-4 py-3 font-mono text-gray-700">
-                                    {{ $wna->nomor_paspor }}
-                                </td>
-                                <td class="px-4 py-3">
-                                    <div>{{ $wna->tujuan_kunjungan }}</div>
-                                    <div class="text-xs text-gray-400">{{ $wna->sponsor ?? '-' }}</div>
-                                </td>
-                                <td class="px-4 py-3">
-                                    <div class="font-semibold {{ $wna->is_overstay ? 'text-red-600' : 'text-green-600' }}">
-                                        {{ $wna->masa_berlaku_izin_tinggal->format('d M Y') }}
-                                    </div>
-                                    @if($wna->is_overstay)
-                                    <span class="text-xs bg-red-200 text-red-800 px-1 rounded">OVERSTAY</span>
-                                    @endif
-                                </td>
-                                <td class="px-4 py-3">
-                                    @if($wna->foto_dokumen)
-                                    <a href="{{ asset('storage/'.$wna->foto_dokumen) }}" target="_blank" class="text-blue-500 underline text-xs">Lihat</a>
-                                    @else
-                                    -
-                                    @endif
-                                </td>
-                                <td class="px-4 py-3 text-center space-x-1">
-                                    <button wire:click="edit({{ $wna->id }})" class="bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded text-xs">Edit</button>
-                                    <button wire:confirm="Hapus data WNA ini?" wire:click="delete({{ $wna->id }})" class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs">Hapus</button>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="6" class="px-4 py-8 text-center text-gray-500">
-                                    Tidak ada data WNA.
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="mt-4">
-                    {{ $wnas->links() }}
-                </div>
-                @endif
-
+            <div class="flex justify-end mt-8 space-x-3 pt-4 border-t border-white/10">
+                <button wire:click="closeModal" class="px-5 py-2.5 rounded-lg border border-white/10 text-gray-300 hover:bg-white/5 font-medium transition">Batal</button>
+                <button wire:click="{{ $isEditMode ? 'update' : 'store' }}" class="px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold shadow-lg shadow-blue-900/50 transition">
+                    {{ $isEditMode ? 'Simpan Perubahan' : 'Simpan Data' }}
+                </button>
             </div>
         </div>
+        @endif
+
+        @if(!$showForm)
+        <div class="bg-gray-900/60 backdrop-blur-md rounded-2xl shadow-xl border border-white/10 overflow-hidden">
+            <div class="p-5 border-b border-white/10 bg-white/5">
+                <input wire:model.live="search" type="text" class="block w-full md:w-96 rounded-lg border-white/10 bg-black/30 text-white focus:border-blue-500 transition text-sm py-2.5 placeholder-gray-500" placeholder="Cari Nama / Paspor...">
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-black/20 text-gray-400 text-xs uppercase tracking-wider font-bold border-b border-white/10">
+                            <th class="px-6 py-4">Dokumen</th>
+                            <th class="px-6 py-4">Identitas & Paspor</th>
+                            <th class="px-6 py-4">Asal & Tujuan</th>
+                            <th class="px-6 py-4">Izin Tinggal</th>
+                            <th class="px-6 py-4 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5 text-gray-300">
+                        @forelse($wnas as $item)
+                        <tr class="hover:bg-white/5 transition duration-150 group">
+                            <td class="px-6 py-4">
+                                @if($item->foto_dokumen)
+                                <img src="{{ asset('storage/' . $item->foto_dokumen) }}" class="w-12 h-12 rounded object-cover border border-white/10 group-hover:border-blue-500 transition">
+                                @else
+                                <div class="w-12 h-12 rounded bg-blue-900/30 flex items-center justify-center text-blue-500 font-bold border border-white/5">
+                                    Doc
+                                </div>
+                                @endif
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <div class="font-bold text-white text-lg">{{ $item->nama_lengkap }}</div>
+                                <div class="text-xs text-gray-400 font-mono tracking-wide">
+                                    PASPOR: {{ $item->nomor_paspor }}
+                                </div>
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <div class="text-white">{{ $item->kebangsaan }}</div>
+                                <div class="text-xs text-gray-500 mt-1">
+                                    Tujuan: {{ $item->tujuan_kunjungan }}
+                                    @if($item->sponsor) <br> Sponsor: {{ $item->sponsor }} @endif
+                                </div>
+                            </td>
+
+                            <td class="px-6 py-4">
+                                @php
+                                $isOverstay = $item->masa_berlaku_izin_tinggal < now();
+                                    $sisaHari=now()->diffInDays($item->masa_berlaku_izin_tinggal, false);
+                                    @endphp
+
+                                    @if($isOverstay)
+                                    <div class="bg-red-500/20 text-red-400 px-3 py-1 rounded-lg border border-red-500/30 inline-block text-center">
+                                        <div class="text-xs font-bold animate-pulse">OVERSTAY</div>
+                                        <div class="text-[10px]">Exp: {{ $item->masa_berlaku_izin_tinggal->format('d/m/Y') }}</div>
+                                    </div>
+                                    @else
+                                    <div class="text-emerald-400 font-bold">
+                                        Valid
+                                        <span class="text-xs text-gray-500 font-normal block">
+                                            s/d {{ $item->masa_berlaku_izin_tinggal->format('d M Y') }}
+                                        </span>
+                                    </div>
+                                    @if($sisaHari < 30)
+                                        <span class="text-[10px] text-yellow-500">Warning: {{ $sisaHari }} hari lagi</span>
+                                        @endif
+                                        @endif
+                            </td>
+
+                            <td class="px-6 py-4 text-center">
+                                <div class="flex justify-center gap-2">
+                                    <button wire:click="edit({{ $item->id }})" class="p-2 rounded-lg text-blue-400 hover:bg-blue-500/10 transition" title="Edit">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
+                                    </button>
+                                    <button wire:confirm="Hapus data WNA ini?" wire:click="delete({{ $item->id }})" class="p-2 rounded-lg text-red-400 hover:bg-red-500/10 transition" title="Hapus">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="5" class="px-6 py-12 text-center text-gray-500 italic">
+                                Belum ada data WNA yang tercatat.
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="p-5 border-t border-white/10 bg-white/5">
+                {{ $wnas->links() }}
+            </div>
+        </div>
+        @endif
     </div>
 </div>

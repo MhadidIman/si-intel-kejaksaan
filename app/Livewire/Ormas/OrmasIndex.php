@@ -31,9 +31,8 @@ class OrmasIndex extends Component
     public function render()
     {
         return view('livewire.ormas.ormas-index', [
-            'data_ormas' => Ormas::where('nama_organisasi', 'like', '%' . $this->search . '%')
+            'ormas' => Ormas::where('nama_organisasi', 'like', '%' . $this->search . '%') // <-- Nama variabel harus 'ormas'
                 ->orWhere('ketua', 'like', '%' . $this->search . '%')
-                ->orWhere('bentuk_organisasi', 'like', '%' . $this->search . '%')
                 ->orderBy('created_at', 'desc')
                 ->paginate(10)
         ]);

@@ -62,7 +62,8 @@ class DpoIndex extends Component
         Dpo::create([
             'nama_lengkap' => $this->nama_lengkap,
             'tempat_lahir' => $this->tempat_lahir,
-            'tanggal_lahir' => $this->tanggal_lahir,
+            // PERBAIKAN: Ubah string kosong jadi NULL agar tidak error di MySQL
+            'tanggal_lahir' => $this->tanggal_lahir ?: null,
             'kasus' => $this->kasus,
             'status_hukum' => $this->status_hukum,
             'ciri_fisik' => $this->ciri_fisik,
@@ -80,6 +81,7 @@ class DpoIndex extends Component
         $this->dpo_id = $id;
         $this->nama_lengkap = $dpo->nama_lengkap;
         $this->tempat_lahir = $dpo->tempat_lahir;
+        // Format tanggal agar bisa terbaca oleh input type="date"
         $this->tanggal_lahir = $dpo->tanggal_lahir ? $dpo->tanggal_lahir->format('Y-m-d') : null;
         $this->kasus = $dpo->kasus;
         $this->status_hukum = $dpo->status_hukum;
@@ -111,7 +113,8 @@ class DpoIndex extends Component
         $dpo->update([
             'nama_lengkap' => $this->nama_lengkap,
             'tempat_lahir' => $this->tempat_lahir,
-            'tanggal_lahir' => $this->tanggal_lahir,
+            // PERBAIKAN: Ubah string kosong jadi NULL
+            'tanggal_lahir' => $this->tanggal_lahir ?: null,
             'kasus' => $this->kasus,
             'status_hukum' => $this->status_hukum,
             'ciri_fisik' => $this->ciri_fisik,

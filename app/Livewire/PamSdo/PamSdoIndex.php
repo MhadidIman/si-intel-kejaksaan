@@ -32,7 +32,7 @@ class PamSdoIndex extends Component
     public function render()
     {
         return view('livewire.pam-sdo.pam-sdo-index', [
-            'data_pam' => PamSdo::where('target', 'like', '%' . $this->search . '%')
+            'pamSdos' => PamSdo::where('target', 'like', '%' . $this->search . '%') // <-- Nama variabel harus 'pamSdos'
                 ->orWhere('uraian_masalah', 'like', '%' . $this->search . '%')
                 ->orderBy('tanggal_laporan', 'desc')
                 ->paginate(10)

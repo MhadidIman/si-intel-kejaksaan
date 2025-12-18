@@ -13,12 +13,10 @@ class LapduIndex extends Component
 {
     use WithPagination, WithFileUploads;
 
-    // Form Variables
     public $nomor_surat, $tanggal_terima, $nama_pelapor, $no_hp_pelapor, $terlapor, $uraian_pengaduan, $disposisi_pimpinan, $status = 'masuk';
     public $bukti_pendukung, $bukti_lama;
     public $lapdu_id;
 
-    // UI Variables
     public $isEditMode = false;
     public $showForm = false;
     public $search = '';
@@ -27,15 +25,14 @@ class LapduIndex extends Component
         'tanggal_terima' => 'required|date',
         'terlapor' => 'required',
         'uraian_pengaduan' => 'required',
-        'bukti_pendukung' => 'nullable|file|max:10240', // Max 10MB (Bisa PDF/Gambar)
+        'bukti_pendukung' => 'nullable|file|max:10240',
     ];
 
     #[Layout('layouts.app')]
     public function render()
     {
         return view('livewire.lapdu.lapdu-index', [
-            'laporans' => Lapdu::where('terlapor', 'like', '%' . $this->search . '%')
-                ->orWhere('nama_pelapor', 'like', '%' . $this->search . '%')
+            'lapdus' => Lapdu::where('terlapor', 'like', '%' . $this->search . '%') // <-- Nama variabel harus 'lapdus'
                 ->orderBy('tanggal_terima', 'desc')
                 ->paginate(10)
         ]);
@@ -51,12 +48,10 @@ class LapduIndex extends Component
     public function store()
     {
         $this->validate();
-
         $path = null;
         if ($this->bukti_pendukung) {
             $path = $this->bukti_pendukung->store('lapdu-files', 'public');
         }
-
         Lapdu::create([
             'nomor_surat' => $this->nomor_surat,
             'tanggal_terima' => $this->tanggal_terima,
@@ -68,7 +63,6 @@ class LapduIndex extends Component
             'disposisi_pimpinan' => $this->disposisi_pimpinan,
             'status' => $this->status,
         ]);
-
         session()->flash('message', 'Pengaduan berhasil dicatat.');
         $this->closeModal();
     }
@@ -86,7 +80,6 @@ class LapduIndex extends Component
         $this->disposisi_pimpinan = $data->disposisi_pimpinan;
         $this->status = $data->status;
         $this->bukti_lama = $data->bukti_pendukung;
-
         $this->showForm = true;
         $this->isEditMode = true;
     }
@@ -95,16 +88,13 @@ class LapduIndex extends Component
     {
         $this->validate();
         $data = Lapdu::find($this->lapdu_id);
-
         $path = $data->bukti_pendukung;
         if ($this->bukti_pendukung) {
-            // Hapus file lama jika ada
             if ($data->bukti_pendukung && Storage::disk('public')->exists($data->bukti_pendukung)) {
                 Storage::disk('public')->delete($data->bukti_pendukung);
             }
             $path = $this->bukti_pendukung->store('lapdu-files', 'public');
         }
-
         $data->update([
             'nomor_surat' => $this->nomor_surat,
             'tanggal_terima' => $this->tanggal_terima,
@@ -116,7 +106,6 @@ class LapduIndex extends Component
             'disposisi_pimpinan' => $this->disposisi_pimpinan,
             'status' => $this->status,
         ]);
-
         session()->flash('message', 'Data pengaduan diperbarui.');
         $this->closeModal();
     }

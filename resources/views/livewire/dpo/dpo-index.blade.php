@@ -1,144 +1,208 @@
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+<div class="py-8">
+    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10">
+
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+            <div>
+                <h2 class="text-3xl font-black text-white tracking-tight">Data Buronan (DPO)</h2>
+                <p class="text-sm text-red-400 mt-1">Daftar Pencarian Orang Tindak Pidana.</p>
+            </div>
+            @if(!$showForm)
+            <button wire:click="create" class="bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-red-900/50 transition border border-red-500/50 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                <span>Input DPO Baru</span>
+            </button>
+            @endif
+        </div>
 
         @if (session()->has('message'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
-            {{ session('message') }}
+        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
+            class="bg-red-900/80 backdrop-blur-sm border-l-4 border-red-500 text-red-100 px-4 py-3 rounded shadow-lg mb-6 flex items-center justify-between">
+            <span>{{ session('message') }}</span>
+            <button @click="show = false" class="text-red-400 hover:text-white">&times;</button>
         </div>
         @endif
 
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 text-gray-900">
+        @if($showForm)
+        <div class="bg-gray-900/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/10 overflow-hidden mb-8 relative p-8">
+            <h3 class="font-bold text-white text-lg mb-6 border-b border-white/10 pb-4">Form Data DPO</h3>
 
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-gray-800">Daftar Pencarian Orang (DPO)</h2>
-                    @if(!$showForm)
-                    <button wire:click="create" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded shadow">
-                        + Tambah Buronan
-                    </button>
-                    @endif
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                @if($showForm)
-                <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-300 mb-1">Nama Lengkap</label>
+                        <input wire:model="nama_lengkap" type="text" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-red-500 focus:ring-red-500 transition shadow-inner placeholder-gray-600" placeholder="Nama Buronan">
+                        @error('nama_lengkap') <span class="text-red-400 text-xs">{{ $message }}</span> @enderror
+                    </div>
 
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
-                                <input wire:model="nama_lengkap" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
-                                @error('nama_lengkap') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Tempat Lahir</label>
-                                <input wire:model="tempat_lahir" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Tanggal Lahir</label>
-                                <input wire:model="tanggal_lahir" type="date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Ciri-ciri Fisik</label>
-                                <textarea wire:model="ciri_fisik" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
-                            </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-300 mb-1">Tempat Lahir</label>
+                            <input wire:model="tempat_lahir" type="text" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-red-500 transition">
                         </div>
-
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Kasus / Perkara</label>
-                                <input wire:model="kasus" type="text" placeholder="Contoh: Tipikor Dana Desa" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
-                                @error('kasus') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Status Hukum</label>
-                                <select wire:model="status_hukum" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                                    <option value="">Pilih Status...</option>
-                                    <option value="Tersangka">Tersangka</option>
-                                    <option value="Terdakwa">Terdakwa</option>
-                                    <option value="Terpidana">Terpidana</option>
-                                    <option value="Saksi">Saksi Kunci</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Status Pencarian</label>
-                                <select wire:model="status_pencarian" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                                    <option value="buron">BURON (Belum Tertangkap)</option>
-                                    <option value="tertangkap">SUDAH TERTANGKAP</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Foto DPO</label>
-
-                                @if ($foto)
-                                <img src="{{ $foto->temporaryUrl() }}" class="w-32 h-32 object-cover rounded border mb-2">
-                                @elseif ($foto_lama)
-                                <img src="{{ asset('storage/'.$foto_lama) }}" class="w-32 h-32 object-cover rounded border mb-2">
-                                @endif
-
-                                <input wire:model="foto" type="file" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
-                                <div wire:loading wire:target="foto" class="text-sm text-gray-500 mt-1">Mengupload foto...</div>
-                                @error('foto') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                            </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-300 mb-1">Tanggal Lahir</label>
+                            <input wire:model="tanggal_lahir" type="date" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-red-500 transition">
                         </div>
                     </div>
 
-                    <div class="flex justify-end mt-6 space-x-2">
-                        <button wire:click="closeModal" class="bg-gray-500 text-white px-4 py-2 rounded">Batal</button>
-                        <button wire:click="{{ $isEditMode ? 'update' : 'store' }}" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
-                            {{ $isEditMode ? 'Simpan Perubahan' : 'Simpan Data DPO' }}
-                        </button>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-300 mb-1">Kasus Posisi</label>
+                        <textarea wire:model="kasus" rows="3" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-red-500 transition placeholder-gray-600" placeholder="Jelaskan kasusnya..."></textarea>
+                        @error('kasus') <span class="text-red-400 text-xs">{{ $message }}</span> @enderror
                     </div>
                 </div>
-                @endif
 
-                @if(!$showForm)
-                <div class="mb-4">
-                    <input wire:model.live="search" type="text" placeholder="Cari DPO..." class="w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    @forelse($dpos as $dpo)
-                    <div class="border rounded-lg p-4 bg-gray-50 flex flex-col items-center text-center shadow-sm relative overflow-hidden">
-
-                        @if($dpo->status_pencarian == 'buron')
-                        <div class="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">DPO</div>
-                        @else
-                        <div class="absolute top-0 right-0 bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">TERTANGKAP</div>
-                        @endif
-
-                        @if($dpo->foto)
-                        <img src="{{ asset('storage/'.$dpo->foto) }}" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow mb-3">
-                        @else
-                        <div class="w-24 h-24 rounded-full bg-gray-300 flex items-center justify-center mb-3 text-gray-500">No Foto</div>
-                        @endif
-
-                        <h3 class="font-bold text-gray-900">{{ $dpo->nama_lengkap }}</h3>
-                        <p class="text-xs text-gray-500 mb-2">{{ $dpo->kasus }}</p>
-
-                        <div class="text-xs text-left w-full bg-white p-2 rounded border mb-3">
-                            <p><strong>Status:</strong> {{ $dpo->status_hukum }}</p>
-                            <p><strong>Ciri:</strong> {{ Str::limit($dpo->ciri_fisik, 30) }}</p>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-300 mb-1">Status Hukum</label>
+                            <select wire:model="status_hukum" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-red-500 transition">
+                                <option value="">-- Pilih --</option>
+                                <option value="Tersangka">Tersangka</option>
+                                <option value="Terdakwa">Terdakwa</option>
+                                <option value="Terpidana">Terpidana</option>
+                                <option value="Saksi">Saksi</option>
+                            </select>
                         </div>
-
-                        <div class="space-x-2">
-                            <button wire:click="edit({{ $dpo->id }})" class="text-blue-600 text-sm font-bold">Edit</button>
-                            <button wire:confirm="Hapus data DPO ini?" wire:click="delete({{ $dpo->id }})" class="text-red-600 text-sm font-bold">Hapus</button>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-300 mb-1">Status Pencarian</label>
+                            <select wire:model="status_pencarian" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-red-500 transition">
+                                <option value="buron">Masih Buron</option>
+                                <option value="tertangkap">Sudah Tertangkap</option>
+                            </select>
                         </div>
                     </div>
-                    @empty
-                    <div class="col-span-4 text-center py-10 text-gray-500">
-                        Belum ada data DPO.
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-300 mb-1">Ciri-ciri Fisik</label>
+                        <input wire:model="ciri_fisik" type="text" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-red-500 transition placeholder-gray-600" placeholder="Tinggi, warna kulit, tanda khusus...">
                     </div>
-                    @endforelse
-                </div>
 
-                <div class="mt-4">
-                    {{ $dpos->links() }}
-                </div>
-                @endif
+                    <div>
+                        <label class="block text-sm font-bold text-gray-300 mb-1">Foto DPO</label>
+                        <div class="flex items-center gap-4">
+                            @if ($foto)
+                            <img src="{{ $foto->temporaryUrl() }}" class="w-16 h-16 object-cover rounded-lg border border-white/20">
+                            @elseif ($foto_lama)
+                            <img src="{{ asset('storage/' . $foto_lama) }}" class="w-16 h-16 object-cover rounded-lg border border-white/20">
+                            @else
+                            <div class="w-16 h-16 bg-white/5 rounded-lg border border-white/10 flex items-center justify-center text-gray-500 text-xs">No Img</div>
+                            @endif
 
+                            <input wire:model="foto" type="file" class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-500 transition cursor-pointer">
+                        </div>
+                        <div wire:loading wire:target="foto" class="text-xs text-yellow-400 mt-1">Mengupload foto...</div>
+                        @error('foto') <span class="text-red-400 text-xs">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end mt-8 space-x-3 pt-4 border-t border-white/10">
+                <button wire:click="closeModal" class="px-5 py-2.5 rounded-lg border border-white/10 text-gray-300 hover:bg-white/5 font-medium transition">Batal</button>
+                <button wire:click="{{ $isEditMode ? 'update' : 'store' }}" class="px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold shadow-lg shadow-red-900/50 transition">
+                    {{ $isEditMode ? 'Simpan Perubahan' : 'Simpan Data DPO' }}
+                </button>
             </div>
         </div>
+        @endif
+
+        @if(!$showForm)
+        <div class="bg-gray-900/60 backdrop-blur-md rounded-2xl shadow-xl border border-white/10 overflow-hidden">
+            <div class="p-5 border-b border-white/10 bg-white/5">
+                <input wire:model.live="search" type="text" class="block w-full md:w-96 rounded-lg border-white/10 bg-black/30 text-white focus:border-red-500 transition text-sm py-2.5 placeholder-gray-500" placeholder="Cari Nama DPO / Kasus...">
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-black/20 text-gray-400 text-xs uppercase tracking-wider font-bold border-b border-white/10">
+                            <th class="px-6 py-4">Foto</th>
+                            <th class="px-6 py-4">Identitas</th>
+                            <th class="px-6 py-4">Kasus</th>
+                            <th class="px-6 py-4">Status Hukum</th>
+                            <th class="px-6 py-4">Status</th>
+                            <th class="px-6 py-4 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5 text-gray-300">
+                        @forelse($dpos as $item)
+                        <tr class="hover:bg-white/5 transition duration-150 group">
+                            <td class="px-6 py-4">
+                                @if($item->foto)
+                                <img src="{{ asset('storage/' . $item->foto) }}" class="w-12 h-12 rounded-full object-cover border-2 border-white/10 group-hover:border-red-500 transition">
+                                @else
+                                <div class="w-12 h-12 rounded-full bg-red-900/30 flex items-center justify-center text-red-500 font-bold border border-white/5">
+                                    ?
+                                </div>
+                                @endif
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <div class="font-bold text-white text-lg">{{ $item->nama_lengkap }}</div>
+                                <div class="text-xs text-gray-500">
+                                    {{ $item->tempat_lahir ?? '-' }},
+                                    {{ $item->tanggal_lahir ? $item->tanggal_lahir->format('d M Y') : '-' }}
+                                </div>
+                                @if($item->ciri_fisik)
+                                <div class="text-[10px] text-gray-400 italic mt-1 line-clamp-1">"{{ $item->ciri_fisik }}"</div>
+                                @endif
+                            </td>
+
+                            <td class="px-6 py-4 max-w-xs truncate" title="{{ $item->kasus }}">
+                                {{ $item->kasus }}
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <span class="bg-gray-700/50 text-gray-300 px-2 py-1 rounded text-xs border border-white/10">
+                                    {{ $item->status_hukum }}
+                                </span>
+                            </td>
+
+                            <td class="px-6 py-4">
+                                @if($item->status_pencarian == 'buron')
+                                <span class="bg-red-500/10 text-red-400 px-3 py-1 rounded-full text-xs border border-red-500/20 font-bold animate-pulse flex items-center gap-1 w-fit">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> BURON
+                                </span>
+                                @else
+                                <span class="bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full text-xs border border-emerald-500/20 font-bold flex items-center gap-1 w-fit">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> TERTANGKAP
+                                </span>
+                                @endif
+                            </td>
+
+                            <td class="px-6 py-4 text-center">
+                                <div class="flex justify-center gap-2">
+                                    <button wire:click="edit({{ $item->id }})" class="p-2 rounded-lg text-blue-400 hover:bg-blue-500/10 transition" title="Edit">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
+                                    </button>
+                                    <button wire:confirm="Hapus data DPO ini?" wire:click="delete({{ $item->id }})" class="p-2 rounded-lg text-red-400 hover:bg-red-500/10 transition" title="Hapus">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="6" class="px-6 py-12 text-center text-gray-500 italic">
+                                Belum ada data DPO yang tercatat.
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="p-5 border-t border-white/10 bg-white/5">
+                {{ $dpos->links() }}
+            </div>
+        </div>
+        @endif
     </div>
 </div>
