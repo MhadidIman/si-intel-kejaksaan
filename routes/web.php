@@ -15,6 +15,8 @@ use App\Livewire\PamSdo\PamSdoIndex;
 use App\Livewire\Jms\JmsIndex;
 use App\Livewire\Kerawanan\KerawananIndex;
 use App\Livewire\Lapdu\LapduIndex;
+use App\Http\Controllers\ReportController;
+
 
 Route::view('/', 'welcome');
 
@@ -58,6 +60,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // 8. Pengaduan Masyarakat (LAPDU)
     Route::get('/lapdu', LapduIndex::class)->name('lapdu.index');
+
+    Route::middleware(['auth'])->group(function () {
+        // ... route profile dll ...
+
+        // Route untuk Cetak Report
+        Route::get('/cetak-dpo', [ReportController::class, 'cetakDpo'])->name('cetak.dpo');
+
+        // Cetak Lapinhar Rekap (Tabel Semua Data)
+        Route::get('/cetak-lapinhar', [ReportController::class, 'cetakLapinhar'])->name('cetak.lapinhar');
+
+        // Cetak Lapinhar Satuan (Format Surat Per Item)
+        Route::get('/cetak-lapinhar/{id}', [ReportController::class, 'cetakLapinharSatuan'])->name('cetak.lapinhar.satuan');
+    });
 });
 
 require __DIR__ . '/auth.php';

@@ -6,14 +6,24 @@
                 <h2 class="text-3xl font-black text-white tracking-tight">Data Buronan (DPO)</h2>
                 <p class="text-sm text-red-400 mt-1">Daftar Pencarian Orang Tindak Pidana.</p>
             </div>
-            @if(!$showForm)
-            <button wire:click="create" class="bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-red-900/50 transition border border-red-500/50 flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-                <span>Input DPO Baru</span>
-            </button>
-            @endif
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a href="{{ route('cetak.dpo') }}" target="_blank" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition border border-gray-500/50 flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                    </svg>
+                    <span>Cetak Laporan</span>
+                </a>
+
+                @if(!$showForm)
+                <button wire:click="create" class="bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-red-900/50 transition border border-red-500/50 flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    <span>Input DPO Baru</span>
+                </button>
+                @endif
+            </div>
         </div>
 
         @if (session()->has('message'))
