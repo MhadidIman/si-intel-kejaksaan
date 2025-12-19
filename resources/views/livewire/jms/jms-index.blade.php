@@ -5,14 +5,24 @@
                 <h2 class="text-3xl font-black text-white tracking-tight">Jaksa Masuk Sekolah</h2>
                 <p class="text-sm text-yellow-400 mt-1">Laporan Kegiatan Penerangan Hukum.</p>
             </div>
-            @if(!$showForm)
-            <button wire:click="create" class="bg-yellow-600 hover:bg-yellow-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-yellow-900/50 transition border border-yellow-500/50 flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-                <span>Input Kegiatan JMS</span>
-            </button>
-            @endif
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a href="{{ route('cetak.jms') }}" target="_blank" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition border border-gray-500/50 flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                    </svg>
+                    <span>Cetak Rekap</span>
+                </a>
+
+                @if(!$showForm)
+                <button wire:click="create" class="bg-yellow-600 hover:bg-yellow-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-yellow-900/50 transition border border-yellow-500/50 flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    <span>Input Kegiatan JMS</span>
+                </button>
+                @endif
+            </div>
         </div>
 
         @if (session()->has('message'))
@@ -31,17 +41,17 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-bold text-gray-300 mb-1">Nama Sekolah</label>
-                        <input wire:model="nama_sekolah" type="text" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-yellow-500 transition">
+                        <input wire:model="nama_sekolah" type="text" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-yellow-500 transition shadow-inner">
                         @error('nama_sekolah') <span class="text-red-400 text-xs">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-bold text-gray-300 mb-1">Tanggal Kegiatan</label>
-                        <input wire:model="tanggal_kegiatan" type="date" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-yellow-500 transition">
+                        <input wire:model="tanggal_kegiatan" type="date" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-yellow-500 transition shadow-inner">
                         @error('tanggal_kegiatan') <span class="text-red-400 text-xs">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-bold text-gray-300 mb-1">Materi Disampaikan</label>
-                        <input wire:model="materi" type="text" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-yellow-500 transition" placeholder="Contoh: Bahaya Narkoba & Cyber Bullying">
+                        <input wire:model="materi" type="text" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-yellow-500 transition shadow-inner" placeholder="Contoh: Bahaya Narkoba & Cyber Bullying">
                         @error('materi') <span class="text-red-400 text-xs">{{ $message }}</span> @enderror
                     </div>
                 </div>
@@ -50,18 +60,18 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-bold text-gray-300 mb-1">Jumlah Siswa</label>
-                            <input wire:model="jumlah_siswa" type="number" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-yellow-500 transition">
+                            <input wire:model="jumlah_siswa" type="number" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-yellow-500 transition shadow-inner">
                             @error('jumlah_siswa') <span class="text-red-400 text-xs">{{ $message }}</span> @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-gray-300 mb-1">Jaksa Pemateri</label>
-                            <input wire:model="nama_jaksa" type="text" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-yellow-500 transition">
+                            <input wire:model="nama_jaksa" type="text" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-yellow-500 transition shadow-inner">
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-sm font-bold text-gray-300 mb-1">Keterangan Lain</label>
-                        <textarea wire:model="keterangan" rows="2" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-yellow-500 transition"></textarea>
+                        <textarea wire:model="keterangan" rows="2" class="block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-yellow-500 transition shadow-inner"></textarea>
                     </div>
 
                     <div>
@@ -97,8 +107,8 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($activities as $item)
-            <div class="bg-gray-900/60 backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden hover:border-yellow-500/50 transition duration-300 group shadow-lg">
-                <div class="h-48 overflow-hidden relative">
+            <div class="bg-gray-900/60 backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden hover:border-yellow-500/50 transition duration-300 group shadow-lg flex flex-col h-full">
+                <div class="h-48 overflow-hidden relative shrink-0">
                     @if($item->foto_kegiatan)
                     <img src="{{ asset('storage/' . $item->foto_kegiatan) }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                     @else
@@ -111,20 +121,28 @@
                     </div>
                 </div>
 
-                <div class="p-5">
+                <div class="p-5 flex-1 flex flex-col">
                     <h3 class="text-xl font-bold text-white mb-1 group-hover:text-yellow-400 transition">{{ $item->nama_sekolah }}</h3>
                     <p class="text-sm text-gray-400 mb-4 line-clamp-2">{{ $item->materi }}</p>
 
-                    <div class="flex justify-between items-center text-xs text-gray-500 border-t border-white/10 pt-4">
+                    <div class="mt-auto pt-4 border-t border-white/10 flex justify-between items-center text-xs text-gray-500">
                         <div class="flex items-center gap-2">
                             <svg class="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                             </svg>
                             <span>{{ $item->jumlah_siswa }} Siswa</span>
                         </div>
-                        <div class="flex gap-2">
+
+                        <div class="flex gap-2 items-center">
+                            <a href="{{ route('cetak.jms.satuan', $item->id) }}" target="_blank" class="text-yellow-400 hover:text-white transition" title="Cetak Laporan Kegiatan">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                                </svg>
+                            </a>
+                            <span class="text-gray-700">|</span>
+
                             <button wire:click="edit({{ $item->id }})" class="text-blue-400 hover:text-white font-bold">Edit</button>
-                            <span class="text-gray-600">|</span>
+                            <span class="text-gray-700">|</span>
                             <button wire:confirm="Hapus?" wire:click="delete({{ $item->id }})" class="text-red-400 hover:text-white font-bold">Hapus</button>
                         </div>
                     </div>

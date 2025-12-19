@@ -3,48 +3,61 @@
 namespace App\Livewire\Kerawanan;
 
 use Livewire\Component;
-use Livewire\WithPagination;
-use Livewire\Attributes\Layout;
 use App\Models\Kerawanan;
+use Livewire\WithPagination;
 
 class KerawananIndex extends Component
 {
     use WithPagination;
 
-    public $kecamatan, $desa, $jenis_ancaman, $tokoh_kunci, $deskripsi_singkat, $tingkat_rawan = 'rendah';
+    // Properti (Variabel)
+    public $kecamatan, $desa, $jenis_ancaman, $tokoh_kunci, $deskripsi_singkat, $tingkat_rawan;
     public $kerawanan_id;
-
+    public $search = '';
     public $isEditMode = false;
     public $showForm = false;
-    public $search = '';
 
+    // Aturan Validasi
     protected $rules = [
         'kecamatan' => 'required',
         'desa' => 'required',
         'jenis_ancaman' => 'required',
-        'tingkat_rawan' => 'required',
+        'deskripsi_singkat' => 'required',
+        'tingkat_rawan' => 'required|in:rendah,sedang,tinggi',
     ];
 
-    #[Layout('layouts.app')]
-    public function render()
+    // Reset pagination saat mencari
+    public function updatingSearch()
     {
-        return view('livewire.kerawanan.kerawanan-index', [
-            'kerawanans' => Kerawanan::where('kecamatan', 'like', '%' . $this->search . '%') // <-- Nama variabel harus 'kerawanans'
-                ->orderByRaw("FIELD(tingkat_rawan, 'tinggi', 'sedang', 'rendah')")
-                ->paginate(12)
-        ]);
+        $this->resetPage();
     }
 
+    public function render()
+    {
+        $data = Kerawanan::where('kecamatan', 'like', '%' . $this->search . '%')
+            ->orWhere('desa', 'like', '%' . $this->search . '%')
+            ->orWhere('jenis_ancaman', 'like', '%' . $this->search . '%')
+            ->latest()
+            ->paginate(10);
+
+        return view('livewire.kerawanan.kerawanan-index', [
+            'kerawanans' => $data
+        ])->layout('layouts.app');
+    }
+
+    // --- METHOD UNTUK MEMBUKA FORM (INI YANG ERROR TADI) ---
     public function create()
     {
-        $this->resetInputFields();
+        $this->resetInput();
         $this->showForm = true;
         $this->isEditMode = false;
     }
 
+    // --- METHOD UNTUK SIMPAN DATA BARU ---
     public function store()
     {
         $this->validate();
+
         Kerawanan::create([
             'kecamatan' => $this->kecamatan,
             'desa' => $this->desa,
@@ -53,10 +66,12 @@ class KerawananIndex extends Component
             'deskripsi_singkat' => $this->deskripsi_singkat,
             'tingkat_rawan' => $this->tingkat_rawan,
         ]);
-        session()->flash('message', 'Data Peta Kerawanan ditambahkan.');
+
+        session()->flash('message', 'Data titik rawan berhasil disimpan!');
         $this->closeModal();
     }
 
+    // --- METHOD UNTUK EDIT ---
     public function edit($id)
     {
         $data = Kerawanan::findOrFail($id);
@@ -67,13 +82,16 @@ class KerawananIndex extends Component
         $this->tokoh_kunci = $data->tokoh_kunci;
         $this->deskripsi_singkat = $data->deskripsi_singkat;
         $this->tingkat_rawan = $data->tingkat_rawan;
-        $this->showForm = true;
+
         $this->isEditMode = true;
+        $this->showForm = true;
     }
 
+    // --- METHOD UNTUK UPDATE ---
     public function update()
     {
         $this->validate();
+
         $data = Kerawanan::find($this->kerawanan_id);
         $data->update([
             'kecamatan' => $this->kecamatan,
@@ -83,29 +101,31 @@ class KerawananIndex extends Component
             'deskripsi_singkat' => $this->deskripsi_singkat,
             'tingkat_rawan' => $this->tingkat_rawan,
         ]);
-        session()->flash('message', 'Data diperbarui.');
+
+        session()->flash('message', 'Data berhasil diperbarui!');
         $this->closeModal();
     }
 
+    // --- METHOD UNTUK DELETE ---
     public function delete($id)
     {
         Kerawanan::find($id)->delete();
-        session()->flash('message', 'Data dihapus.');
+        session()->flash('message', 'Data berhasil dihapus!');
     }
 
     public function closeModal()
     {
         $this->showForm = false;
-        $this->resetInputFields();
+        $this->resetInput();
     }
 
-    private function resetInputFields()
+    private function resetInput()
     {
         $this->kecamatan = '';
         $this->desa = '';
         $this->jenis_ancaman = '';
         $this->tokoh_kunci = '';
         $this->deskripsi_singkat = '';
-        $this->tingkat_rawan = 'rendah';
+        $this->tingkat_rawan = '';
     }
 }

@@ -17,8 +17,11 @@ use App\Livewire\Kerawanan\KerawananIndex;
 use App\Livewire\Lapdu\LapduIndex;
 use App\Http\Controllers\ReportController;
 
-
-Route::view('/', 'welcome');
+// --- PERBAIKAN DI SINI ---
+// Mengarahkan halaman utama langsung ke Login, bukan ke 'welcome'
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 
 // Route Profile Bawaan Breeze
 Route::view('profile', 'profile')
@@ -29,49 +32,54 @@ Route::view('profile', 'profile')
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // --- DASHBOARD BARU (Livewire) ---
-    // Menggunakan component DashboardIndex agar bisa menampilkan statistik real-time
     Route::get('/dashboard', DashboardIndex::class)->name('dashboard');
 
     // --- MANAJEMEN USER ---
     Route::get('/users', UserIndex::class)->name('users.index');
 
     // --- MODUL BANK DATA INTELIJEN ---
-
-    // 1. Laporan Informasi Harian
     Route::get('/lapinhar', LapinharIndex::class)->name('lapinhar.index');
-
-    // 2. Data DPO / Buronan
     Route::get('/dpo', DpoIndex::class)->name('dpo.index');
-
-    // 3. Pengawasan Orang Asing (WNA)
     Route::get('/wna', WnaIndex::class)->name('wna.index');
-
-    // 4. Data Ormas & PAKEM
     Route::get('/ormas', OrmasIndex::class)->name('ormas.index');
-
-    // 5. PAM SDO (Pengamanan Internal)
     Route::get('/pam-sdo', PamSdoIndex::class)->name('pam-sdo.index');
-
-    // 6. Jaksa Masuk Sekolah (JMS)
     Route::get('/jms', JmsIndex::class)->name('jms.index');
-
-    // 7. Peta Kerawanan
     Route::get('/kerawanan', KerawananIndex::class)->name('kerawanan.index');
-
-    // 8. Pengaduan Masyarakat (LAPDU)
     Route::get('/lapdu', LapduIndex::class)->name('lapdu.index');
 
-    Route::middleware(['auth'])->group(function () {
-        // ... route profile dll ...
+    // --- ROUTE CETAK LAPORAN ---
+    Route::controller(ReportController::class)->group(function () {
+        // DPO
+        Route::get('/cetak-dpo', 'cetakDpo')->name('cetak.dpo');
+        Route::get('/cetak-dpo/{id}', 'cetakDpoSatuan')->name('cetak.dpo.satuan');
 
-        // Route untuk Cetak Report
-        Route::get('/cetak-dpo', [ReportController::class, 'cetakDpo'])->name('cetak.dpo');
+        // Lapinhar
+        Route::get('/cetak-lapinhar', 'cetakLapinhar')->name('cetak.lapinhar');
+        Route::get('/cetak-lapinhar/{id}', 'cetakLapinharSatuan')->name('cetak.lapinhar.satuan');
 
-        // Cetak Lapinhar Rekap (Tabel Semua Data)
-        Route::get('/cetak-lapinhar', [ReportController::class, 'cetakLapinhar'])->name('cetak.lapinhar');
+        // WNA
+        Route::get('/cetak-wna', 'cetakWna')->name('cetak.wna');
+        Route::get('/cetak-wna/{id}', 'cetakWnaSatuan')->name('cetak.wna.satuan');
 
-        // Cetak Lapinhar Satuan (Format Surat Per Item)
-        Route::get('/cetak-lapinhar/{id}', [ReportController::class, 'cetakLapinharSatuan'])->name('cetak.lapinhar.satuan');
+        // ORMAS
+        Route::get('/cetak-ormas', 'cetakOrmas')->name('cetak.ormas');
+        Route::get('/cetak-ormas/{id}', 'cetakOrmasSatuan')->name('cetak.ormas.satuan');
+
+        // PAM SDO
+        Route::get('/cetak-pam-sdo', 'cetakPamSdo')->name('cetak.pam-sdo');
+        Route::get('/cetak-pam-sdo/{id}', 'cetakPamSdoSatuan')->name('cetak.pam-sdo.satuan');
+
+        // JMS
+        Route::get('/cetak-jms', 'cetakJms')->name('cetak.jms');
+        Route::get('/cetak-jms/{id}', 'cetakJmsSatuan')->name('cetak.jms.satuan');
+
+        // PETA KERAWANAN
+        Route::get('/cetak-kerawanan', 'cetakKerawanan')->name('cetak.kerawanan');
+        Route::get('/cetak-kerawanan/{id}', 'cetakKerawananSatuan')->name('cetak.kerawanan.satuan');
+
+        // LAPDU
+        Route::get('/cetak-lapdu', 'cetakLapdu')->name('cetak.lapdu');
+        Route::get('/cetak-lapdu/{id}', 'cetakLapduSatuan')->name('cetak.lapdu.satuan');
     });
 });
 

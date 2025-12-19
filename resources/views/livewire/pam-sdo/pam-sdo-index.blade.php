@@ -6,14 +6,24 @@
                 <h2 class="text-3xl font-black text-white tracking-tight">PAM SDO</h2>
                 <p class="text-sm text-cyan-400 mt-1">Pengamanan Sumber Daya Organisasi (Personil, Materiil, Dokumen).</p>
             </div>
-            @if(!$showForm)
-            <button wire:click="create" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-cyan-900/50 transition border border-cyan-500/50 flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-                <span>Buat Laporan PAM</span>
-            </button>
-            @endif
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a href="{{ route('cetak.pam-sdo') }}" target="_blank" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition border border-gray-500/50 flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                    </svg>
+                    <span>Cetak Rekap</span>
+                </a>
+
+                @if(!$showForm)
+                <button wire:click="create" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-cyan-900/50 transition border border-cyan-500/50 flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    <span>Buat Laporan PAM</span>
+                </button>
+                @endif
+            </div>
         </div>
 
         @if (session()->has('message'))
@@ -124,14 +134,29 @@
                                 <div class="text-xs text-gray-500">{{ $item->nip_atau_nomor ?? '-' }}</div>
                             </td>
                             <td class="px-6 py-4">{{ $item->kategori }}</td>
-                            <td class="px-6 py-4 text-xs">{{ Str::limit($item->uraian_masalah, 40) }}</td>
+                            <td class="px-6 py-4 text-xs max-w-xs truncate">{{ Str::limit($item->uraian_masalah, 40) }}</td>
                             <td class="px-6 py-4">
                                 <span class="bg-cyan-500/10 text-cyan-400 px-2 py-1 rounded text-xs border border-cyan-500/20 uppercase font-bold">{{ $item->status }}</span>
                             </td>
                             <td class="px-6 py-4 text-center">
                                 <div class="flex justify-center gap-2">
-                                    <button wire:click="edit({{ $item->id }})" class="text-blue-400 hover:text-blue-300">Edit</button>
-                                    <button wire:confirm="Hapus?" wire:click="delete({{ $item->id }})" class="text-red-400 hover:text-red-300">Hapus</button>
+
+                                    <a href="{{ route('cetak.pam-sdo.satuan', $item->id) }}" target="_blank" class="p-2 rounded-lg text-yellow-400 hover:bg-yellow-500/10 transition" title="Cetak Laporan">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                    </a>
+
+                                    <button wire:click="edit({{ $item->id }})" class="p-2 rounded-lg text-blue-400 hover:bg-blue-500/10 transition" title="Edit">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
+                                    </button>
+                                    <button wire:confirm="Hapus?" wire:click="delete({{ $item->id }})" class="p-2 rounded-lg text-red-400 hover:bg-red-500/10 transition" title="Hapus">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
