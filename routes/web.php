@@ -15,10 +15,10 @@ use App\Livewire\PamSdo\PamSdoIndex;
 use App\Livewire\Jms\JmsIndex;
 use App\Livewire\Kerawanan\KerawananIndex;
 use App\Livewire\Lapdu\LapduIndex;
+// Import Penkum dihapus
 use App\Http\Controllers\ReportController;
 
-// --- PERBAIKAN DI SINI ---
-// Mengarahkan halaman utama langsung ke Login, bukan ke 'welcome'
+// Mengarahkan halaman utama langsung ke Login
 Route::get('/', function () {
     return redirect()->route('login');
 });
@@ -38,12 +38,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/users', UserIndex::class)->name('users.index');
 
     // --- MODUL BANK DATA INTELIJEN ---
+    // Bidang Operasional
     Route::get('/lapinhar', LapinharIndex::class)->name('lapinhar.index');
     Route::get('/dpo', DpoIndex::class)->name('dpo.index');
     Route::get('/wna', WnaIndex::class)->name('wna.index');
     Route::get('/ormas', OrmasIndex::class)->name('ormas.index');
     Route::get('/pam-sdo', PamSdoIndex::class)->name('pam-sdo.index');
+
+    // Giat & Pelayanan
     Route::get('/jms', JmsIndex::class)->name('jms.index');
+    // Route Penkum dihapus
     Route::get('/kerawanan', KerawananIndex::class)->name('kerawanan.index');
     Route::get('/lapdu', LapduIndex::class)->name('lapdu.index');
 
@@ -80,6 +84,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // LAPDU
         Route::get('/cetak-lapdu', 'cetakLapdu')->name('cetak.lapdu');
         Route::get('/cetak-lapdu/{id}', 'cetakLapduSatuan')->name('cetak.lapdu.satuan');
+
+        // Route cetak penkum dihapus
     });
 });
 

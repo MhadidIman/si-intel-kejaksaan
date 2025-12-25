@@ -8,8 +8,7 @@
         /* Pengaturan Kertas dan Font Standar Dinas */
         @page {
             size: A4 portrait;
-            margin: 2.5cm 2.5cm 2.5cm 2.5cm;
-            /* Margin standar surat dinas */
+            margin: 1.5cm 2cm 2cm 2cm;
         }
 
         body {
@@ -19,40 +18,73 @@
             color: #000;
         }
 
-        /* Klasifikasi Rahasia */
+        /* --- STYLING KOP SURAT PRESISI --- */
+        .kop-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0;
+        }
+
+        .logo-cell {
+            width: 100px;
+            /* Lebar kolom logo */
+            vertical-align: middle;
+            text-align: left;
+        }
+
+        .logo-img {
+            width: 90px;
+            /* Logo diperbesar agar lebih presisi */
+            height: auto;
+        }
+
+        .teks-cell {
+            text-align: center;
+            vertical-align: middle;
+            padding-right: 90px;
+            /* Penyeimbang agar teks benar-benar di tengah */
+        }
+
+        .teks-cell h1 {
+            font-size: 13pt;
+            margin: 0;
+            padding: 0;
+            text-transform: uppercase;
+            font-weight: normal;
+        }
+
+        .teks-cell h2 {
+            font-size: 15pt;
+            margin: 0;
+            padding: 0;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .teks-cell p {
+            font-size: 8.5pt;
+            margin: 1px 0;
+            padding: 0;
+            line-height: 1.2;
+        }
+
+        .garis-kop-ganda {
+            border-top: 3px solid black;
+            border-bottom: 1px solid black;
+            height: 2px;
+            margin-top: 8px;
+            margin-bottom: 25px;
+        }
+
+        /* --- STYLING ISI LAPORAN --- */
         .rahasia-top {
             font-weight: bold;
             text-decoration: underline;
             text-align: right;
             font-size: 11pt;
-            margin-bottom: 0px;
+            margin-bottom: 10px;
         }
 
-        .rahasia-bottom {
-            font-weight: bold;
-            text-decoration: underline;
-            text-align: right;
-            font-size: 11pt;
-            margin-top: 30px;
-        }
-
-        /* Kop Surat Sederhana */
-        .kop-surat {
-            text-align: center;
-            font-weight: bold;
-            text-transform: uppercase;
-            line-height: 1.2;
-            margin-bottom: 20px;
-        }
-
-        /* Garis Pemisah Kop */
-        .garis-kop {
-            border-bottom: 3px double black;
-            /* Garis ganda tebal tipis */
-            margin-bottom: 20px;
-        }
-
-        /* Judul Laporan */
         .judul {
             text-align: center;
             font-weight: bold;
@@ -67,7 +99,6 @@
             margin-bottom: 30px;
         }
 
-        /* Bagian Kepada/Dari (Header Laporan) */
         .meta-data {
             width: 100%;
             margin-bottom: 20px;
@@ -87,7 +118,6 @@
             text-align: center;
         }
 
-        /* Isi Laporan */
         .section-title {
             font-weight: bold;
             text-transform: uppercase;
@@ -98,11 +128,9 @@
         .content-text {
             text-align: justify;
             text-indent: 30px;
-            /* Menjorok ke dalam seperti paragraf surat */
             margin-bottom: 10px;
         }
 
-        /* Tanda Tangan */
         .ttd-container {
             float: right;
             width: 280px;
@@ -115,6 +143,14 @@
             text-decoration: underline;
             margin-top: 70px;
         }
+
+        .rahasia-bottom {
+            font-weight: bold;
+            text-decoration: underline;
+            text-align: right;
+            font-size: 11pt;
+            margin-top: 30px;
+        }
     </style>
 </head>
 
@@ -122,13 +158,23 @@
 
     <div class="rahasia-top">RAHASIA</div>
 
-    <div class="kop-surat">
-        KEJAKSAAN REPUBLIK INDONESIA<br>
-        KEJAKSAAN TINGGI (PROVINSI ANDA)<br>
-        KEJAKSAAN NEGERI (KOTA ANDA)
-    </div>
-
-    <div class="garis-kop"></div>
+    <table class="kop-table">
+        <tr>
+            <td class="logo-cell">
+                <img src="{{ public_path('img/logo-kejaksaan.png') }}" class="logo-img">
+            </td>
+            <td class="teks-cell">
+                <h1>KEJAKSAAN REPUBLIK INDONESIA</h1>
+                <h1>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h1>
+                <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
+                <p>JALAN BRIG JEND H. HASAN BASRI NO. 3 RW.002 KELURAHAN PANGERAN KECAMATAN BANJARMASIN UTARA</p>
+                <p>KOTA BANJARMASIN PROVINSI KALIMANTAN SELATAN KODE POS 70124</p>
+                <p>TELPON : (0511) 3300402 / 6723314 FAX : (0511) 6723314</p>
+                <p>website : kejari-banjarmasin.go.id, email : kasubagbin@kejari-banjarmasin.go.id</p>
+            </td>
+        </tr>
+    </table>
+    <div class="garis-kop-ganda"></div>
 
     <div class="judul">LAPORAN INFORMASI</div>
     <div class="nomor">NOMOR: {{ $item->nomor_surat ?? 'R-......./......./.......' }}</div>
@@ -155,11 +201,6 @@
             <td>-</td>
         </tr>
         <tr>
-            <td class="label">Perihal</td>
-            <td class="sep">:</td>
-            <td style="font-weight: bold; text-transform: uppercase;">{{ $item->peristiwa }}</td>
-        </tr>
-        <tr>
             <td class="label">Bidang</td>
             <td class="sep">:</td>
             <td>{{ $item->bidang }}</td>
@@ -175,7 +216,7 @@
 
     <div class="section-title">II. FAKTA - FAKTA</div>
     <div class="content-text">
-        {{ $item->peristiwa }}
+        Telah dilaporkan mengenai peristiwa: <strong>{{ $item->peristiwa }}</strong>.
     </div>
     <div class="content-text">
         Adapun rincian kejadian dan data pendukung terkait peristiwa tersebut telah diverifikasi dan dicatat sesuai dengan temuan di lapangan.
@@ -192,11 +233,11 @@
     </div>
 
     <div class="ttd-container">
-        <p>{{ config('app.kota_kantor', 'Jakarta') }}, {{ \Carbon\Carbon::parse($item->tanggal_surat)->isoFormat('D MMMM Y') }}</p>
+        <p>Banjarmasin, {{ \Carbon\Carbon::parse($item->tanggal_surat)->isoFormat('D MMMM Y') }}</p>
         <p>Pelapor,</p>
 
         <div class="nama-terang">{{ auth()->user()->name }}</div>
-        <div>Jaksa Pratama / NIP. ....................</div>
+        <div>Jaksa Pratama / NIP. {{ auth()->user()->nip ?? '....................' }}</div>
     </div>
 
     <div style="clear: both;"></div>

@@ -58,6 +58,9 @@ class LapduIndex extends Component
         $this->validate();
 
         Lapdu::create([
+            // KUNCI PERBAIKAN: Menyimpan ID user penginput untuk Dashboard Admin
+            'user_id' => auth()->id(),
+
             'nomor_surat' => $this->nomor_surat,
             'tanggal_terima' => $this->tanggal_terima,
             'nama_pelapor' => $this->nama_pelapor,
@@ -95,6 +98,7 @@ class LapduIndex extends Component
 
         $data = Lapdu::find($this->lapdu_id);
         $data->update([
+            // user_id tidak perlu diupdate agar record penginput awal tetap asli
             'nomor_surat' => $this->nomor_surat,
             'tanggal_terima' => $this->tanggal_terima,
             'nama_pelapor' => $this->nama_pelapor,

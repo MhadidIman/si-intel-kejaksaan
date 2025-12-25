@@ -2,32 +2,28 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
+     * Atribut yang dapat diisi secara massal.
      */
     protected $fillable = [
         'name',
-        'nip', // Tambahkan ini
+        'nip',      // NIP Pegawai Kejaksaan
         'email',
         'password',
-        'role', // Tambahkan ini
+        'role',     // Role: admin atau staff
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
+     * Atribut yang disembunyikan untuk serialisasi.
      */
     protected $hidden = [
         'password',
@@ -35,9 +31,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Cast atribut ke tipe data tertentu.
      */
     protected function casts(): array
     {
@@ -45,5 +39,51 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Helper: Cek apakah user adalah Admin
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Helper: Cek apakah user adalah Staff
+     */
+    public function isStaff(): bool
+    {
+        return $this->role === 'staff';
+    }
+
+    /**
+     * RELASI UNTUK MONITORING PRODUKTIVITAS STAFF
+     * Menghubungkan User ke data yang mereka input.
+     */
+
+    public function lapinhars(): HasMany
+    {
+        return $this->hasMany(Lapinhar::class, 'user_id');
+    }
+
+    public function dpos(): HasMany
+    {
+        return $this->hasMany(Dpo::class, 'user_id');
+    }
+
+    public function wnas(): HasMany
+    {
+        return $this->hasMany(Wna::class, 'user_id');
+    }
+
+    public function lapdus(): HasMany
+    {
+        return $this->hasMany(Lapdu::class, 'user_id');
+    }
+
+    public function kerawanans(): HasMany
+    {
+        return $this->hasMany(Kerawanan::class, 'user_id');
     }
 }

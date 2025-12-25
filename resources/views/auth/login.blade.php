@@ -45,9 +45,7 @@
                     </label>
 
                     @if (Route::has('password.request'))
-                    <a class="text-xs text-emerald-500 hover:text-emerald-400 font-bold transition" href="{{ route('password.request') }}">
-                        {{ __('Lupa Password?') }}
-                    </a>
+
                     @endif
                 </div>
 

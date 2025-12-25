@@ -12,8 +12,9 @@ class UserIndex extends Component
 {
     use WithPagination;
 
-    // DEFINISI VARIABEL PUBLIK (Wajib ada agar bisa dibaca di Blade)
-    public $name, $email, $password, $user_id;
+    // DEFINISI VARIABEL PUBLIK
+    // Menambahkan $nip dan $role agar data dapat ditangkap dari form dan disimpan ke database
+    public $name, $email, $password, $user_id, $nip, $role;
 
     // Variabel untuk mengontrol tampilan Form/Modal
     public $isEditMode = false;
@@ -33,6 +34,7 @@ class UserIndex extends Component
         return view('livewire.users.user-index', [
             'users' => User::where('name', 'like', '%' . $this->search . '%')
                 ->orWhere('email', 'like', '%' . $this->search . '%')
+                ->orWhere('nip', 'like', '%' . $this->search . '%') // Menambahkan pencarian berdasarkan NIP
                 ->orderBy('created_at', 'desc')
                 ->paginate(8)
         ]);
@@ -41,22 +43,26 @@ class UserIndex extends Component
     public function create()
     {
         $this->resetInputFields();
-        $this->showForm = true; // Ini yang mentrigger tampilan form muncul
+        $this->showForm = true;
         $this->isEditMode = false;
     }
 
     public function store()
     {
         $this->validate([
-            'name' => 'required',
+            'name' => 'required|string|max:255',
+            'nip' => 'required|string|min:18|unique:users,nip', // Validasi NIP wajib diisi dan unik
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
+            'role' => 'required|in:admin,staff', // Validasi role harus admin atau staff
         ]);
 
         User::create([
             'name' => $this->name,
+            'nip' => $this->nip, // Menyimpan data NIP
             'email' => $this->email,
             'password' => Hash::make($this->password),
+            'role' => $this->role, // Menyimpan data Role
         ]);
 
         session()->flash('message', 'Personil berhasil ditambahkan.');
@@ -68,8 +74,10 @@ class UserIndex extends Component
         $user = User::findOrFail($id);
         $this->user_id = $id;
         $this->name = $user->name;
+        $this->nip = $user->nip; // Memuat data NIP saat edit
         $this->email = $user->email;
-        $this->password = ''; // Kosongkan password saat edit
+        $this->role = $user->role; // Memuat data Role saat edit
+        $this->password = '';
 
         $this->showForm = true;
         $this->isEditMode = true;
@@ -78,18 +86,21 @@ class UserIndex extends Component
     public function update()
     {
         $this->validate([
-            'name' => 'required',
+            'name' => 'required|string|max:255',
+            'nip' => 'required|string|min:18|unique:users,nip,' . $this->user_id,
             'email' => 'required|email|unique:users,email,' . $this->user_id,
+            'role' => 'required|in:admin,staff',
         ]);
 
         $user = User::find($this->user_id);
 
         $data = [
             'name' => $this->name,
+            'nip' => $this->nip, // Memperbarui data NIP
             'email' => $this->email,
+            'role' => $this->role, // Memperbarui data Role
         ];
 
-        // Hanya update password jika diisi
         if (!empty($this->password)) {
             $data['password'] = Hash::make($this->password);
         }
@@ -102,7 +113,6 @@ class UserIndex extends Component
 
     public function delete($id)
     {
-        // Cegah menghapus diri sendiri
         if ($id == auth()->id()) {
             return;
         }
@@ -120,8 +130,10 @@ class UserIndex extends Component
     private function resetInputFields()
     {
         $this->name = '';
+        $this->nip = ''; // Reset field NIP
         $this->email = '';
         $this->password = '';
+        $this->role = ''; // Reset field Role
         $this->user_id = null;
     }
 }
