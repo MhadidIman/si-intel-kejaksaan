@@ -10,14 +10,23 @@ return new class extends Migration
     {
         Schema::create('dpos', function (Blueprint $table) {
             $table->id();
+            // Opsional: Mencatat penginput
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+
             $table->string('nama_lengkap');
             $table->string('tempat_lahir')->nullable();
             $table->date('tanggal_lahir')->nullable();
-            $table->string('kasus'); // Misal: Korupsi / Narkoba
-            $table->string('status_hukum'); // Tersangka / Terpidana
-            $table->string('ciri_fisik')->nullable(); // Tinggi, kulit, dll
-            $table->string('foto')->nullable(); // Path foto
+            $table->string('kasus');
+            $table->string('status_hukum');
+            $table->string('ciri_fisik')->nullable();
+            $table->string('foto')->nullable();
+
+            // Status Operasional (Buron/Tertangkap)
             $table->enum('status_pencarian', ['buron', 'tertangkap'])->default('buron');
+
+            // KOLOM BARU: Status Verifikasi Admin
+            $table->enum('status_verifikasi', ['pending', 'disetujui', 'ditolak'])->default('pending');
+
             $table->timestamps();
         });
     }

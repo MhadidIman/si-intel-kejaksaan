@@ -1,120 +1,39 @@
 <?php
 
-namespace App\Livewire\Lapdu;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use Livewire\Component;
-use App\Models\Lapdu;
-use Livewire\WithPagination;
-
-class LapduIndex extends Component
+return new class extends Migration
 {
-    use WithPagination;
-
-    // Properti sesuai Migration Anda
-    public $nomor_surat, $tanggal_terima, $nama_pelapor, $no_hp_pelapor, $terlapor, $uraian_pengaduan, $status;
-    public $lapdu_id;
-    public $search = '';
-    public $showForm = false;
-    public $isEditMode = false;
-
-    protected $rules = [
-        'tanggal_terima' => 'required|date',
-        'terlapor' => 'required',
-        'uraian_pengaduan' => 'required',
-        'status' => 'required|in:masuk,telaah,lid,arsipkan',
-    ];
-
-    public function render()
+    public function up(): void
     {
-        $data = Lapdu::where('nama_pelapor', 'like', '%' . $this->search . '%')
-            ->orWhere('terlapor', 'like', '%' . $this->search . '%')
-            ->orWhere('uraian_pengaduan', 'like', '%' . $this->search . '%')
-            ->latest()
-            ->paginate(10);
+        Schema::create('lapdus', function (Blueprint $table) {
+            $table->id();
+            // Kolom Verifikasi Admin
+            $table->enum('status_verifikasi', ['pending', 'disetujui', 'ditolak'])->default('pending');
 
-        return view('livewire.lapdu.lapdu-index', ['lapdus' => $data])
-            ->layout('layouts.app');
+            // Data Pelapor
+            $table->string('nama_pelapor');
+            $table->string('nik')->nullable();
+            $table->string('no_hp')->nullable();
+
+            // Data Pengaduan
+            $table->string('nama_terlapor')->nullable(); // Siapa yang dilaporkan
+            $table->string('kategori_laporan'); // Korupsi / Umum / Pegawai
+            $table->text('uraian_pengaduan'); // Kronologi singkat
+            $table->string('bukti_dukung')->nullable(); // File Upload
+
+            // Status Tindak Lanjut (Operasional)
+            $table->enum('status_laporan', ['menunggu', 'proses', 'selesai'])->default('menunggu');
+            $table->text('keterangan_tindak_lanjut')->nullable();
+
+            $table->timestamps();
+        });
     }
 
-    public function create()
+    public function down(): void
     {
-        $this->resetInput();
-        $this->showForm = true;
-        $this->isEditMode = false;
+        Schema::dropIfExists('lapdus');
     }
-
-    public function store()
-    {
-        $this->validate();
-
-        Lapdu::create([
-            'nomor_surat' => $this->nomor_surat,
-            'tanggal_terima' => $this->tanggal_terima,
-            'nama_pelapor' => $this->nama_pelapor,
-            'no_hp_pelapor' => $this->no_hp_pelapor,
-            'terlapor' => $this->terlapor,
-            'uraian_pengaduan' => $this->uraian_pengaduan,
-            'status' => $this->status,
-        ]);
-
-        session()->flash('message', 'Pengaduan berhasil disimpan.');
-        $this->closeModal();
-    }
-
-    public function edit($id)
-    {
-        $data = Lapdu::findOrFail($id);
-        $this->lapdu_id = $id;
-        $this->nomor_surat = $data->nomor_surat;
-        $this->tanggal_terima = $data->tanggal_terima;
-        $this->nama_pelapor = $data->nama_pelapor;
-        $this->no_hp_pelapor = $data->no_hp_pelapor;
-        $this->terlapor = $data->terlapor;
-        $this->uraian_pengaduan = $data->uraian_pengaduan;
-        $this->status = $data->status;
-
-        $this->isEditMode = true;
-        $this->showForm = true;
-    }
-
-    public function update()
-    {
-        $this->validate();
-        $data = Lapdu::find($this->lapdu_id);
-        $data->update([
-            'nomor_surat' => $this->nomor_surat,
-            'tanggal_terima' => $this->tanggal_terima,
-            'nama_pelapor' => $this->nama_pelapor,
-            'no_hp_pelapor' => $this->no_hp_pelapor,
-            'terlapor' => $this->terlapor,
-            'uraian_pengaduan' => $this->uraian_pengaduan,
-            'status' => $this->status,
-        ]);
-
-        session()->flash('message', 'Data diperbarui.');
-        $this->closeModal();
-    }
-
-    public function delete($id)
-    {
-        Lapdu::find($id)->delete();
-        session()->flash('message', 'Data dihapus.');
-    }
-
-    public function closeModal()
-    {
-        $this->showForm = false;
-        $this->resetInput();
-    }
-
-    private function resetInput()
-    {
-        $this->nomor_surat = '';
-        $this->tanggal_terima = '';
-        $this->nama_pelapor = '';
-        $this->no_hp_pelapor = '';
-        $this->terlapor = '';
-        $this->uraian_pengaduan = '';
-        $this->status = 'masuk';
-    }
-}
+};

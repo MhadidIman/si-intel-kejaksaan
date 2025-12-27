@@ -6,19 +6,26 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
 use App\Models\Ormas;
+use Illuminate\Support\Facades\Auth;
 
 class OrmasIndex extends Component
 {
     use WithPagination;
 
     // Form Variables
-    public $nama_organisasi, $ketua, $alamat_sekretariat, $bentuk_organisasi, $nomor_legalitas, $jumlah_anggota, $kegiatan_terakhir, $status = 'aktif';
+    public $nama_organisasi, $ketua, $alamat_sekretariat, $bentuk_organisasi, $nomor_legalitas, $jumlah_anggota, $kegiatan_terakhir;
+    public $status = 'aktif'; // Status Aktivitas
+    public $status_verifikasi = 'pending'; // Status Verifikasi
     public $ormas_id;
 
     // UI Variables
     public $isEditMode = false;
     public $showForm = false;
     public $search = '';
+
+    // Modal Status
+    public $showStatusModal = false;
+    public $targetId = null;
 
     protected $rules = [
         'nama_organisasi' => 'required',
@@ -27,11 +34,34 @@ class OrmasIndex extends Component
         'status' => 'required',
     ];
 
+    // --- LOGIKA VERIFIKASI ---
+    public function openStatusModal($id)
+    {
+        $this->targetId = $id;
+        $this->showStatusModal = true;
+    }
+
+    public function closeStatusModal()
+    {
+        $this->showStatusModal = false;
+        $this->targetId = null;
+    }
+
+    public function updateStatus($newStatus)
+    {
+        if (Auth::user()->isAdmin() && $this->targetId) {
+            Ormas::where('id', $this->targetId)->update(['status_verifikasi' => $newStatus]);
+            session()->flash('message', 'Status verifikasi berhasil diubah menjadi ' . strtoupper($newStatus));
+            $this->closeStatusModal();
+        }
+    }
+    // -------------------------
+
     #[Layout('layouts.app')]
     public function render()
     {
         return view('livewire.ormas.ormas-index', [
-            'ormas' => Ormas::where('nama_organisasi', 'like', '%' . $this->search . '%') // <-- Nama variabel harus 'ormas'
+            'ormas' => Ormas::where('nama_organisasi', 'like', '%' . $this->search . '%')
                 ->orWhere('ketua', 'like', '%' . $this->search . '%')
                 ->orderBy('created_at', 'desc')
                 ->paginate(10)
@@ -58,6 +88,7 @@ class OrmasIndex extends Component
             'jumlah_anggota' => $this->jumlah_anggota,
             'kegiatan_terakhir' => $this->kegiatan_terakhir,
             'status' => $this->status,
+            'status_verifikasi' => 'pending', // Default
         ]);
 
         session()->flash('message', 'Data Organisasi berhasil ditambahkan.');
@@ -67,6 +98,12 @@ class OrmasIndex extends Component
     public function edit($id)
     {
         $data = Ormas::findOrFail($id);
+
+        if ($data->status_verifikasi === 'disetujui' && !Auth::user()->isAdmin()) {
+            session()->flash('message', 'Data yang sudah divalidasi tidak dapat diubah.');
+            return;
+        }
+
         $this->ormas_id = $id;
         $this->nama_organisasi = $data->nama_organisasi;
         $this->ketua = $data->ketua;
@@ -76,6 +113,7 @@ class OrmasIndex extends Component
         $this->jumlah_anggota = $data->jumlah_anggota;
         $this->kegiatan_terakhir = $data->kegiatan_terakhir;
         $this->status = $data->status;
+        $this->status_verifikasi = $data->status_verifikasi;
 
         $this->showForm = true;
         $this->isEditMode = true;
@@ -95,6 +133,7 @@ class OrmasIndex extends Component
             'jumlah_anggota' => $this->jumlah_anggota,
             'kegiatan_terakhir' => $this->kegiatan_terakhir,
             'status' => $this->status,
+            'status_verifikasi' => Auth::user()->isAdmin() ? $data->status_verifikasi : 'pending',
         ]);
 
         session()->flash('message', 'Data Organisasi diperbarui.');
@@ -123,5 +162,6 @@ class OrmasIndex extends Component
         $this->jumlah_anggota = 0;
         $this->kegiatan_terakhir = '';
         $this->status = 'aktif';
+        $this->status_verifikasi = 'pending';
     }
 }

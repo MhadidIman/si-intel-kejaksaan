@@ -10,34 +10,28 @@ class Lapdu extends Model
 {
     use HasFactory;
 
-    /**
-     * Atribut yang dapat diisi secara massal.
-     * Ditambahkan 'user_id' untuk pencatatan penginput data.
-     */
     protected $fillable = [
         'user_id',
         'nomor_surat',
-        'tanggal_terima',
+        'tanggal_terima', // Pastikan sesuai database
         'nama_pelapor',
         'no_hp_pelapor',
-        'terlapor',
+        'nik',            // Tambahan sesuai form baru
+        'terlapor',       // Di controller baru kita pakai 'nama_terlapor', tapi di db lama 'terlapor'. Kita samakan jadi 'nama_terlapor' agar konsisten.
+        'nama_terlapor',  // <-- Gunakan ini jika di migration pakai nama_terlapor
+        'kategori_laporan',
         'uraian_pengaduan',
-        'bukti_pendukung',
+        'bukti_dukung',   // Ganti bukti_pendukung jadi bukti_dukung
+        'status_laporan', // <-- PENTING: Ganti 'status' jadi 'status_laporan'
+        'keterangan_tindak_lanjut',
         'disposisi_pimpinan',
-        'status',
+        'status_verifikasi', // Tambahan wajib untuk admin
     ];
 
-    /**
-     * Cast atribut ke tipe data tertentu.
-     */
     protected $casts = [
         'tanggal_terima' => 'date',
     ];
 
-    /**
-     * RELASI: Menghubungkan Laporan Pengaduan ke Staff yang menginputnya.
-     * Digunakan oleh Admin untuk memantau produktivitas staff di Dashboard.
-     */
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');

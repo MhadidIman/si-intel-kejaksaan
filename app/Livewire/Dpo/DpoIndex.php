@@ -4,10 +4,12 @@ namespace App\Livewire\Dpo;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\WithFileUploads; // Wajib untuk upload file
+use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
 use App\Models\Dpo;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class DpoIndex extends Component
 {
@@ -15,21 +17,51 @@ class DpoIndex extends Component
 
     // Variables Form
     public $nama_lengkap, $tempat_lahir, $tanggal_lahir, $kasus, $status_hukum, $ciri_fisik, $status_pencarian = 'buron';
-    public $foto; // Untuk file upload baru
-    public $foto_lama; // Untuk menyimpan path foto lama saat edit
+    public $foto;
+    public $foto_lama;
     public $dpo_id;
+
+    // Status Verifikasi
+    public $status_verifikasi = 'pending';
 
     // UI Variables
     public $isEditMode = false;
     public $showForm = false;
     public $search = '';
 
+    // MODAL STATUS VARIABLES
+    public $showStatusModal = false;
+    public $targetId = null;
+
     protected $rules = [
         'nama_lengkap' => 'required',
         'kasus' => 'required',
         'status_hukum' => 'required',
-        'foto' => 'nullable|image|max:2048', // Max 2MB, harus gambar
+        'foto' => 'nullable|image|max:2048',
     ];
+
+    // --- LOGIKA VERIFIKASI (SAMA SEPERTI LAPINHAR) ---
+    public function openStatusModal($id)
+    {
+        $this->targetId = $id;
+        $this->showStatusModal = true;
+    }
+
+    public function closeStatusModal()
+    {
+        $this->showStatusModal = false;
+        $this->targetId = null;
+    }
+
+    public function updateStatus($newStatus)
+    {
+        if (Auth::user()->isAdmin() && $this->targetId) {
+            Dpo::where('id', $this->targetId)->update(['status_verifikasi' => $newStatus]);
+            session()->flash('message', 'Status DPO berhasil diubah menjadi ' . strtoupper($newStatus));
+            $this->closeStatusModal();
+        }
+    }
+    // ------------------------------------------------
 
     #[Layout('layouts.app')]
     public function render()
@@ -55,39 +87,46 @@ class DpoIndex extends Component
 
         $path_foto = null;
         if ($this->foto) {
-            // Simpan ke folder: storage/app/public/dpo-photos
             $path_foto = $this->foto->store('dpo-photos', 'public');
         }
 
         Dpo::create([
+            'user_id' => Auth::id(),
             'nama_lengkap' => $this->nama_lengkap,
             'tempat_lahir' => $this->tempat_lahir,
-            // PERBAIKAN: Ubah string kosong jadi NULL agar tidak error di MySQL
             'tanggal_lahir' => $this->tanggal_lahir ?: null,
             'kasus' => $this->kasus,
             'status_hukum' => $this->status_hukum,
             'ciri_fisik' => $this->ciri_fisik,
             'status_pencarian' => $this->status_pencarian,
             'foto' => $path_foto,
+            'status_verifikasi' => 'pending', // Default
         ]);
 
-        session()->flash('message', 'Data DPO berhasil ditambahkan.');
+        session()->flash('message', 'Data DPO berhasil ditambahkan & menunggu verifikasi.');
         $this->closeModal();
     }
 
     public function edit($id)
     {
         $dpo = Dpo::findOrFail($id);
+
+        // Proteksi: Staff tidak bisa edit jika sudah disetujui
+        if ($dpo->status_verifikasi === 'disetujui' && !Auth::user()->isAdmin()) {
+            session()->flash('message', 'Data DPO yang sudah divalidasi tidak dapat diubah.');
+            return;
+        }
+
         $this->dpo_id = $id;
         $this->nama_lengkap = $dpo->nama_lengkap;
         $this->tempat_lahir = $dpo->tempat_lahir;
-        // Format tanggal agar bisa terbaca oleh input type="date"
-        $this->tanggal_lahir = $dpo->tanggal_lahir ? $dpo->tanggal_lahir->format('Y-m-d') : null;
+        $this->tanggal_lahir = $dpo->tanggal_lahir ? Carbon::parse($dpo->tanggal_lahir)->format('Y-m-d') : null;
         $this->kasus = $dpo->kasus;
         $this->status_hukum = $dpo->status_hukum;
         $this->ciri_fisik = $dpo->ciri_fisik;
         $this->status_pencarian = $dpo->status_pencarian;
-        $this->foto_lama = $dpo->foto; // Simpan path lama
+        $this->foto_lama = $dpo->foto;
+        $this->status_verifikasi = $dpo->status_verifikasi;
 
         $this->showForm = true;
         $this->isEditMode = true;
@@ -98,28 +137,26 @@ class DpoIndex extends Component
         $this->validate();
         $dpo = Dpo::find($this->dpo_id);
 
-        $path_foto = $dpo->foto; // Default pakai foto lama
+        $path_foto = $dpo->foto;
 
-        // Jika user upload foto baru
         if ($this->foto) {
-            // Hapus foto lama jika ada
             if ($dpo->foto && Storage::disk('public')->exists($dpo->foto)) {
                 Storage::disk('public')->delete($dpo->foto);
             }
-            // Simpan foto baru
             $path_foto = $this->foto->store('dpo-photos', 'public');
         }
 
         $dpo->update([
             'nama_lengkap' => $this->nama_lengkap,
             'tempat_lahir' => $this->tempat_lahir,
-            // PERBAIKAN: Ubah string kosong jadi NULL
             'tanggal_lahir' => $this->tanggal_lahir ?: null,
             'kasus' => $this->kasus,
             'status_hukum' => $this->status_hukum,
             'ciri_fisik' => $this->ciri_fisik,
             'status_pencarian' => $this->status_pencarian,
             'foto' => $path_foto,
+            // Reset ke pending jika diedit oleh staff
+            'status_verifikasi' => Auth::user()->isAdmin() ? $dpo->status_verifikasi : 'pending',
         ]);
 
         session()->flash('message', 'Data DPO berhasil diperbarui.');
@@ -129,7 +166,6 @@ class DpoIndex extends Component
     public function delete($id)
     {
         $dpo = Dpo::find($id);
-        // Hapus file foto fisik saat data dihapus
         if ($dpo->foto && Storage::disk('public')->exists($dpo->foto)) {
             Storage::disk('public')->delete($dpo->foto);
         }
@@ -154,5 +190,6 @@ class DpoIndex extends Component
         $this->foto = null;
         $this->foto_lama = null;
         $this->status_pencarian = 'buron';
+        $this->status_verifikasi = 'pending';
     }
 }

@@ -10,6 +10,7 @@ class JmsActivity extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'nama_sekolah',
         'tanggal_kegiatan',
         'materi',
@@ -17,6 +18,7 @@ class JmsActivity extends Model
         'nama_jaksa',
         'keterangan',
         'foto_kegiatan',
+        'status_verifikasi', // Status Admin
     ];
 
     protected $casts = [

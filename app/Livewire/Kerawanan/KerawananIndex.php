@@ -3,129 +3,184 @@
 namespace App\Livewire\Kerawanan;
 
 use Livewire\Component;
-use App\Models\Kerawanan;
 use Livewire\WithPagination;
+use Livewire\Attributes\Layout;
+use App\Models\Kerawanan;
+use Illuminate\Support\Facades\Auth;
 
 class KerawananIndex extends Component
 {
     use WithPagination;
 
-    // Properti (Variabel)
-    public $kecamatan, $desa, $jenis_ancaman, $tokoh_kunci, $deskripsi_singkat, $tingkat_rawan;
+    // Form Variables
+    public $kecamatan, $bidang, $potensi_ancaman, $sumber_informasi, $tingkat_rawan = 'rendah', $upaya_pencegahan;
+    public $status_verifikasi = 'pending';
     public $kerawanan_id;
-    public $search = '';
+
+    // UI Variables
     public $isEditMode = false;
     public $showForm = false;
+    public $search = '';
 
-    // Aturan Validasi
+    // Modal Status
+    public $showStatusModal = false;
+    public $targetId = null;
+
     protected $rules = [
         'kecamatan' => 'required',
-        'desa' => 'required',
-        'jenis_ancaman' => 'required',
-        'deskripsi_singkat' => 'required',
-        'tingkat_rawan' => 'required|in:rendah,sedang,tinggi',
+        'bidang' => 'required',
+        'potensi_ancaman' => 'required',
+        'tingkat_rawan' => 'required|in:tinggi,sedang,rendah',
     ];
 
-    // Reset pagination saat mencari
-    public function updatingSearch()
+    // --- FITUR OTOMATISASI UPAYA PENCEGAHAN ---
+    // Fungsi ini akan jalan otomatis saat Anda merubah pilihan dropdown "Tingkat Kerawanan"
+    public function updatedTingkatRawan($value)
     {
-        $this->resetPage();
+        // Jika sedang mode edit dan text area sudah ada isinya, kita tanya dulu atau biarkan (opsional).
+        // Disini kita buat otomatis menimpa untuk kemudahan.
+
+        switch ($value) {
+            case 'tinggi':
+                $this->upaya_pencegahan = "Melakukan penggalangan terhadap tokoh kunci, koordinasi intensif dengan aparat keamanan (TNI/Polri), dan pelaksanaan operasi intelijen pengamanan tertutup (Pam-Tup).";
+                break;
+
+            case 'sedang':
+                $this->upaya_pencegahan = "Meningkatkan frekuensi pemantauan lapangan, koordinasi dengan perangkat desa/kecamatan, dan melakukan deteksi dini terhadap potensi gejolak.";
+                break;
+
+            case 'rendah':
+                $this->upaya_pencegahan = "Melakukan monitoring berkala, penyuluhan hukum (JMS/Penyuluhan) kepada masyarakat, dan menjaga komunikasi dengan informan di lapangan.";
+                break;
+
+            default:
+                $this->upaya_pencegahan = "";
+        }
+    }
+    // -------------------------------------------
+
+    // --- LOGIKA VERIFIKASI ---
+    public function openStatusModal($id)
+    {
+        $this->targetId = $id;
+        $this->showStatusModal = true;
     }
 
+    public function closeStatusModal()
+    {
+        $this->showStatusModal = false;
+        $this->targetId = null;
+    }
+
+    public function updateStatus($newStatus)
+    {
+        if (Auth::user()->isAdmin() && $this->targetId) {
+            Kerawanan::where('id', $this->targetId)->update(['status_verifikasi' => $newStatus]);
+            session()->flash('message', 'Status pemetaan berhasil diubah menjadi ' . strtoupper($newStatus));
+            $this->closeStatusModal();
+        }
+    }
+
+    #[Layout('layouts.app')]
     public function render()
     {
-        $data = Kerawanan::where('kecamatan', 'like', '%' . $this->search . '%')
-            ->orWhere('desa', 'like', '%' . $this->search . '%')
-            ->orWhere('jenis_ancaman', 'like', '%' . $this->search . '%')
-            ->latest()
-            ->paginate(10);
-
         return view('livewire.kerawanan.kerawanan-index', [
-            'kerawanans' => $data
-        ])->layout('layouts.app');
+            'peta' => Kerawanan::where('kecamatan', 'like', '%' . $this->search . '%')
+                ->orWhere('potensi_ancaman', 'like', '%' . $this->search . '%')
+                ->orderByRaw("FIELD(tingkat_rawan, 'tinggi', 'sedang', 'rendah')")
+                ->paginate(10)
+        ]);
     }
 
-    // --- METHOD UNTUK MEMBUKA FORM (INI YANG ERROR TADI) ---
     public function create()
     {
-        $this->resetInput();
+        $this->resetInputFields();
         $this->showForm = true;
         $this->isEditMode = false;
+
+        // Trigger default untuk 'rendah' saat buka form baru
+        $this->updatedTingkatRawan('rendah');
     }
 
-    // --- METHOD UNTUK SIMPAN DATA BARU ---
     public function store()
     {
         $this->validate();
 
         Kerawanan::create([
             'kecamatan' => $this->kecamatan,
-            'desa' => $this->desa,
-            'jenis_ancaman' => $this->jenis_ancaman,
-            'tokoh_kunci' => $this->tokoh_kunci,
-            'deskripsi_singkat' => $this->deskripsi_singkat,
+            'bidang' => $this->bidang,
+            'potensi_ancaman' => $this->potensi_ancaman,
+            'sumber_informasi' => $this->sumber_informasi,
             'tingkat_rawan' => $this->tingkat_rawan,
+            'upaya_pencegahan' => $this->upaya_pencegahan,
+            'status_verifikasi' => 'pending',
         ]);
 
-        session()->flash('message', 'Data titik rawan berhasil disimpan!');
+        session()->flash('message', 'Data Kerawanan berhasil dipetakan.');
         $this->closeModal();
     }
 
-    // --- METHOD UNTUK EDIT ---
     public function edit($id)
     {
         $data = Kerawanan::findOrFail($id);
+
+        if ($data->status_verifikasi === 'disetujui' && !Auth::user()->isAdmin()) {
+            session()->flash('message', 'Data yang sudah divalidasi tidak dapat diubah.');
+            return;
+        }
+
         $this->kerawanan_id = $id;
         $this->kecamatan = $data->kecamatan;
-        $this->desa = $data->desa;
-        $this->jenis_ancaman = $data->jenis_ancaman;
-        $this->tokoh_kunci = $data->tokoh_kunci;
-        $this->deskripsi_singkat = $data->deskripsi_singkat;
+        $this->bidang = $data->bidang;
+        $this->potensi_ancaman = $data->potensi_ancaman;
+        $this->sumber_informasi = $data->sumber_informasi;
         $this->tingkat_rawan = $data->tingkat_rawan;
+        $this->upaya_pencegahan = $data->upaya_pencegahan;
+        $this->status_verifikasi = $data->status_verifikasi;
 
-        $this->isEditMode = true;
         $this->showForm = true;
+        $this->isEditMode = true;
     }
 
-    // --- METHOD UNTUK UPDATE ---
     public function update()
     {
         $this->validate();
+        $data = Kerawanan::findOrFail($this->kerawanan_id);
 
-        $data = Kerawanan::find($this->kerawanan_id);
         $data->update([
             'kecamatan' => $this->kecamatan,
-            'desa' => $this->desa,
-            'jenis_ancaman' => $this->jenis_ancaman,
-            'tokoh_kunci' => $this->tokoh_kunci,
-            'deskripsi_singkat' => $this->deskripsi_singkat,
+            'bidang' => $this->bidang,
+            'potensi_ancaman' => $this->potensi_ancaman,
+            'sumber_informasi' => $this->sumber_informasi,
             'tingkat_rawan' => $this->tingkat_rawan,
+            'upaya_pencegahan' => $this->upaya_pencegahan,
+            'status_verifikasi' => Auth::user()->isAdmin() ? $data->status_verifikasi : 'pending',
         ]);
 
-        session()->flash('message', 'Data berhasil diperbarui!');
+        session()->flash('message', 'Data Kerawanan diperbarui.');
         $this->closeModal();
     }
 
-    // --- METHOD UNTUK DELETE ---
     public function delete($id)
     {
-        Kerawanan::find($id)->delete();
-        session()->flash('message', 'Data berhasil dihapus!');
+        Kerawanan::findOrFail($id)->delete();
+        session()->flash('message', 'Data dihapus.');
     }
 
     public function closeModal()
     {
         $this->showForm = false;
-        $this->resetInput();
+        $this->resetInputFields();
     }
 
-    private function resetInput()
+    private function resetInputFields()
     {
         $this->kecamatan = '';
-        $this->desa = '';
-        $this->jenis_ancaman = '';
-        $this->tokoh_kunci = '';
-        $this->deskripsi_singkat = '';
-        $this->tingkat_rawan = '';
+        $this->bidang = '';
+        $this->potensi_ancaman = '';
+        $this->sumber_informasi = '';
+        $this->tingkat_rawan = 'rendah';
+        $this->upaya_pencegahan = '';
+        $this->status_verifikasi = 'pending';
     }
 }

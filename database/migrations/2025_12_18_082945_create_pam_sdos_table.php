@@ -10,15 +10,23 @@ return new class extends Migration
     {
         Schema::create('pam_sdos', function (Blueprint $table) {
             $table->id();
-            $table->date('tanggal_laporan');
-            $table->string('kategori'); // Personil / Materiil / Dokumen
-            $table->string('target'); // Nama Pegawai atau Nama Aset
-            $table->string('nip_atau_nomor')->nullable(); // NIP (jika orang) / No Aset
-            $table->text('uraian_masalah'); // Masalah yang terjadi / Potensi Ancaman
-            $table->text('tindakan_pam'); // Apa yang dilakukan Intel
-            $table->string('keterangan')->nullable();
-            $table->enum('status', ['lid', 'proses', 'selesai', 'aman'])->default('lid');
-            // lid = Penyelidikan, proses = Tindak Lanjut
+            // Kolom Verifikasi Baru
+            $table->enum('status_verifikasi', ['pending', 'disetujui', 'ditolak'])->default('pending');
+
+            // Data Personil
+            $table->string('nama_pegawai');
+            $table->string('nip_nrp')->nullable();
+            $table->string('pangkat_jabatan');
+            $table->string('satuan_kerja'); // Kejari/Kejati mana
+
+            // Data Masalah/Pengamanan
+            $table->text('permasalahan'); // Uraian singkat masalah
+            $table->text('keterangan')->nullable(); // Tindak lanjut
+
+            // Status Pengamanan (Clear / Dalam Pengawasan)
+            $table->enum('status_pam', ['clear', 'diawasi', 'ditindak'])->default('diawasi');
+
+            $table->string('foto')->nullable();
             $table->timestamps();
         });
     }

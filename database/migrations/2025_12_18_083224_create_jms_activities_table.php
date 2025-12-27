@@ -10,13 +10,19 @@ return new class extends Migration
     {
         Schema::create('jms_activities', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_sekolah'); // Tempat kegiatan
+            // Opsional: Mencatat siapa yang input
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+
+            // Kolom Verifikasi Baru
+            $table->enum('status_verifikasi', ['pending', 'disetujui', 'ditolak'])->default('pending');
+
+            $table->string('nama_sekolah');
             $table->date('tanggal_kegiatan');
-            $table->string('materi'); // Misal: Bahaya Narkoba / Bullying
-            $table->integer('jumlah_siswa')->default(0); // Audiens
-            $table->string('nama_jaksa'); // Siapa pematerinya
-            $table->text('keterangan')->nullable(); // Catatan tambahan
-            $table->string('foto_kegiatan')->nullable(); // Bukti dukung
+            $table->string('materi');
+            $table->integer('jumlah_siswa')->default(0);
+            $table->string('nama_jaksa');
+            $table->text('keterangan')->nullable();
+            $table->string('foto_kegiatan')->nullable();
             $table->timestamps();
         });
     }

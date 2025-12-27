@@ -17,6 +17,7 @@ class Ormas extends Model
         'nomor_legalitas',
         'jumlah_anggota',
         'kegiatan_terakhir',
-        'status',
+        'status',             // Status Aktivitas (Aktif/Vakum)
+        'status_verifikasi',  // Status Admin (Pending/Acc)
     ];
 }

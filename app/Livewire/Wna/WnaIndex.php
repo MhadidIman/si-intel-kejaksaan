@@ -8,6 +8,8 @@ use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
 use App\Models\Wna;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class WnaIndex extends Component
 {
@@ -18,10 +20,17 @@ class WnaIndex extends Component
     public $foto_dokumen, $foto_lama;
     public $wna_id;
 
+    // Status Verifikasi
+    public $status_verifikasi = 'pending';
+
     // UI Variables
     public $isEditMode = false;
     public $showForm = false;
     public $search = '';
+
+    // Modal Status
+    public $showStatusModal = false;
+    public $targetId = null;
 
     protected $rules = [
         'nama_lengkap' => 'required',
@@ -31,6 +40,29 @@ class WnaIndex extends Component
         'alamat_menginap' => 'required',
         'foto_dokumen' => 'nullable|image|max:2048',
     ];
+
+    // --- LOGIKA VERIFIKASI ---
+    public function openStatusModal($id)
+    {
+        $this->targetId = $id;
+        $this->showStatusModal = true;
+    }
+
+    public function closeStatusModal()
+    {
+        $this->showStatusModal = false;
+        $this->targetId = null;
+    }
+
+    public function updateStatus($newStatus)
+    {
+        if (Auth::user()->isAdmin() && $this->targetId) {
+            Wna::where('id', $this->targetId)->update(['status_verifikasi' => $newStatus]);
+            session()->flash('message', 'Status WNA berhasil diubah menjadi ' . strtoupper($newStatus));
+            $this->closeStatusModal();
+        }
+    }
+    // -------------------------
 
     #[Layout('layouts.app')]
     public function render()
@@ -64,13 +96,13 @@ class WnaIndex extends Component
             'nama_lengkap' => $this->nama_lengkap,
             'nomor_paspor' => $this->nomor_paspor,
             'kebangsaan' => $this->kebangsaan,
-            // PERBAIKAN: Gunakan operator ternary untuk ubah string kosong jadi NULL
             'tanggal_tiba' => $this->tanggal_tiba ?: null,
             'masa_berlaku_izin_tinggal' => $this->masa_berlaku_izin_tinggal,
             'tujuan_kunjungan' => $this->tujuan_kunjungan,
             'sponsor' => $this->sponsor,
             'alamat_menginap' => $this->alamat_menginap,
             'foto_dokumen' => $path,
+            'status_verifikasi' => 'pending', // Default
         ]);
 
         session()->flash('message', 'Data WNA berhasil disimpan.');
@@ -80,6 +112,13 @@ class WnaIndex extends Component
     public function edit($id)
     {
         $data = Wna::findOrFail($id);
+
+        // Proteksi Edit
+        if ($data->status_verifikasi === 'disetujui' && !Auth::user()->isAdmin()) {
+            session()->flash('message', 'Data yang sudah divalidasi tidak dapat diubah.');
+            return;
+        }
+
         $this->wna_id = $id;
         $this->nama_lengkap = $data->nama_lengkap;
         $this->nomor_paspor = $data->nomor_paspor;
@@ -90,6 +129,7 @@ class WnaIndex extends Component
         $this->sponsor = $data->sponsor;
         $this->alamat_menginap = $data->alamat_menginap;
         $this->foto_lama = $data->foto_dokumen;
+        $this->status_verifikasi = $data->status_verifikasi;
 
         $this->showForm = true;
         $this->isEditMode = true;
@@ -112,13 +152,13 @@ class WnaIndex extends Component
             'nama_lengkap' => $this->nama_lengkap,
             'nomor_paspor' => $this->nomor_paspor,
             'kebangsaan' => $this->kebangsaan,
-            // PERBAIKAN: Gunakan operator ternary disini juga
             'tanggal_tiba' => $this->tanggal_tiba ?: null,
             'masa_berlaku_izin_tinggal' => $this->masa_berlaku_izin_tinggal,
             'tujuan_kunjungan' => $this->tujuan_kunjungan,
             'sponsor' => $this->sponsor,
             'alamat_menginap' => $this->alamat_menginap,
             'foto_dokumen' => $path,
+            'status_verifikasi' => Auth::user()->isAdmin() ? $data->status_verifikasi : 'pending',
         ]);
 
         session()->flash('message', 'Data WNA diperbarui.');
@@ -153,5 +193,6 @@ class WnaIndex extends Component
         $this->alamat_menginap = '';
         $this->foto_dokumen = null;
         $this->foto_lama = null;
+        $this->status_verifikasi = 'pending';
     }
 }

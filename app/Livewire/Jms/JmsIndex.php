@@ -8,6 +8,8 @@ use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
 use App\Models\JmsActivity;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class JmsIndex extends Component
 {
@@ -16,12 +18,17 @@ class JmsIndex extends Component
     // Form Variables
     public $nama_sekolah, $tanggal_kegiatan, $materi, $jumlah_siswa, $nama_jaksa, $keterangan;
     public $foto_kegiatan, $foto_lama;
+    public $status_verifikasi = 'pending';
     public $jms_id;
 
     // UI Variables
     public $isEditMode = false;
     public $showForm = false;
     public $search = '';
+
+    // Modal Status
+    public $showStatusModal = false;
+    public $targetId = null;
 
     protected $rules = [
         'nama_sekolah' => 'required',
@@ -31,6 +38,29 @@ class JmsIndex extends Component
         'foto_kegiatan' => 'nullable|image|max:5120', // Max 5MB
     ];
 
+    // --- LOGIKA VERIFIKASI ---
+    public function openStatusModal($id)
+    {
+        $this->targetId = $id;
+        $this->showStatusModal = true;
+    }
+
+    public function closeStatusModal()
+    {
+        $this->showStatusModal = false;
+        $this->targetId = null;
+    }
+
+    public function updateStatus($newStatus)
+    {
+        if (Auth::user()->isAdmin() && $this->targetId) {
+            JmsActivity::where('id', $this->targetId)->update(['status_verifikasi' => $newStatus]);
+            session()->flash('message', 'Status kegiatan berhasil diubah menjadi ' . strtoupper($newStatus));
+            $this->closeStatusModal();
+        }
+    }
+    // -------------------------
+
     #[Layout('layouts.app')]
     public function render()
     {
@@ -38,7 +68,7 @@ class JmsIndex extends Component
             'activities' => JmsActivity::where('nama_sekolah', 'like', '%' . $this->search . '%')
                 ->orWhere('materi', 'like', '%' . $this->search . '%')
                 ->orderBy('tanggal_kegiatan', 'desc')
-                ->paginate(9) // Kita pakai Grid Layout (3x3)
+                ->paginate(10)
         ]);
     }
 
@@ -59,6 +89,7 @@ class JmsIndex extends Component
         }
 
         JmsActivity::create([
+            'user_id' => Auth::id(),
             'nama_sekolah' => $this->nama_sekolah,
             'tanggal_kegiatan' => $this->tanggal_kegiatan,
             'materi' => $this->materi,
@@ -66,6 +97,7 @@ class JmsIndex extends Component
             'nama_jaksa' => $this->nama_jaksa,
             'keterangan' => $this->keterangan,
             'foto_kegiatan' => $path,
+            'status_verifikasi' => 'pending', // Default
         ]);
 
         session()->flash('message', 'Laporan JMS berhasil disimpan.');
@@ -75,6 +107,12 @@ class JmsIndex extends Component
     public function edit($id)
     {
         $data = JmsActivity::findOrFail($id);
+
+        if ($data->status_verifikasi === 'disetujui' && !Auth::user()->isAdmin()) {
+            session()->flash('message', 'Data yang sudah divalidasi tidak dapat diubah.');
+            return;
+        }
+
         $this->jms_id = $id;
         $this->nama_sekolah = $data->nama_sekolah;
         $this->tanggal_kegiatan = $data->tanggal_kegiatan->format('Y-m-d');
@@ -83,6 +121,7 @@ class JmsIndex extends Component
         $this->nama_jaksa = $data->nama_jaksa;
         $this->keterangan = $data->keterangan;
         $this->foto_lama = $data->foto_kegiatan;
+        $this->status_verifikasi = $data->status_verifikasi;
 
         $this->showForm = true;
         $this->isEditMode = true;
@@ -91,7 +130,7 @@ class JmsIndex extends Component
     public function update()
     {
         $this->validate();
-        $data = JmsActivity::find($this->jms_id);
+        $data = JmsActivity::findOrFail($this->jms_id);
 
         $path = $data->foto_kegiatan;
         if ($this->foto_kegiatan) {
@@ -109,6 +148,7 @@ class JmsIndex extends Component
             'nama_jaksa' => $this->nama_jaksa,
             'keterangan' => $this->keterangan,
             'foto_kegiatan' => $path,
+            'status_verifikasi' => Auth::user()->isAdmin() ? $data->status_verifikasi : 'pending',
         ]);
 
         session()->flash('message', 'Data JMS diperbarui.');
@@ -117,7 +157,7 @@ class JmsIndex extends Component
 
     public function delete($id)
     {
-        $data = JmsActivity::find($id);
+        $data = JmsActivity::findOrFail($id);
         if ($data->foto_kegiatan && Storage::disk('public')->exists($data->foto_kegiatan)) {
             Storage::disk('public')->delete($data->foto_kegiatan);
         }
@@ -141,5 +181,6 @@ class JmsIndex extends Component
         $this->keterangan = '';
         $this->foto_kegiatan = null;
         $this->foto_lama = null;
+        $this->status_verifikasi = 'pending';
     }
 }

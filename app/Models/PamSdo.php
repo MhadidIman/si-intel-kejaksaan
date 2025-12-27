@@ -10,17 +10,14 @@ class PamSdo extends Model
     use HasFactory;
 
     protected $fillable = [
-        'tanggal_laporan',
-        'kategori',
-        'target',
-        'nip_atau_nomor',
-        'uraian_masalah',
-        'tindakan_pam',
+        'nama_pegawai',
+        'nip_nrp',
+        'pangkat_jabatan',
+        'satuan_kerja',
+        'permasalahan',
         'keterangan',
-        'status',
-    ];
-
-    protected $casts = [
-        'tanggal_laporan' => 'date',
+        'status_pam',        // Status Operasional
+        'foto',
+        'status_verifikasi', // Status Admin
     ];
 }

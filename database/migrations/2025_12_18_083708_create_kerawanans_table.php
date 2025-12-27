@@ -10,13 +10,20 @@ return new class extends Migration
     {
         Schema::create('kerawanans', function (Blueprint $table) {
             $table->id();
-            $table->string('kecamatan'); // Nama Kecamatan
-            $table->string('desa'); // Nama Desa/Kelurahan
-            $table->string('jenis_ancaman'); // Misal: Sengketa Lahan, Konflik Agama
-            $table->string('tokoh_kunci')->nullable(); // Provokator / Tokoh Masyarakat
-            $table->text('deskripsi_singkat');
-            $table->enum('tingkat_rawan', ['rendah', 'sedang', 'tinggi']);
-            // Tinggi = Merah, Sedang = Kuning, Rendah = Hijau
+            // Kolom Verifikasi Admin
+            $table->enum('status_verifikasi', ['pending', 'disetujui', 'ditolak'])->default('pending');
+
+            // Data Pemetaan
+            $table->string('kecamatan'); // Lokasi / Wilayah
+            $table->string('bidang'); // IPOLEKSOSBUDHANKAM
+            $table->text('potensi_ancaman'); // Isu strategis
+            $table->string('sumber_informasi')->nullable();
+
+            // Tingkat Kerawanan (Skala Prioritas)
+            $table->enum('tingkat_rawan', ['tinggi', 'sedang', 'rendah'])->default('rendah');
+
+            $table->text('upaya_pencegahan')->nullable(); // Rekomendasi/Tindak Lanjut
+
             $table->timestamps();
         });
     }

@@ -10,15 +10,18 @@ return new class extends Migration
     {
         Schema::create('wnas', function (Blueprint $table) {
             $table->id();
+            // Menambahkan kolom status_verifikasi
+            $table->enum('status_verifikasi', ['pending', 'disetujui', 'ditolak'])->default('pending');
+
             $table->string('nama_lengkap');
             $table->string('nomor_paspor');
-            $table->string('kebangsaan'); // Negara asal
+            $table->string('kebangsaan');
             $table->date('tanggal_tiba')->nullable();
-            $table->date('masa_berlaku_izin_tinggal'); // Expired Date Visa
-            $table->string('tujuan_kunjungan'); // Wisata, Kerja, Sosial
-            $table->string('sponsor')->nullable(); // Penjamin di Indonesia
-            $table->text('alamat_menginap'); // Hotel / Rumah
-            $table->string('foto_dokumen')->nullable(); // Foto Paspor
+            $table->date('masa_berlaku_izin_tinggal');
+            $table->string('tujuan_kunjungan');
+            $table->string('sponsor')->nullable();
+            $table->text('alamat_menginap');
+            $table->string('foto_dokumen')->nullable();
             $table->timestamps();
         });
     }

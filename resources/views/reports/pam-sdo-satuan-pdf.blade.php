@@ -2,12 +2,12 @@
 <html>
 
 <head>
-    <title>Laporan Pengamanan - {{ $item->target }}</title>
+    <title>Laporan PAM SDO - {{ $item->nama_pegawai }}</title>
     <style>
         /* Pengaturan Kertas dan Font Standar Dinas */
         @page {
             size: A4 portrait;
-            margin: 1.5cm 2cm 2cm 2cm;
+            margin: 2cm 2cm 2cm 2cm;
         }
 
         body {
@@ -17,7 +17,7 @@
             color: #000;
         }
 
-        /* --- STYLING KOP SURAT PRESISI --- */
+        /* --- STYLING KOP SURAT --- */
         .kop-table {
             width: 100%;
             border-collapse: collapse;
@@ -31,37 +31,34 @@
         }
 
         .logo-img {
-            width: 90px;
+            width: 80px;
             height: auto;
         }
 
         .teks-cell {
             text-align: center;
             vertical-align: middle;
-            padding-right: 90px;
-            /* Penyeimbang agar teks benar-benar di tengah */
+            padding-right: 80px;
+            /* Penyeimbang */
         }
 
         .teks-cell h1 {
-            font-size: 13pt;
+            font-size: 14pt;
             margin: 0;
-            padding: 0;
+            font-weight: bold;
             text-transform: uppercase;
-            font-weight: normal;
         }
 
         .teks-cell h2 {
-            font-size: 15pt;
+            font-size: 16pt;
             margin: 0;
-            padding: 0;
-            text-transform: uppercase;
             font-weight: bold;
+            text-transform: uppercase;
         }
 
         .teks-cell p {
-            font-size: 8.5pt;
+            font-size: 9pt;
             margin: 1px 0;
-            padding: 0;
             line-height: 1.2;
         }
 
@@ -69,22 +66,22 @@
             border-top: 3px solid black;
             border-bottom: 1px solid black;
             height: 2px;
-            margin-top: 8px;
-            margin-bottom: 25px;
+            margin-top: 5px;
+            margin-bottom: 20px;
         }
 
-        /* --- STYLING ISI DOKUMEN --- */
+        /* --- STYLING ISI --- */
         .rahasia {
             font-weight: bold;
             text-decoration: underline;
             text-align: right;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
             font-size: 11pt;
         }
 
         .judul {
             text-align: center;
-            font-size: 14pt;
+            font-size: 13pt;
             font-weight: bold;
             text-decoration: underline;
             margin-bottom: 30px;
@@ -92,18 +89,20 @@
         }
 
         .content-block {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .label-heading {
             font-weight: bold;
             text-transform: uppercase;
             margin-bottom: 5px;
+            text-decoration: underline;
         }
 
         .value-text {
             text-align: justify;
-            padding-left: 25px;
+            padding-left: 20px;
+            margin-bottom: 10px;
         }
 
         .table-info {
@@ -114,11 +113,11 @@
 
         .table-info td {
             vertical-align: top;
-            padding: 4px 0;
+            padding: 3px 0;
         }
 
         .col-label {
-            width: 180px;
+            width: 200px;
             font-weight: bold;
         }
 
@@ -127,21 +126,38 @@
             text-align: center;
         }
 
+        /* FOTO PROFILE */
+        .foto-container {
+            position: absolute;
+            top: 210px;
+            right: 0;
+            width: 110px;
+            height: 140px;
+            border: 1px solid #000;
+            padding: 3px;
+        }
+
+        .foto-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         .status-box {
             border: 2px solid black;
-            padding: 12px;
+            padding: 10px;
             text-align: center;
             font-weight: bold;
             text-transform: uppercase;
-            margin-top: 20px;
-            background-color: #f4f4f4;
+            margin-top: 30px;
+            background-color: #f0f0f0;
         }
 
         .ttd {
             float: right;
-            width: 280px;
+            width: 300px;
             text-align: center;
-            margin-top: 50px;
+            margin-top: 40px;
         }
     </style>
 </head>
@@ -159,73 +175,82 @@
                 <h1>KEJAKSAAN REPUBLIK INDONESIA</h1>
                 <h1>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h1>
                 <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
-                <p>JALAN BRIG JEND H. HASAN BASRI NO. 3 RW.002 KELURAHAN PANGERAN KECAMATAN BANJARMASIN UTARA</p>
-                <p>KOTA BANJARMASIN PROVINSI KALIMANTAN SELATAN KODE POS 70124</p>
-                <p>TELPON : (0511) 3300402 / 6723314 FAX : (0511) 6723314</p>
-                <p>website : kejari-banjarmasin.go.id, email : kasubagbin@kejari-banjarmasin.go.id</p>
+                <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
+                <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
             </td>
         </tr>
     </table>
     <div class="garis-kop-ganda"></div>
 
-    <div class="judul">LAPORAN PELAKSANAAN PENGAMANAN SDO</div>
+    <div class="judul">LAPORAN PENGAMANAN SUMBER DAYA ORGANISASI (SDO)</div>
+
+    @if($item->foto)
+    <div class="foto-container">
+        <img src="{{ public_path('storage/' . $item->foto) }}" class="foto-img">
+    </div>
+    @endif
 
     <div class="content-block">
         <table class="table-info">
             <tr>
-                <td class="col-label">Hari / Tanggal</td>
+                <td class="col-label">Hari / Tanggal Laporan</td>
                 <td class="col-sep">:</td>
-                <td>{{ \Carbon\Carbon::parse($item->tanggal_laporan)->isoFormat('dddd, D MMMM Y') }}</td>
+                <td>{{ \Carbon\Carbon::parse($item->created_at)->isoFormat('dddd, D MMMM Y') }}</td>
             </tr>
             <tr>
-                <td class="col-label">Kategori Pengamanan</td>
+                <td class="col-label">Nama Pegawai / Jaksa</td>
                 <td class="col-sep">:</td>
-                <td>{{ $item->kategori }}</td>
+                <td><strong>{{ strtoupper($item->nama_pegawai) }}</strong></td>
             </tr>
             <tr>
-                <td class="col-label">Target / Sasaran</td>
+                <td class="col-label">NIP / NRP</td>
                 <td class="col-sep">:</td>
-                <td><strong>{{ strtoupper($item->target) }}</strong></td>
+                <td>{{ $item->nip_nrp ?? '-' }}</td>
             </tr>
             <tr>
-                <td class="col-label">Identitas (NIP/No)</td>
+                <td class="col-label">Pangkat / Jabatan</td>
                 <td class="col-sep">:</td>
-                <td>{{ $item->nip_atau_nomor ?? '-' }}</td>
+                <td>{{ $item->pangkat_jabatan }}</td>
+            </tr>
+            <tr>
+                <td class="col-label">Satuan Kerja</td>
+                <td class="col-sep">:</td>
+                <td>{{ $item->satuan_kerja }}</td>
             </tr>
         </table>
     </div>
 
     <div class="content-block">
-        <div class="label-heading">I. URAIAN PERMASALAHAN / ANCAMAN</div>
+        <div class="label-heading">I. URAIAN PERMASALAHAN / INDIKASI</div>
         <div class="value-text">
-            {{ $item->uraian_masalah }}
+            {{ $item->permasalahan }}
         </div>
     </div>
 
     <div class="content-block">
-        <div class="label-heading">II. TINDAKAN PENGAMANAN YANG DILAKUKAN</div>
+        <div class="label-heading">II. KETERANGAN / TINDAK LANJUT</div>
         <div class="value-text">
-            {{ $item->tindakan_pam ?? 'Belum ada tindakan khusus yang dicatat.' }}
-        </div>
-    </div>
-
-    <div class="content-block">
-        <div class="label-heading">III. KETERANGAN TAMBAHAN</div>
-        <div class="value-text">
-            {{ $item->keterangan ?? '-' }}
+            {{ $item->keterangan ?? 'Tidak ada keterangan tambahan.' }}
         </div>
     </div>
 
     <div class="status-box">
-        STATUS TERAKHIR: {{ strtoupper($item->status) }}
+        STATUS PENGAMANAN:
+        @if($item->status_pam == 'clear')
+        <span style="color: green;">AMAN / CLEAR</span>
+        @elseif($item->status_pam == 'ditindak')
+        <span style="color: orange;">DITINDAK LANJUTI</span>
+        @else
+        <span style="color: red;">DALAM PENGAWASAN</span>
+        @endif
     </div>
 
     <div class="ttd">
-        <p>Banjarmasin, {{ \Carbon\Carbon::parse($item->tanggal_laporan)->isoFormat('D MMMM Y') }}</p>
-        <p>Petugas PAM,</p>
+        <p>Banjarmasin, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</p>
+        <p>Kasi Intelijen,</p>
         <br><br><br><br>
-        <p style="text-decoration: underline; font-weight: bold;">{{ auth()->user()->name }}</p>
-        <p>Jaksa Intelijen / NIP. {{ auth()->user()->nip ?? '....................' }}</p>
+        <p style="text-decoration: underline; font-weight: bold;">(NAMA PEJABAT)</p>
+        <p>Jaksa Madya / NIP. ..........................</p>
     </div>
 
     <div style="clear: both;"></div>

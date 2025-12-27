@@ -1,25 +1,23 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    {{-- GANTI $item JADI $data --}}
-    <title>Laporan Kegiatan - {{ $data->nama_sekolah }}</title>
+    <title>Laporan JMS - {{ $data->nama_sekolah }}</title>
     <style>
-        /* Pengaturan Kertas */
+        /* Pengaturan Kertas dan Font Standar Dinas */
         @page {
             size: A4 portrait;
-            margin: 1.5cm 2cm 2cm 2cm;
+            margin: 2cm;
         }
 
         body {
-            font-family: Arial, sans-serif;
-            font-size: 11pt;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
             line-height: 1.5;
             color: #000;
         }
 
-        /* --- STYLING KOP SURAT PRESISI --- */
+        /* --- STYLING KOP SURAT --- */
         .kop-table {
             width: 100%;
             border-collapse: collapse;
@@ -33,37 +31,34 @@
         }
 
         .logo-img {
-            width: 90px;
+            width: 80px;
             height: auto;
         }
 
         .teks-cell {
             text-align: center;
             vertical-align: middle;
-            padding-right: 90px;
-            /* Penyeimbang agar teks benar-benar di tengah */
+            padding-right: 80px;
+            /* Penyeimbang */
         }
 
         .teks-cell h1 {
-            font-size: 13pt;
+            font-size: 14pt;
             margin: 0;
-            padding: 0;
+            font-weight: bold;
             text-transform: uppercase;
-            font-weight: normal;
         }
 
         .teks-cell h2 {
-            font-size: 15pt;
+            font-size: 16pt;
             margin: 0;
-            padding: 0;
-            text-transform: uppercase;
             font-weight: bold;
+            text-transform: uppercase;
         }
 
         .teks-cell p {
-            font-size: 8.5pt;
+            font-size: 9pt;
             margin: 1px 0;
-            padding: 0;
             line-height: 1.2;
         }
 
@@ -71,11 +66,11 @@
             border-top: 3px solid black;
             border-bottom: 1px solid black;
             height: 2px;
-            margin-top: 8px;
+            margin-top: 5px;
             margin-bottom: 25px;
         }
 
-        /* --- STYLING ISI DOKUMEN --- */
+        /* --- STYLING ISI --- */
         .judul {
             text-align: center;
             font-size: 14pt;
@@ -85,16 +80,23 @@
             text-transform: uppercase;
         }
 
+        .sub-judul {
+            font-weight: bold;
+            text-decoration: underline;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 12pt;
+        }
+
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .data-table td {
-            padding: 8px;
+            padding: 5px;
             vertical-align: top;
-            border-bottom: 1px solid #eee;
         }
 
         .label {
@@ -103,38 +105,43 @@
         }
 
         .sep {
-            width: 10px;
+            width: 15px;
             text-align: center;
         }
 
+        /* FOTO */
         .foto-container {
             text-align: center;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
+            margin-top: 15px;
             padding: 10px;
+            border: 1px solid #ccc;
             background-color: #f9f9f9;
         }
 
-        .foto-container img {
+        .foto-img {
             max-width: 100%;
             height: auto;
-            max-height: 400px;
-            border-radius: 4px;
+            max-height: 350px;
+            /* Batasi tinggi agar tidak pecah halaman */
+            border: 1px solid #000;
         }
 
         .caption {
             font-size: 10pt;
             font-style: italic;
-            color: #555;
             margin-top: 5px;
+            color: #333;
         }
 
         .ttd {
             float: right;
-            width: 280px;
+            width: 300px;
             text-align: center;
             margin-top: 50px;
+        }
+
+        .clear {
+            clear: both;
         }
     </style>
 </head>
@@ -150,10 +157,8 @@
                 <h1>KEJAKSAAN REPUBLIK INDONESIA</h1>
                 <h1>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h1>
                 <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
-                <p>JALAN BRIG JEND H. HASAN BASRI NO. 3 RW.002 KELURAHAN PANGERAN KECAMATAN BANJARMASIN UTARA</p>
-                <p>KOTA BANJARMASIN PROVINSI KALIMANTAN SELATAN KODE POS 70124</p>
-                <p>TELPON : (0511) 3300402 / 6723314 FAX : (0511) 6723314</p>
-                <p>website : kejari-banjarmasin.go.id, email : kasubagbin@kejari-banjarmasin.go.id</p>
+                <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
+                <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
             </td>
         </tr>
     </table>
@@ -161,10 +166,10 @@
 
     <div class="judul">LAPORAN KEGIATAN JAKSA MASUK SEKOLAH</div>
 
-    <h3 style="text-decoration: underline;">I. DATA KEGIATAN</h3>
+    <div class="sub-judul">I. DATA PELAKSANAAN</div>
     <table class="data-table">
         <tr>
-            <td class="label">Nama Sekolah</td>
+            <td class="label">Nama Sekolah / Tempat</td>
             <td class="sep">:</td>
             <td><strong>{{ strtoupper($data->nama_sekolah) }}</strong></td>
         </tr>
@@ -180,7 +185,7 @@
         </tr>
     </table>
 
-    <h3 style="text-decoration: underline;">II. MATERI & PESERTA</h3>
+    <div class="sub-judul">II. MATERI DAN PESERTA</div>
     <table class="data-table">
         <tr>
             <td class="label">Materi Disampaikan</td>
@@ -195,17 +200,22 @@
         <tr>
             <td class="label">Keterangan Lain</td>
             <td class="sep">:</td>
-            <td>{{ $data->keterangan ?? '-' }}</td>
+            <td>{{ $data->keterangan ?? 'Tidak ada keterangan tambahan.' }}</td>
         </tr>
     </table>
 
-    <h3 style="text-decoration: underline;">III. DOKUMENTASI KEGIATAN</h3>
+    <div class="sub-judul">III. DOKUMENTASI KEGIATAN</div>
     <div class="foto-container">
-        @if($data->foto_kegiatan && file_exists(public_path('storage/' . $data->foto_kegiatan)))
-        <img src="{{ public_path('storage/' . $data->foto_kegiatan) }}">
-        <div class="caption">Dokumentasi pelaksanaan kegiatan JMS di {{ $data->nama_sekolah }}</div>
+        @if($data->foto_kegiatan)
+        <img src="{{ public_path('storage/' . $data->foto_kegiatan) }}" class="foto-img">
+        <div class="caption">
+            Dokumentasi pelaksanaan kegiatan JMS di {{ $data->nama_sekolah }}<br>
+            Tanggal: {{ \Carbon\Carbon::parse($data->tanggal_kegiatan)->format('d/m/Y') }}
+        </div>
         @else
-        <div style="padding: 50px; color: gray;">FOTO DOKUMENTASI TIDAK TERSEDIA</div>
+        <div style="padding: 40px; color: gray; font-style: italic;">
+            [ Foto dokumentasi tidak tersedia ]
+        </div>
         @endif
     </div>
 
@@ -213,8 +223,11 @@
         <p>Banjarmasin, {{ \Carbon\Carbon::parse($data->tanggal_kegiatan)->isoFormat('D MMMM Y') }}</p>
         <p>Petugas Pelaksana,</p>
         <br><br><br><br>
-        <p><strong>{{ auth()->user()->name }}</strong><br>Jaksa Intelijen / NIP. {{ auth()->user()->nip ?? '..........' }}</p>
+        <p style="text-decoration: underline; font-weight: bold;">{{ auth()->user()->name }}</p>
+        <p>Jaksa Intelijen / NIP. {{ auth()->user()->nip ?? '....................' }}</p>
     </div>
+
+    <div class="clear"></div>
 
 </body>
 

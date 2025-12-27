@@ -3,52 +3,85 @@
 namespace App\Livewire\Lapdu;
 
 use Livewire\Component;
-use App\Models\Lapdu;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads;
+use Livewire\Attributes\Layout;
+use App\Models\Lapdu;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class LapduIndex extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads;
 
-    // Properti sesuai Migration & Form
-    public $nomor_surat, $tanggal_terima, $nama_pelapor, $no_hp_pelapor, $terlapor, $uraian_pengaduan, $disposisi_pimpinan, $status;
+    // Properti Data
+    public $nomor_surat, $tanggal_terima, $nama_pelapor, $nik, $no_hp_pelapor, $nama_terlapor, $kategori_laporan, $uraian_pengaduan, $keterangan_tindak_lanjut;
+
+    // PENTING: Ganti $status jadi $status_laporan
+    public $status_laporan = 'menunggu';
+    public $status_verifikasi = 'pending';
+
+    public $bukti_dukung, $bukti_lama;
     public $lapdu_id;
 
-    public $search = '';
-    public $showForm = false;
+    // UI
     public $isEditMode = false;
+    public $showForm = false;
+    public $search = '';
 
-    // Aturan Validasi
+    // Modal Status Admin
+    public $showStatusModal = false;
+    public $targetId = null;
+
     protected $rules = [
-        'tanggal_terima' => 'required|date',
-        'terlapor' => 'required|min:3',
+        'nama_pelapor' => 'required',
         'uraian_pengaduan' => 'required',
-        'status' => 'required|in:masuk,telaah,lid,arsipkan',
+        'kategori_laporan' => 'required',
+        'status_laporan' => 'required',
+        'bukti_dukung' => 'nullable|file|max:10240', // Max 10MB
     ];
 
-    public function updatingSearch()
+    // --- LOGIKA VERIFIKASI ADMIN ---
+    public function openStatusModal($id)
     {
-        $this->resetPage();
+        $this->targetId = $id;
+        $this->showStatusModal = true;
     }
 
+    public function closeStatusModal()
+    {
+        $this->showStatusModal = false;
+        $this->targetId = null;
+    }
+
+    public function updateStatus($newStatus)
+    {
+        if (Auth::user()->isAdmin() && $this->targetId) {
+            Lapdu::where('id', $this->targetId)->update(['status_verifikasi' => $newStatus]);
+            session()->flash('message', 'Status Verifikasi berhasil diubah menjadi ' . strtoupper($newStatus));
+            $this->closeStatusModal();
+        }
+    }
+
+    #[Layout('layouts.app')]
     public function render()
     {
         $data = Lapdu::where(function ($query) {
             $query->where('nama_pelapor', 'like', '%' . $this->search . '%')
-                ->orWhere('terlapor', 'like', '%' . $this->search . '%')
-                ->orWhere('uraian_pengaduan', 'like', '%' . $this->search . '%');
+                ->orWhere('uraian_pengaduan', 'like', '%' . $this->search . '%')
+                ->orWhere('nama_terlapor', 'like', '%' . $this->search . '%'); // Sesuaikan dengan nama kolom di DB
         })
-            ->latest()
+            ->orderBy('created_at', 'desc')
             ->paginate(10);
 
         return view('livewire.lapdu.lapdu-index', [
             'lapdus' => $data
-        ])->layout('layouts.app');
+        ]);
     }
 
     public function create()
     {
-        $this->resetInput();
+        $this->resetInputFields();
         $this->showForm = true;
         $this->isEditMode = false;
     }
@@ -57,84 +90,121 @@ class LapduIndex extends Component
     {
         $this->validate();
 
-        Lapdu::create([
-            // KUNCI PERBAIKAN: Menyimpan ID user penginput untuk Dashboard Admin
-            'user_id' => auth()->id(),
+        $path = null;
+        if ($this->bukti_dukung) {
+            $path = $this->bukti_dukung->store('lapdu-files', 'public');
+        }
 
+        Lapdu::create([
+            'user_id' => Auth::id(), // Simpan siapa yang input
             'nomor_surat' => $this->nomor_surat,
             'tanggal_terima' => $this->tanggal_terima,
             'nama_pelapor' => $this->nama_pelapor,
+            'nik' => $this->nik,
             'no_hp_pelapor' => $this->no_hp_pelapor,
-            'terlapor' => $this->terlapor,
+            'nama_terlapor' => $this->nama_terlapor, // Sesuaikan kolom DB
+            'kategori_laporan' => $this->kategori_laporan,
             'uraian_pengaduan' => $this->uraian_pengaduan,
-            'disposisi_pimpinan' => $this->disposisi_pimpinan,
-            'status' => $this->status,
+            'status_laporan' => $this->status_laporan, // <-- Pakai variable baru
+            'keterangan_tindak_lanjut' => $this->keterangan_tindak_lanjut,
+            'bukti_dukung' => $path,
+            'status_verifikasi' => 'pending',
         ]);
 
-        session()->flash('message', 'Laporan Berhasil Disimpan.');
+        session()->flash('message', 'Laporan Pengaduan berhasil diterima.');
         $this->closeModal();
     }
 
     public function edit($id)
     {
         $data = Lapdu::findOrFail($id);
+
+        if ($data->status_verifikasi === 'disetujui' && !Auth::user()->isAdmin()) {
+            session()->flash('message', 'Laporan yang sudah disetujui tidak dapat diubah.');
+            return;
+        }
+
         $this->lapdu_id = $id;
         $this->nomor_surat = $data->nomor_surat;
-        $this->tanggal_terima = $data->tanggal_terima;
+        $this->tanggal_terima = $data->tanggal_terima ? $data->tanggal_terima->format('Y-m-d') : null;
         $this->nama_pelapor = $data->nama_pelapor;
+        $this->nik = $data->nik;
         $this->no_hp_pelapor = $data->no_hp_pelapor;
-        $this->terlapor = $data->terlapor;
+        $this->nama_terlapor = $data->nama_terlapor;
+        $this->kategori_laporan = $data->kategori_laporan;
         $this->uraian_pengaduan = $data->uraian_pengaduan;
-        $this->disposisi_pimpinan = $data->disposisi_pimpinan;
-        $this->status = $data->status;
+        $this->status_laporan = $data->status_laporan; // Load status
+        $this->keterangan_tindak_lanjut = $data->keterangan_tindak_lanjut;
+        $this->bukti_lama = $data->bukti_dukung;
+        $this->status_verifikasi = $data->status_verifikasi;
 
-        $this->isEditMode = true;
         $this->showForm = true;
+        $this->isEditMode = true;
     }
 
     public function update()
     {
         $this->validate();
+        $data = Lapdu::findOrFail($this->lapdu_id);
 
-        $data = Lapdu::find($this->lapdu_id);
+        $path = $data->bukti_dukung;
+        if ($this->bukti_dukung) {
+            if ($data->bukti_dukung && Storage::disk('public')->exists($data->bukti_dukung)) {
+                Storage::disk('public')->delete($data->bukti_dukung);
+            }
+            $path = $this->bukti_dukung->store('lapdu-files', 'public');
+        }
+
         $data->update([
-            // user_id tidak perlu diupdate agar record penginput awal tetap asli
             'nomor_surat' => $this->nomor_surat,
             'tanggal_terima' => $this->tanggal_terima,
             'nama_pelapor' => $this->nama_pelapor,
+            'nik' => $this->nik,
             'no_hp_pelapor' => $this->no_hp_pelapor,
-            'terlapor' => $this->terlapor,
+            'nama_terlapor' => $this->nama_terlapor,
+            'kategori_laporan' => $this->kategori_laporan,
             'uraian_pengaduan' => $this->uraian_pengaduan,
-            'disposisi_pimpinan' => $this->disposisi_pimpinan,
-            'status' => $this->status,
+            'status_laporan' => $this->status_laporan,
+            'keterangan_tindak_lanjut' => $this->keterangan_tindak_lanjut,
+            'bukti_dukung' => $path,
+            // Jika diedit admin, status verifikasi tetap. Jika staff, kembali pending.
+            'status_verifikasi' => Auth::user()->isAdmin() ? $data->status_verifikasi : 'pending',
         ]);
 
-        session()->flash('message', 'Data Berhasil Diperbarui.');
+        session()->flash('message', 'Data Pengaduan diperbarui.');
         $this->closeModal();
     }
 
     public function delete($id)
     {
-        Lapdu::find($id)->delete();
-        session()->flash('message', 'Data Berhasil Dihapus.');
+        $data = Lapdu::findOrFail($id);
+        if ($data->bukti_dukung && Storage::disk('public')->exists($data->bukti_dukung)) {
+            Storage::disk('public')->delete($data->bukti_dukung);
+        }
+        $data->delete();
+        session()->flash('message', 'Data dihapus.');
     }
 
     public function closeModal()
     {
         $this->showForm = false;
-        $this->resetInput();
+        $this->resetInputFields();
     }
 
-    private function resetInput()
+    private function resetInputFields()
     {
         $this->nomor_surat = '';
         $this->tanggal_terima = '';
         $this->nama_pelapor = '';
+        $this->nik = '';
         $this->no_hp_pelapor = '';
-        $this->terlapor = '';
+        $this->nama_terlapor = '';
+        $this->kategori_laporan = '';
         $this->uraian_pengaduan = '';
-        $this->disposisi_pimpinan = '';
-        $this->status = 'masuk';
-        $this->lapdu_id = null;
+        $this->status_laporan = 'menunggu';
+        $this->keterangan_tindak_lanjut = '';
+        $this->bukti_dukung = null;
+        $this->bukti_lama = null;
+        $this->status_verifikasi = 'pending';
     }
 }

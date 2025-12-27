@@ -182,7 +182,9 @@
                             <tbody class="divide-y divide-gray-50">
                                 @forelse($recent_lapinhars as $item)
                                 <tr class="hover:bg-slate-50 transition">
-                                    <td class="px-8 py-5 font-bold text-slate-700">{{ $item->tanggal_surat->format('d/m/Y') }}</td>
+                                    <td class="px-8 py-5 font-bold text-slate-700">
+                                        {{ $item->tanggal_surat ? $item->tanggal_surat->format('d/m/Y') : '-' }}
+                                    </td>
                                     <td class="px-8 py-5 text-slate-600 font-medium line-clamp-1 italic">{{ $item->peristiwa }}</td>
                                     <td class="px-8 py-5 text-right">
                                         <span class="px-3 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-[10px] font-black border border-emerald-100">{{ $item->bidang }}</span>
@@ -209,14 +211,21 @@
                         @forelse($recent_lapdus as $lapdu)
                         <div class="p-8 hover:bg-slate-50 transition group cursor-pointer border-l-4 border-transparent hover:border-emerald-600">
                             <div class="flex justify-between items-start mb-4">
-                                <span class="text-[9px] font-black text-white bg-emerald-600 px-3 py-1 rounded-full uppercase">{{ $lapdu->status }}</span>
-                                <span class="text-[10px] font-mono text-slate-400">{{ $lapdu->tanggal_terima->format('d.m.Y') }}</span>
+                                {{-- PERBAIKAN: status -> status_laporan --}}
+                                <span class="text-[9px] font-black text-white bg-emerald-600 px-3 py-1 rounded-full uppercase">{{ $lapdu->status_laporan }}</span>
+
+                                {{-- PERBAIKAN UTAMA: Tambahkan pengecekan null pada tanggal_terima atau gunakan created_at --}}
+                                <span class="text-[10px] font-mono text-slate-400">
+                                    {{ $lapdu->tanggal_terima ? $lapdu->tanggal_terima->format('d.m.Y') : ($lapdu->created_at ? $lapdu->created_at->format('d.m.Y') : '-') }}
+                                </span>
                             </div>
-                            <p class="text-sm font-black text-slate-800 mb-2 group-hover:text-emerald-700 transition uppercase">Terlapor: {{ $lapdu->terlapor }}</p>
+
+                            {{-- PERBAIKAN: terlapor -> nama_terlapor --}}
+                            <p class="text-sm font-black text-slate-800 mb-2 group-hover:text-emerald-700 transition uppercase">Terlapor: {{ $lapdu->nama_terlapor ?? 'N/A' }}</p>
                             <p class="text-xs text-slate-500 leading-relaxed italic line-clamp-2">"{{ $lapdu->uraian_pengaduan }}"</p>
                         </div>
                         @empty
-                        <div class="p-10 text-center text-slate-300 italic">Kosong</div>
+                        <div class="p-10 text-center text-slate-300 italic">Belum ada laporan masuk.</div>
                         @endforelse
                     </div>
                     <div class="p-6 bg-slate-50 border-t border-gray-100">

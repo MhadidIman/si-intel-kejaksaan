@@ -10,6 +10,7 @@ class Dpo extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id', // Tambahan
         'nama_lengkap',
         'tempat_lahir',
         'tanggal_lahir',
@@ -18,6 +19,7 @@ class Dpo extends Model
         'ciri_fisik',
         'foto',
         'status_pencarian',
+        'status_verifikasi', // Tambahan Wajib
     ];
 
     protected $casts = [

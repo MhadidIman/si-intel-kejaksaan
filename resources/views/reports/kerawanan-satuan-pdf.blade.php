@@ -5,10 +5,9 @@
     <meta charset="UTF-8">
     <title>Analisa Kerawanan - {{ $data->kecamatan }}</title>
     <style>
-        /* Pengaturan Standar Surat Dinas Intelijen */
         @page {
             size: A4 portrait;
-            margin: 1.5cm 2cm 2cm 2cm;
+            margin: 2cm;
         }
 
         body {
@@ -18,7 +17,6 @@
             color: #000;
         }
 
-        /* --- STYLING KOP SURAT PRESISI --- */
         .kop-table {
             width: 100%;
             border-collapse: collapse;
@@ -32,37 +30,33 @@
         }
 
         .logo-img {
-            width: 90px;
+            width: 80px;
             height: auto;
         }
 
         .teks-cell {
             text-align: center;
             vertical-align: middle;
-            padding-right: 90px;
-            /* Penyeimbang agar teks benar-benar di tengah */
+            padding-right: 80px;
         }
 
         .teks-cell h1 {
-            font-size: 13pt;
+            font-size: 14pt;
             margin: 0;
-            padding: 0;
+            font-weight: bold;
             text-transform: uppercase;
-            font-weight: normal;
         }
 
         .teks-cell h2 {
-            font-size: 15pt;
+            font-size: 16pt;
             margin: 0;
-            padding: 0;
-            text-transform: uppercase;
             font-weight: bold;
+            text-transform: uppercase;
         }
 
         .teks-cell p {
-            font-size: 8.5pt;
+            font-size: 9pt;
             margin: 1px 0;
-            padding: 0;
             line-height: 1.2;
         }
 
@@ -70,11 +64,10 @@
             border-top: 3px solid black;
             border-bottom: 1px solid black;
             height: 2px;
-            margin-top: 8px;
+            margin-top: 5px;
             margin-bottom: 25px;
         }
 
-        /* --- STYLING ISI DOKUMEN --- */
         .rahasia {
             font-weight: bold;
             text-decoration: underline;
@@ -93,21 +86,22 @@
         }
 
         .section {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .status-tag {
             float: right;
-            padding: 8px 15px;
+            padding: 5px 15px;
             border: 2px solid #000;
             font-weight: bold;
             text-transform: uppercase;
-            background-color: #f3f4f6;
+            font-size: 10pt;
         }
 
         .table-info {
             width: 100%;
             margin-bottom: 20px;
+            border-collapse: collapse;
         }
 
         .table-info td {
@@ -116,7 +110,7 @@
         }
 
         .label-field {
-            width: 160px;
+            width: 180px;
             font-weight: bold;
         }
 
@@ -127,24 +121,25 @@
 
         .box-text {
             border: 1px solid #000;
-            padding: 15px;
+            padding: 10px;
             text-align: justify;
-            background-color: #fafafa;
-            min-height: 100px;
+            min-height: 80px;
+            margin-top: 5px;
         }
 
         .title-sub {
             font-weight: bold;
             text-transform: uppercase;
-            margin-bottom: 8px;
             display: block;
+            margin-bottom: 5px;
+            text-decoration: underline;
         }
 
         .ttd {
             float: right;
-            width: 280px;
+            width: 300px;
             text-align: center;
-            margin-top: 50px;
+            margin-top: 40px;
         }
 
         .nama-pejabat {
@@ -172,10 +167,8 @@
                 <h1>KEJAKSAAN REPUBLIK INDONESIA</h1>
                 <h1>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h1>
                 <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
-                <p>JALAN BRIG JEND H. HASAN BASRI NO. 3 RW.002 KELURAHAN PANGERAN KECAMATAN BANJARMASIN UTARA</p>
-                <p>KOTA BANJARMASIN PROVINSI KALIMANTAN SELATAN KODE POS 70124</p>
-                <p>TELPON : (0511) 3300402 / 6723314 FAX : (0511) 6723314</p>
-                <p>website : kejari-banjarmasin.go.id, email : kasubagbin@kejari-banjarmasin.go.id</p>
+                <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
+                <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
             </td>
         </tr>
     </table>
@@ -184,65 +177,65 @@
     <div class="judul">LEMBAR ANALISA POTENSI KERAWANAN WILAYAH</div>
 
     <div class="section">
-        <div class="status-tag">
-            TINGKAT: {{ $data->tingkat_rawan }}
-        </div>
+        {{-- LOGIKA WARNA DILETAKKAN LANGSUNG DENGAN IF/ELSE BIASA AGAR LEBIH STABIL --}}
+        @if($data->tingkat_rawan == 'tinggi')
+        <div class="status-tag" style="background-color: #fee2e2;">
+            @elseif($data->tingkat_rawan == 'sedang')
+            <div class="status-tag" style="background-color: #ffedd5;">
+                @else
+                <div class="status-tag" style="background-color: #dcfce7;">
+                    @endif
+                    TINGKAT: {{ strtoupper($data->tingkat_rawan) }}
+                </div>
 
-        <table class="table-info">
-            <tr>
-                <td class="label-field">Kecamatan</td>
-                <td class="separator">:</td>
-                <td><strong>{{ strtoupper($data->kecamatan) }}</strong></td>
-            </tr>
-            <tr>
-                <td class="label-field">Desa / Kelurahan</td>
-                <td class="separator">:</td>
-                <td>{{ $data->desa }}</td>
-            </tr>
-            <tr>
-                <td class="label-field">Jenis Ancaman</td>
-                <td class="separator">:</td>
-                <td>{{ $data->jenis_ancaman }}</td>
-            </tr>
-            <tr>
-                <td class="label-field">Tokoh Kunci</td>
-                <td class="separator">:</td>
-                <td>{{ $data->tokoh_kunci ?? 'Tidak teridentifikasi' }}</td>
-            </tr>
-        </table>
-    </div>
+                <table class="table-info">
+                    <tr>
+                        <td class="label-field">Wilayah Kecamatan</td>
+                        <td class="separator">:</td>
+                        <td><strong>{{ strtoupper($data->kecamatan) }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="label-field">Bidang Intelijen</td>
+                        <td class="separator">:</td>
+                        <td>{{ $data->bidang }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-field">Sumber Informasi</td>
+                        <td class="separator">:</td>
+                        <td>{{ $data->sumber_informasi ?? 'Terbuka / Tertutup' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-field">Tanggal Analisa</td>
+                        <td class="separator">:</td>
+                        <td>{{ \Carbon\Carbon::parse($data->created_at)->isoFormat('dddd, D MMMM Y') }}</td>
+                    </tr>
+                </table>
+            </div>
 
-    <div class="section">
-        <span class="title-sub">I. Deskripsi Kerawanan / Potensi Konflik</span>
-        <div class="box-text">
-            {{ $data->deskripsi_singkat }}
-        </div>
-    </div>
+            <div class="section">
+                <span class="title-sub">I. URAIAN POTENSI ANCAMAN / PERMASALAHAN</span>
+                <div class="box-text">
+                    {{ $data->potensi_ancaman }}
+                </div>
+            </div>
 
-    <div class="section">
-        <span class="title-sub">II. Analisa Intelijen</span>
-        <div class="box-text">
-            Berdasarkan data yang dihimpun, wilayah {{ $data->kecamatan }} khususnya Desa {{ $data->desa }} dikategorikan memiliki tingkat rawan {{ strtoupper($data->tingkat_rawan) }}. Hal ini memerlukan atensi khusus dari pimpinan untuk meminimalisir eskalasi konflik di lapangan yang dapat mengganggu ketertiban umum.
-        </div>
-    </div>
+            <div class="section">
+                <span class="title-sub">II. REKOMENDASI / UPAYA PENCEGAHAN</span>
+                <div class="box-text">
+                    {{ $data->upaya_pencegahan ?? 'Belum ada rekomendasi khusus yang dicatat.' }}
+                </div>
+            </div>
 
-    <div class="section">
-        <span class="title-sub">III. Rekomendasi Tindakan</span>
-        <div class="box-text">
-            Disarankan untuk melakukan pemantauan secara tertutup terhadap pergerakan tokoh-tokoh yang terlibat dan melakukan koordinasi dengan pihak-pihak terkait guna melakukan langkah pencegahan (Pre-emptive) sebelum situasi berkembang menjadi gangguan nyata.
-        </div>
-    </div>
+            <div class="ttd">
+                <p>Banjarmasin, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</p>
+                <p>Petugas Analis Intelijen,</p>
 
-    <div class="ttd">
-        <p>Banjarmasin, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</p>
-        <p>Petugas Analis Intelijen,</p>
+                <div class="nama-pejabat">{{ auth()->user()->name }}</div>
+                <div>Jaksa Intelijen / NIP. {{ auth()->user()->nip ?? '....................' }}</div>
+            </div>
 
-        <div class="nama-pejabat">{{ auth()->user()->name }}</div>
-        <div>Jaksa Intelijen / NIP. {{ auth()->user()->nip ?? '..........' }}</div>
-    </div>
-
-    <div class="clear"></div>
-    <div class="rahasia" style="margin-top: 30px;">RAHASIA</div>
+            <div class="clear"></div>
+            <div class="rahasia" style="margin-top: 20px;">RAHASIA</div>
 
 </body>
 

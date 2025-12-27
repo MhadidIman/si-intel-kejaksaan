@@ -11,10 +11,11 @@ class Kerawanan extends Model
 
     protected $fillable = [
         'kecamatan',
-        'desa',
-        'jenis_ancaman',
-        'tokoh_kunci',
-        'deskripsi_singkat',
+        'bidang',
+        'potensi_ancaman',
+        'sumber_informasi',
         'tingkat_rawan',
+        'upaya_pencegahan',
+        'status_verifikasi', // Status Admin
     ];
 }

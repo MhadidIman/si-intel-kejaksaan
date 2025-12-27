@@ -10,14 +10,17 @@ return new class extends Migration
     {
         Schema::create('ormas', function (Blueprint $table) {
             $table->id();
+            // Kolom Verifikasi Baru
+            $table->enum('status_verifikasi', ['pending', 'disetujui', 'ditolak'])->default('pending');
+
             $table->string('nama_organisasi');
-            $table->string('ketua'); // Nama pimpinan
+            $table->string('ketua');
             $table->text('alamat_sekretariat')->nullable();
-            $table->string('bentuk_organisasi'); // Ormas / LSM / Yayasan / Aliran Kepercayaan
-            $table->string('nomor_legalitas')->nullable(); // SKT / AHU / Akta Notaris
+            $table->string('bentuk_organisasi'); // Ormas / LSM / Yayasan
+            $table->string('nomor_legalitas')->nullable();
             $table->integer('jumlah_anggota')->default(0);
-            $table->text('kegiatan_terakhir')->nullable(); // Fokus kegiatannya apa
-            // Status pemantauan
+            $table->text('kegiatan_terakhir')->nullable();
+            // Status Aktivitas (Aktif/Vakum/Dilarang)
             $table->enum('status', ['aktif', 'vakum', 'diawasi', 'dilarang'])->default('aktif');
             $table->timestamps();
         });
