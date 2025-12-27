@@ -49,6 +49,8 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+
+
     /**
      * Helper: Cek apakah user adalah Staff
      */

@@ -1,167 +1,196 @@
-<div class="py-8">
-    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 space-y-8">
+<div class="py-10 bg-[#f8fafc] min-h-screen">
+    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 space-y-10">
 
-        <div class="relative bg-gradient-to-r from-emerald-600 to-teal-600 rounded-3xl p-8 md:p-10 shadow-2xl border border-white/20 overflow-hidden text-white">
-            <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center">
-                <div class="space-y-2">
-                    <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight drop-shadow-md">Si-Intelijen Kejaksaan</h1>
-                    <p class="text-lg md:text-xl text-emerald-50 opacity-90">Sistem Informasi Manajemen Bank Data Intelijen.</p>
+        <div class="relative overflow-hidden bg-white rounded-[2.5rem] p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.05)] border-b-4 border-emerald-600">
+            <div class="absolute -top-24 -right-24 w-96 h-96 bg-emerald-50 blur-[100px] rounded-full"></div>
 
-                    <div class="pt-4 flex flex-wrap gap-3 text-base md:text-lg font-medium">
-                        <span class="bg-white/20 px-4 py-2 rounded-xl border border-white/20 backdrop-blur-md shadow-sm flex items-center gap-2 hover:bg-white/30 transition cursor-default">
-                            👋 Hai, {{ auth()->user()->name }}
+            <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
+                <div class="space-y-4 text-center md:text-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-black uppercase tracking-widest border border-emerald-100">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
                         </span>
-                        <span class="bg-white/20 px-4 py-2 rounded-xl border border-white/20 backdrop-blur-md shadow-sm flex items-center gap-2 hover:bg-white/30 transition cursor-default">
-                            📅 {{ now()->isoFormat('dddd, D MMMM Y') }}
-                        </span>
+                        Sistem Monitoring Aktif
+                    </div>
+                    <h1 class="text-4xl md:text-6xl font-black text-slate-900 leading-tight tracking-tighter italic">
+                        SI-INTEL <span class="text-emerald-600">KEJAKSAAN</span>
+                    </h1>
+                    <p class="text-lg text-slate-500 font-medium max-w-xl italic">
+                        "Otoritas Manajemen Bank Data Intelijen Terpusat Kejaksaan Republik Indonesia."
+                    </p>
+
+                    <div class="pt-4 flex flex-wrap justify-center md:justify-start gap-4">
+                        <div class="px-6 py-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center gap-3 shadow-sm">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-lg shadow-emerald-200">
+                                <i class="fas fa-user-shield"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase tracking-widest text-slate-400 font-black">Petugas</p>
+                                <p class="text-slate-700 font-bold">{{ auth()->user()->name }}</p>
+                            </div>
+                        </div>
+                        <div class="px-6 py-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center gap-3 shadow-sm">
+                            <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-200">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase tracking-widest text-slate-400 font-black">Hari Tugas</p>
+                                <p class="text-slate-700 font-bold">{{ now()->isoFormat('dddd, D MMMM Y') }}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="hidden md:block opacity-20 transform scale-150 translate-x-10 translate-y-4">
-                    <svg class="h-48 w-48 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2L1 21h22L12 2zm0 3.516L20.297 19H3.703L12 5.516zM11 16h2v2h-2v-2zm0-5h2v4h-2v-4z" />
-                    </svg>
+
+                <div class="hidden lg:block relative group">
+                    <img src="{{ asset('img/logo-kejaksaan.png') }}" class="relative h-56 w-56 object-contain drop-shadow-2xl group-hover:scale-105 transition duration-700">
                 </div>
             </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
-            <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-lg p-6 border-l-8 border-red-500 border-t border-r border-b border-white/10 hover:bg-white/20 hover:-translate-y-1 transition duration-300 flex flex-col justify-between h-40 group">
-                <div class="flex justify-between items-start">
+            {{-- Card Merah: DPO --}}
+            <div class="bg-red-600 rounded-[2rem] p-7 shadow-xl shadow-red-200 flex flex-col justify-between h-48 relative overflow-hidden group hover:-translate-y-2 transition duration-500">
+                <div class="absolute -right-4 -top-4 opacity-20 text-white text-8xl transform rotate-12 group-hover:rotate-0 transition duration-700">
+                    <i class="fas fa-user-secret"></i>
+                </div>
+                <div class="relative z-10 flex justify-between items-start">
                     <div>
-                        <p class="text-xs font-bold text-gray-300 uppercase tracking-widest group-hover:text-red-300 transition">Buronan (DPO)</p>
-                        <p class="text-5xl font-black text-white mt-2 drop-shadow-sm">{{ $total_dpo_buron }}</p>
+                        <p class="text-xs font-black text-red-100 uppercase tracking-[0.2em]">Buronan (DPO)</p>
+                        <p class="text-6xl font-black text-white mt-1 tracking-tighter">{{ $total_dpo_buron }}</p>
                     </div>
-                    <div class="p-3 bg-red-500/20 rounded-xl text-red-300 border border-red-500/30">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                        </svg>
+                    <div class="p-3 bg-white/20 rounded-2xl text-white backdrop-blur-md border border-white/30">
+                        <i class="fas fa-user-secret text-2xl"></i>
                     </div>
                 </div>
-                <div class="text-red-300 font-bold text-sm flex items-center gap-1">
-                    <span class="animate-pulse">⚠️ Pencarian Aktif</span>
+                <div class="relative z-10 py-1.5 px-4 bg-white/10 rounded-xl border border-white/20 w-fit">
+                    <span class="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Pencarian Aktif
+                    </span>
                 </div>
             </div>
 
-            <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-lg p-6 border-l-8 border-orange-500 border-t border-r border-b border-white/10 hover:bg-white/20 hover:-translate-y-1 transition duration-300 flex flex-col justify-between h-40 group">
-                <div class="flex justify-between items-start">
+            {{-- Card Oranye: Kerawanan --}}
+            <div class="bg-orange-500 rounded-[2rem] p-7 shadow-xl shadow-orange-200 flex flex-col justify-between h-48 relative overflow-hidden group hover:-translate-y-2 transition duration-500">
+                <div class="absolute -right-4 -top-4 opacity-20 text-white text-8xl transform rotate-12 group-hover:rotate-0 transition duration-700">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="relative z-10 flex justify-between items-start">
                     <div>
-                        <p class="text-xs font-bold text-gray-300 uppercase tracking-widest group-hover:text-orange-300 transition">Rawan Tinggi</p>
-                        <p class="text-5xl font-black text-white mt-2 drop-shadow-sm">{{ $total_rawan_tinggi }}</p>
+                        <p class="text-xs font-black text-orange-50 uppercase tracking-[0.2em]">Rawan Tinggi</p>
+                        <p class="text-6xl font-black text-white mt-1 tracking-tighter">{{ $total_rawan_tinggi }}</p>
                     </div>
-                    <div class="p-3 bg-orange-500/20 rounded-xl text-orange-300 border border-orange-500/30">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        </svg>
+                    <div class="p-3 bg-white/20 rounded-2xl text-white backdrop-blur-md border border-white/30">
+                        <i class="fas fa-map-marker-alt text-2xl"></i>
                     </div>
                 </div>
-                <div class="text-orange-300 font-bold text-sm flex items-center gap-1">
-                    <span>🔥 Perlu Atensi</span>
+                <div class="relative z-10 py-1.5 px-4 bg-white/10 rounded-xl border border-white/20 w-fit">
+                    <span class="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-white"></span> Perlu Atensi
+                    </span>
                 </div>
             </div>
 
-            <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-lg p-6 border-l-8 border-blue-500 border-t border-r border-b border-white/10 hover:bg-white/20 hover:-translate-y-1 transition duration-300 flex flex-col justify-between h-40 group">
-                <div class="flex justify-between items-start">
+            {{-- Card Biru: WNA --}}
+            <div class="bg-blue-600 rounded-[2rem] p-7 shadow-xl shadow-blue-200 flex flex-col justify-between h-48 relative overflow-hidden group hover:-translate-y-2 transition duration-500">
+                <div class="absolute -right-4 -top-4 opacity-20 text-white text-8xl transform rotate-12 group-hover:rotate-0 transition duration-700">
+                    <i class="fas fa-globe-americas"></i>
+                </div>
+                <div class="relative z-10 flex justify-between items-start">
                     <div>
-                        <p class="text-xs font-bold text-gray-300 uppercase tracking-widest group-hover:text-blue-300 transition">WNA Overstay</p>
-                        <p class="text-5xl font-black text-white mt-2 drop-shadow-sm">{{ $total_wna_overstay }}</p>
+                        <p class="text-xs font-black text-blue-50 uppercase tracking-[0.2em]">WNA Overstay</p>
+                        <p class="text-6xl font-black text-white mt-1 tracking-tighter">{{ $total_wna_overstay }}</p>
                     </div>
-                    <div class="p-3 bg-blue-500/20 rounded-xl text-blue-300 border border-blue-500/30">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
+                    <div class="p-3 bg-white/20 rounded-2xl text-white backdrop-blur-md border border-white/30">
+                        <i class="fas fa-passport text-2xl"></i>
                     </div>
                 </div>
-                <div class="text-blue-300 font-bold text-sm flex items-center gap-1">
-                    <span>🌏 TIMPORA</span>
+                <div class="relative z-10 py-1.5 px-4 bg-white/10 rounded-xl border border-white/20 w-fit">
+                    <span class="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-white"></span> Giat Timpora
+                    </span>
                 </div>
             </div>
 
-            <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-lg p-6 border-l-8 border-emerald-500 border-t border-r border-b border-white/10 hover:bg-white/20 hover:-translate-y-1 transition duration-300 flex flex-col justify-between h-40 group">
-                <div class="flex justify-between items-start">
+            {{-- Card Hijau: Lapdu --}}
+            <div class="bg-emerald-600 rounded-[2rem] p-7 shadow-xl shadow-emerald-200 flex flex-col justify-between h-48 relative overflow-hidden group hover:-translate-y-2 transition duration-500">
+                <div class="absolute -right-4 -top-4 opacity-20 text-white text-8xl transform rotate-12 group-hover:rotate-0 transition duration-700">
+                    <i class="fas fa-envelope-open-text"></i>
+                </div>
+                <div class="relative z-10 flex justify-between items-start">
                     <div>
-                        <p class="text-xs font-bold text-gray-300 uppercase tracking-widest group-hover:text-emerald-300 transition">Lapdu Baru</p>
-                        <p class="text-5xl font-black text-white mt-2 drop-shadow-sm">{{ $total_lapdu_masuk }}</p>
+                        <p class="text-xs font-black text-emerald-50 uppercase tracking-[0.2em]">Lapdu Masuk</p>
+                        <p class="text-6xl font-black text-white mt-1 tracking-tighter">{{ $total_lapdu_masuk }}</p>
                     </div>
-                    <div class="p-3 bg-emerald-500/20 rounded-xl text-emerald-300 border border-emerald-500/30">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                        </svg>
+                    <div class="p-3 bg-white/20 rounded-2xl text-white backdrop-blur-md border border-white/30">
+                        <i class="fas fa-inbox text-2xl"></i>
                     </div>
                 </div>
-                <div class="text-emerald-300 font-bold text-sm flex items-center gap-1">
-                    <span>📩 Menunggu Disposisi</span>
+                <div class="relative z-10 py-1.5 px-4 bg-white/10 rounded-xl border border-white/20 w-fit">
+                    <span class="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-white"></span> Menunggu Disposisi
+                    </span>
                 </div>
             </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
             <div class="lg:col-span-2 space-y-8">
-
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                    <a href="{{ route('lapinhar.index') }}" wire:navigate class="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 shadow-lg hover:bg-emerald-500/20 hover:border-emerald-400/50 transition text-center group flex flex-col items-center justify-center h-40">
-                        <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-emerald-500/30 transition duration-300 border border-emerald-500/30">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <a href="{{ route('lapinhar.index') }}" wire:navigate class="group bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-lg hover:border-emerald-500 transition-all duration-500 text-center flex flex-col items-center justify-center gap-3 h-40">
+                        <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition duration-500 border border-emerald-100">
+                            <i class="fas fa-file-signature text-2xl"></i>
                         </div>
-                        <span class="text-base font-bold text-gray-200 group-hover:text-white">Buat Lapinhar</span>
+                        <span class="text-xs font-black text-slate-700 uppercase tracking-widest">Buat Lapinhar</span>
                     </a>
-                    <a href="{{ route('dpo.index') }}" wire:navigate class="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 shadow-lg hover:bg-red-500/20 hover:border-red-400/50 transition text-center group flex flex-col items-center justify-center h-40">
-                        <div class="w-16 h-16 bg-red-500/20 text-red-400 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-red-500/30 transition duration-300 border border-red-500/30">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
-                            </svg>
+                    <a href="{{ route('dpo.index') }}" wire:navigate class="group bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-lg hover:border-red-500 transition-all duration-500 text-center flex flex-col items-center justify-center gap-3 h-40">
+                        <div class="w-14 h-14 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition duration-500 border border-red-100">
+                            <i class="fas fa-user-plus text-2xl"></i>
                         </div>
-                        <span class="text-base font-bold text-gray-200 group-hover:text-white">Input DPO</span>
+                        <span class="text-xs font-black text-slate-700 uppercase tracking-widest">Input DPO</span>
                     </a>
-                    <a href="{{ route('kerawanan.index') }}" wire:navigate class="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 shadow-lg hover:bg-orange-500/20 hover:border-orange-400/50 transition text-center group flex flex-col items-center justify-center h-40">
-                        <div class="w-16 h-16 bg-orange-500/20 text-orange-400 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-orange-500/30 transition duration-300 border border-orange-500/30">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0121 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
-                            </svg>
+                    <a href="{{ route('kerawanan.index') }}" wire:navigate class="group bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-lg hover:border-orange-500 transition-all duration-500 text-center flex flex-col items-center justify-center gap-3 h-40">
+                        <div class="w-14 h-14 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition duration-500 border border-orange-100">
+                            <i class="fas fa-map-marked-alt text-2xl"></i>
                         </div>
-                        <span class="text-base font-bold text-gray-200 group-hover:text-white">Peta Rawan</span>
+                        <span class="text-xs font-black text-slate-700 uppercase tracking-widest">Peta Rawan</span>
                     </a>
-                    <a href="{{ route('pam-sdo.index') }}" wire:navigate class="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 shadow-lg hover:bg-blue-500/20 hover:border-blue-400/50 transition text-center group flex flex-col items-center justify-center h-40">
-                        <div class="w-16 h-16 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-blue-500/30 transition duration-300 border border-blue-500/30">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                            </svg>
+                    <a href="{{ route('pam-sdo.index') }}" wire:navigate class="group bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-lg hover:border-blue-500 transition-all duration-500 text-center flex flex-col items-center justify-center gap-3 h-40">
+                        <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition duration-500 border border-blue-100">
+                            <i class="fas fa-shield-alt text-2xl"></i>
                         </div>
-                        <span class="text-base font-bold text-gray-200 group-hover:text-white">PAM SDO</span>
+                        <span class="text-xs font-black text-slate-700 uppercase tracking-widest">PAM SDO</span>
                     </a>
                 </div>
 
-                <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-lg border border-white/10 overflow-hidden">
-                    <div class="px-8 py-6 border-b border-white/10 bg-white/5 flex justify-between items-center">
-                        <h3 class="font-bold text-white text-lg">Laporan Informasi Terkini</h3>
-                        <a href="{{ route('lapinhar.index') }}" wire:navigate class="text-sm text-emerald-300 font-bold hover:text-emerald-200 hover:underline">Lihat Semua Data &rarr;</a>
+                <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="px-8 py-6 border-b border-gray-100 flex justify-between items-center bg-slate-50/50">
+                        <h3 class="font-black text-slate-800 text-base uppercase tracking-widest italic flex items-center gap-3">
+                            <span class="w-1.5 h-6 bg-emerald-600 rounded-full"></span> Laporan Informasi Terkini
+                        </h3>
+                        <a href="{{ route('lapinhar.index') }}" wire:navigate class="text-[10px] font-black uppercase tracking-widest text-emerald-700 hover:underline">Semua Laporan &rarr;</a>
                     </div>
-
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-gray-200">
-                            <thead class="bg-black/20 text-gray-400 uppercase text-sm border-b border-white/10 font-bold tracking-wider">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-50 text-slate-400 uppercase text-[10px] font-black tracking-widest border-b border-gray-100">
                                 <tr>
-                                    <th class="px-8 py-5">Tanggal</th>
-                                    <th class="px-8 py-5">Peristiwa</th>
-                                    <th class="px-8 py-5">Bidang</th>
+                                    <th class="px-8 py-5">Registrasi</th>
+                                    <th class="px-8 py-5">Substansi Peristiwa</th>
+                                    <th class="px-8 py-5 text-right">Klasifikasi</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-white/10 text-base">
+                            <tbody class="divide-y divide-gray-50">
                                 @forelse($recent_lapinhars as $item)
-                                <tr class="hover:bg-white/5 transition">
-                                    <td class="px-8 py-5 whitespace-nowrap text-gray-400">{{ $item->tanggal_surat->format('d/m/Y') }}</td>
-                                    <td class="px-8 py-5 font-semibold text-white">{{ Str::limit($item->peristiwa, 50) }}</td>
-                                    <td class="px-8 py-5">
-                                        <span class="bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full text-sm font-medium border border-emerald-500/30">{{ $item->bidang }}</span>
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="px-8 py-5 font-bold text-slate-700">{{ $item->tanggal_surat->format('d/m/Y') }}</td>
+                                    <td class="px-8 py-5 text-slate-600 font-medium line-clamp-1 italic">{{ $item->peristiwa }}</td>
+                                    <td class="px-8 py-5 text-right">
+                                        <span class="px-3 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-[10px] font-black border border-emerald-100">{{ $item->bidang }}</span>
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="3" class="px-8 py-8 text-center text-gray-500 italic">Belum ada data laporan masuk.</td>
+                                    <td colspan="3" class="px-8 py-10 text-center text-slate-400 italic">Belum ada data.</td>
                                 </tr>
                                 @endforelse
                             </tbody>
@@ -171,43 +200,42 @@
             </div>
 
             <div class="space-y-8">
-                <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-lg border border-white/10 overflow-hidden">
-                    <div class="px-6 py-5 border-b border-white/10 bg-white/5 flex items-center justify-between">
-                        <h3 class="font-bold text-white text-lg">Pengaduan (Lapdu)</h3>
-                        <span class="bg-red-500/20 text-red-300 border border-red-500/30 text-xs font-bold px-2 py-1 rounded animate-pulse">Live</span>
+                <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="px-8 py-6 border-b border-gray-100 bg-slate-50/50 flex items-center justify-between">
+                        <h3 class="font-black text-slate-800 text-base uppercase tracking-widest italic">Signal Lapdu</h3>
+                        <span class="px-2 py-1 bg-red-100 text-red-600 text-[9px] font-black rounded uppercase animate-pulse">Live Monitor</span>
                     </div>
-                    <div class="divide-y divide-white/10">
+                    <div class="divide-y divide-gray-50 max-h-[480px] overflow-y-auto">
                         @forelse($recent_lapdus as $lapdu)
-                        <div class="p-6 hover:bg-white/5 transition group cursor-pointer">
-                            <div class="flex justify-between items-start mb-2">
-                                <span class="text-xs font-bold text-emerald-900 bg-emerald-300 px-2 py-1 rounded uppercase tracking-wide shadow-sm shadow-emerald-500/50">{{ $lapdu->status }}</span>
-                                <span class="text-xs font-medium text-gray-400">{{ $lapdu->tanggal_terima->format('d M Y') }}</span>
+                        <div class="p-8 hover:bg-slate-50 transition group cursor-pointer border-l-4 border-transparent hover:border-emerald-600">
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="text-[9px] font-black text-white bg-emerald-600 px-3 py-1 rounded-full uppercase">{{ $lapdu->status }}</span>
+                                <span class="text-[10px] font-mono text-slate-400">{{ $lapdu->tanggal_terima->format('d.m.Y') }}</span>
                             </div>
-                            <p class="text-base font-bold text-gray-100 mb-1 group-hover:text-emerald-300 transition">Terlapor: {{ $lapdu->terlapor }}</p>
-                            <p class="text-sm text-gray-400 line-clamp-2">{{ $lapdu->uraian_pengaduan }}</p>
+                            <p class="text-sm font-black text-slate-800 mb-2 group-hover:text-emerald-700 transition uppercase">Terlapor: {{ $lapdu->terlapor }}</p>
+                            <p class="text-xs text-slate-500 leading-relaxed italic line-clamp-2">"{{ $lapdu->uraian_pengaduan }}"</p>
                         </div>
                         @empty
-                        <div class="p-10 text-center text-sm text-gray-500 italic">
-                            Tidak ada pengaduan baru yang masuk.
-                        </div>
+                        <div class="p-10 text-center text-slate-300 italic">Kosong</div>
                         @endforelse
                     </div>
-                    <div class="p-4 bg-black/20 text-center border-t border-white/10">
-                        <a href="{{ route('lapdu.index') }}" wire:navigate class="block w-full bg-white/5 border border-white/10 text-gray-300 font-bold py-2 rounded-lg hover:bg-white/10 hover:text-white transition shadow-sm">
+                    <div class="p-6 bg-slate-50 border-t border-gray-100">
+                        <a href="{{ route('lapdu.index') }}" wire:navigate class="w-full inline-block px-6 py-3 font-black text-center text-emerald-700 uppercase tracking-widest border-2 border-emerald-600 rounded-2xl hover:bg-emerald-600 hover:text-white transition-all duration-300 text-xs italic">
                             Kelola Pengaduan
                         </a>
                     </div>
                 </div>
 
-                <div class="bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
-                    <div class="relative z-10">
-                        <h4 class="font-black text-2xl text-yellow-500 mb-3 tracking-widest border-b border-white/10 pb-3 inline-block">SATYA ADHI WICAKSANA</h4>
-                        <p class="text-lg text-gray-300 italic leading-relaxed">"Setia, bijaksana, dan bertanggung jawab dalam menjalankan tugas penegakan hukum."</p>
-                    </div>
-                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-yellow-500 rounded-full opacity-10 blur-xl"></div>
+                {{-- Motto --}}
+                <div class="bg-slate-900 rounded-[2.5rem] p-10 shadow-xl relative overflow-hidden text-center">
+                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-amber-500 rounded-full opacity-10 blur-xl"></div>
+                    <h4 class="font-black text-2xl text-amber-400 mb-4 tracking-[0.3em] uppercase italic">SATYA ADHI WICAKSANA</h4>
+                    <div class="w-12 h-0.5 bg-amber-400/30 mx-auto mb-6"></div>
+                    <p class="text-sm text-slate-300 font-medium leading-loose italic">
+                        "Setia, bijaksana, dan bertanggung jawab dalam menjalankan tugas penegakan hukum."
+                    </p>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

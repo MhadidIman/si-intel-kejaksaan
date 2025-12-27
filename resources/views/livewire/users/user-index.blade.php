@@ -1,211 +1,183 @@
-<div class="py-8">
-    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10">
+<div class="py-10 bg-[#f8fafc] min-h-screen">
+    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 space-y-10">
 
-        <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-            <div>
-                <h2 class="text-3xl font-black text-white tracking-tight">Manajemen Personil</h2>
-                <p class="text-sm text-emerald-400 mt-1">Kelola hak akses Jaksa dan Staf Intelijen Kejaksaan RI.</p>
+        <div class="flex flex-col md:flex-row justify-between items-center gap-6 bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
+            <div class="relative">
+                <div class="absolute -left-4 top-0 w-1.5 h-full bg-emerald-600 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.4)]"></div>
+                <h2 class="text-4xl font-black text-slate-900 tracking-tighter italic uppercase">
+                    Manajemen <span class="text-emerald-700">Personil</span>
+                </h2>
+                <p class="text-[11px] text-slate-500 mt-2 font-black tracking-[0.2em] uppercase flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)] animate-pulse"></span>
+                    Kontrol Otoritas Jaksa & Staf Intelijen
+                </p>
             </div>
 
             @if(!$showForm)
-            <button wire:click="create" class="group bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-emerald-900/50 hover:shadow-emerald-500/30 transition-all duration-300 flex items-center gap-2 border border-emerald-500/50">
-                <svg class="w-5 h-5 group-hover:rotate-90 transition duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-                <span>Tambah Personil</span>
+            <button wire:click="create" class="group relative overflow-hidden bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 px-10 rounded-2xl shadow-[0_10px_20px_rgba(5,150,105,0.2)] transition-all duration-300 flex items-center gap-3 text-xs uppercase tracking-widest border-2 border-emerald-500">
+                <i class="fas fa-user-plus text-base group-hover:scale-110 transition duration-300"></i>
+                <span>Tambah Personil Baru</span>
             </button>
             @endif
         </div>
 
         @if (session()->has('message'))
-        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
-            class="bg-emerald-900/80 backdrop-blur-sm border-l-4 border-emerald-500 text-emerald-100 px-4 py-3 rounded shadow-lg mb-6 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <span class="font-medium">{{ session('message') }}</span>
+        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)"
+            class="bg-emerald-50 border-2 border-emerald-100 text-emerald-700 px-8 py-5 rounded-2xl shadow-sm mb-6 flex items-center justify-between text-xs font-black uppercase tracking-widest">
+            <div class="flex items-center gap-4">
+                <i class="fas fa-check-circle text-xl text-emerald-500"></i>
+                {{ session('message') }}
             </div>
-            <button @click="show = false" class="text-emerald-400 hover:text-white">&times;</button>
+            <button @click="show = false" class="text-emerald-300 hover:text-emerald-600 transition text-xl">&times;</button>
         </div>
         @endif
 
         @if($showForm)
-        <div class="bg-gray-900/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/10 overflow-hidden mb-8 relative">
-            <div class="bg-white/5 px-6 py-4 border-b border-white/10 flex justify-between items-center">
-                <h3 class="font-bold text-white text-lg">
-                    {{ $isEditMode ? 'Edit Data Personil' : 'Tambah Personil Baru' }}
-                </h3>
-                <button wire:click="closeModal" class="text-gray-400 hover:text-white transition">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
+        <div x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95"
+            class="bg-white rounded-[3rem] shadow-2xl border-2 border-emerald-100 overflow-hidden mb-12 relative">
+
+            <div class="bg-emerald-50 px-10 py-8 border-b-2 border-emerald-100 flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 bg-emerald-600 text-white rounded-2xl shadow-lg">
+                        <i class="fas fa-id-badge text-xl"></i>
+                    </div>
+                    <h3 class="font-black text-emerald-900 text-lg uppercase tracking-[0.2em] italic">
+                        {{ $isEditMode ? 'Update Data Otoritas' : 'Registrasi Akun Baru' }}
+                    </h3>
+                </div>
+                <button wire:click="closeModal" class="p-3 bg-white border-2 border-slate-200 text-slate-400 hover:text-red-600 hover:border-red-200 rounded-2xl transition shadow-md">
+                    <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
 
-            <div class="p-6 md:p-8">
-                <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-1">
-                        <label class="block text-sm font-bold text-gray-300 px-1 uppercase tracking-wider">Nama Lengkap</label>
+            <form wire:submit.prevent="{{ $isEditMode ? 'update' : 'store' }}" class="p-10 md:p-14">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div class="space-y-3">
+                        <label class="block text-xs font-black text-slate-700 uppercase tracking-widest ml-1">Nama Lengkap Petugas</label>
                         <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-emerald-500">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
+                            <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-emerald-600">
+                                <i class="fas fa-user-tie"></i>
                             </div>
-                            <input wire:model="name" type="text" class="pl-10 block w-full rounded-lg bg-black/40 border-white/10 text-white placeholder-gray-600 focus:border-emerald-500 focus:ring-emerald-500 transition shadow-inner py-3" placeholder="Nama Lengkap">
+                            <input wire:model="name" type="text" class="pl-14 block w-full rounded-2xl bg-slate-50 border-2 border-slate-100 text-slate-900 font-bold focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-500/5 transition-all py-5 shadow-sm" placeholder="Nama Lengkap">
                         </div>
-                        @error('name') <span class="text-red-400 text-[10px] font-bold uppercase ml-1">{{ $message }}</span> @enderror
+                        @error('name') <span class="text-red-600 text-[10px] font-black uppercase italic ml-2">{{ $message }}</span> @enderror
                     </div>
 
-                    <div class="space-y-1">
-                        <label class="block text-sm font-bold text-gray-300 px-1 uppercase tracking-wider">NIP (Pegawai)</label>
+                    <div class="space-y-3">
+                        <label class="block text-xs font-black text-slate-700 uppercase tracking-widest ml-1">NIP (Pegawai)</label>
                         <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-emerald-500">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path>
-                                </svg>
+                            <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-emerald-600">
+                                <i class="fas fa-id-card-alt"></i>
                             </div>
-                            <input wire:model="nip" type="text" class="pl-10 block w-full rounded-lg bg-black/40 border-white/10 text-white placeholder-gray-600 focus:border-emerald-500 focus:ring-emerald-500 transition shadow-inner py-3" placeholder="Contoh: 19900101XXXXXXXX">
+                            <input wire:model="nip" type="text" class="pl-14 block w-full rounded-2xl bg-slate-50 border-2 border-slate-100 text-slate-900 font-bold focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-500/5 transition-all py-5 shadow-sm" placeholder="19XXXXXXXXXXXXX">
                         </div>
-                        @error('nip') <span class="text-red-400 text-[10px] font-bold uppercase ml-1">{{ $message }}</span> @enderror
+                        @error('nip') <span class="text-red-600 text-[10px] font-black uppercase italic ml-2">{{ $message }}</span> @enderror
                     </div>
 
-                    <div class="space-y-1">
-                        <label class="block text-sm font-bold text-gray-300 px-1 uppercase tracking-wider">Email Dinas</label>
+                    <div class="space-y-3">
+                        <label class="block text-xs font-black text-slate-700 uppercase tracking-widest ml-1">Email Dinas</label>
                         <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-emerald-500">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                                </svg>
+                            <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-emerald-600">
+                                <i class="fas fa-envelope-open"></i>
                             </div>
-                            <input wire:model="email" type="email" class="pl-10 block w-full rounded-lg bg-black/40 border-white/10 text-white placeholder-gray-600 focus:border-emerald-500 focus:ring-emerald-500 transition shadow-inner py-3" placeholder="email@kejaksaan.go.id">
+                            <input wire:model="email" type="email" class="pl-14 block w-full rounded-2xl bg-slate-50 border-2 border-slate-100 text-slate-900 font-bold focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-500/5 transition-all py-5 shadow-sm" placeholder="user@kejaksaan.go.id">
                         </div>
-                        @error('email') <span class="text-red-400 text-[10px] font-bold uppercase ml-1">{{ $message }}</span> @enderror
+                        @error('email') <span class="text-red-600 text-[10px] font-black uppercase italic ml-2">{{ $message }}</span> @enderror
                     </div>
 
-                    <div class="space-y-1">
-                        <label class="block text-sm font-bold text-gray-300 px-1 uppercase tracking-wider">Otoritas / Role</label>
+                    <div class="space-y-3">
+                        <label class="block text-xs font-black text-slate-700 uppercase tracking-widest ml-1">Level Otoritas</label>
                         <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-emerald-500">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                                </svg>
+                            <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-emerald-600">
+                                <i class="fas fa-user-shield"></i>
                             </div>
-                            <select wire:model="role" class="pl-10 block w-full rounded-lg bg-black/40 border-white/10 text-white focus:border-emerald-500 focus:ring-emerald-500 transition py-3">
-                                <option value="" class="bg-gray-900">Pilih Role</option>
-                                <option value="admin" class="bg-gray-900 uppercase">Administrator (Full Access)</option>
-                                <option value="staff" class="bg-gray-900 uppercase">Staff Intel (Operator)</option>
+                            <select wire:model="role" class="pl-14 block w-full rounded-2xl bg-slate-50 border-2 border-slate-100 text-slate-900 font-black focus:border-emerald-600 focus:bg-white transition-all py-5 shadow-sm appearance-none">
+                                <option value="">-- Pilih Akses --</option>
+                                <option value="admin">ADMINISTRATOR (FULL ACCESS)</option>
+                                <option value="staff">STAFF INTEL (OPERATOR)</option>
                             </select>
                         </div>
-                        @error('role') <span class="text-red-400 text-[10px] font-bold uppercase ml-1">{{ $message }}</span> @enderror
+                        @error('role') <span class="text-red-600 text-[10px] font-black uppercase italic ml-2">{{ $message }}</span> @enderror
                     </div>
 
-                    <div class="col-span-1 md:col-span-2 space-y-1 text-center">
-                        <label class="block text-sm font-bold text-gray-300 uppercase tracking-wider px-1">
-                            Password Keamanan
-                            @if($isEditMode) <span class="text-[10px] font-normal text-gray-500 italic lowercase block">(Kosongkan jika tidak ingin mengubah)</span> @endif
-                        </label>
-                        <div class="relative max-w-md mx-auto">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-emerald-500">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                                </svg>
+                    <div class="col-span-1 md:col-span-2 space-y-3">
+                        <label class="block text-xs font-black text-slate-700 uppercase tracking-widest text-center">Keamanan Akun (Password)</label>
+                        <div class="relative max-w-lg mx-auto">
+                            <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-emerald-600">
+                                <i class="fas fa-key"></i>
                             </div>
-                            <input wire:model="password" type="password" class="pl-10 block w-full rounded-lg bg-black/40 border-white/10 text-white placeholder-gray-600 focus:border-emerald-500 focus:ring-emerald-500 transition shadow-inner py-3 text-center" placeholder="••••••••">
+                            <input wire:model="password" type="password" class="pl-14 block w-full rounded-2xl bg-slate-50 border-2 border-slate-100 text-slate-900 font-bold focus:border-emerald-600 focus:bg-white transition-all py-5 shadow-sm text-center tracking-[0.5em]" placeholder="••••••••">
                         </div>
-                        @error('password') <span class="text-red-400 text-[10px] font-bold uppercase ml-1 block">{{ $message }}</span> @enderror
+                        @if($isEditMode) <p class="text-[10px] text-center font-bold text-slate-400 mt-2 uppercase">* Kosongkan jika tidak ingin mengubah</p> @endif
                     </div>
-                </form>
+                </div>
 
-                <div class="flex justify-end mt-8 space-x-3">
-                    <button wire:click="closeModal" class="px-6 py-3 rounded-xl border border-white/10 text-gray-300 hover:bg-white/5 font-bold uppercase tracking-widest text-xs transition">
-                        Batal
-                    </button>
-                    <button wire:click="{{ $isEditMode ? 'update' : 'store' }}" class="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black uppercase tracking-widest text-xs shadow-lg shadow-emerald-900/50 hover:shadow-emerald-500/30 transition flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        {{ $isEditMode ? 'Simpan Perubahan' : 'Konfirmasi & Buat Akun' }}
+                <div class="flex justify-end mt-16 space-x-6">
+                    <button type="button" wire:click="closeModal" class="px-10 py-5 rounded-2xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 font-black uppercase text-xs tracking-widest transition shadow-sm">Batal</button>
+                    <button type="submit" class="px-14 py-5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black uppercase text-xs tracking-widest shadow-xl shadow-emerald-200 transition transform hover:-translate-y-1 border-2 border-emerald-500">
+                        {{ $isEditMode ? 'Simpan Perubahan' : 'Proses Registrasi Akun' }}
                     </button>
                 </div>
-            </div>
+            </form>
         </div>
         @endif
 
         @if(!$showForm)
-        <div class="bg-gray-900/60 backdrop-blur-md rounded-2xl shadow-xl border border-white/10 overflow-hidden">
+        <div class="bg-white rounded-[3rem] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border-2 border-slate-100 overflow-hidden">
 
-            <div class="p-6 border-b border-white/10 bg-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="relative w-full md:w-96 group">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-emerald-500/50 group-focus-within:text-emerald-400 transition-colors">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
+            <div class="p-8 border-b-2 border-slate-50 bg-slate-50/40 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="relative w-full md:w-[600px] group">
+                    <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-emerald-600">
+                        <i class="fas fa-search"></i>
                     </div>
-                    <input wire:model.live="search" type="text" class="pl-10 block w-full rounded-xl border-white/10 bg-black/50 text-white focus:border-emerald-500 focus:ring-emerald-500 transition text-sm py-3 placeholder-gray-500" placeholder="Cari Nama, NIP, atau Email...">
+                    <input wire:model.live="search" type="text" class="pl-14 block w-full rounded-2xl border-2 border-slate-200 bg-white text-slate-900 font-bold focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/5 transition-all text-sm py-4 shadow-sm placeholder:text-slate-400" placeholder="Cari Personil (Nama, NIP, atau Email Dinas)...">
                 </div>
-                <div class="text-sm font-bold uppercase tracking-widest text-gray-500">
-                    Total Personil: <span class="text-emerald-400">{{ $users->total() }}</span>
-                </div>
+                <span class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] bg-white px-5 py-3 rounded-xl border border-slate-100 shadow-sm">
+                    Total Korps: <span class="text-emerald-600 text-lg">{{ $users->total() }}</span>
+                </span>
             </div>
 
-            <div class="overflow-x-auto text-sm">
+            <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-black/40 text-gray-400 text-[10px] uppercase tracking-[0.2em] font-black border-b border-white/10">
-                            <th class="px-6 py-5">Informasi Pegawai</th>
-                            <th class="px-6 py-5">NIP</th>
-                            <th class="px-6 py-5">Otoritas / Role</th>
-                            <th class="px-6 py-5">Tgl Gabung</th>
-                            <th class="px-6 py-5 text-center">Manajemen</th>
+                        <tr class="bg-slate-50/80 text-slate-500 text-[10px] uppercase tracking-[0.3em] font-black border-b-2 border-slate-100 italic">
+                            <th class="px-10 py-8 italic">Profil & Identitas Akun</th>
+                            <th class="px-10 py-8 text-center italic">Hak Akses</th>
+                            <th class="px-10 py-8 text-center italic">Manajemen Opsi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-white/5">
+                    <tbody class="divide-y-2 divide-slate-50">
                         @forelse($users as $user)
-                        <tr class="hover:bg-emerald-400/[0.02] transition duration-150 group">
-                            <td class="px-6 py-5">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-900/40 text-emerald-400 flex items-center justify-center font-black text-xl border border-emerald-500/30 group-hover:scale-110 transition duration-300">
+                        <tr class="hover:bg-emerald-50/30 transition duration-300 group">
+                            <td class="px-10 py-8">
+                                <div class="flex items-center gap-6">
+                                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 to-emerald-800 text-white flex items-center justify-center font-black text-2xl shadow-lg shadow-emerald-200 group-hover:rotate-6 transition duration-500">
                                         {{ strtoupper(substr($user->name, 0, 1)) }}
                                     </div>
                                     <div>
-                                        <div class="font-black text-gray-200 group-hover:text-emerald-400 transition uppercase tracking-wide">{{ $user->name }}</div>
-                                        <div class="text-[11px] text-gray-500 font-bold uppercase tracking-tighter">{{ $user->email }}</div>
+                                        <div class="font-black text-slate-900 text-base uppercase tracking-tight">{{ $user->name }}</div>
+                                        <div class="flex items-center gap-2 mt-1.5 font-bold">
+                                            <span class="text-[11px] text-slate-500 uppercase tracking-tighter">NIP. {{ $user->nip }}</span>
+                                            <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                                            <span class="text-[11px] text-emerald-600 tracking-tight">{{ $user->email }}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-6 py-5 font-mono text-emerald-500/80 font-bold">
-                                {{ $user->nip }}
-                            </td>
-                            <td class="px-6 py-5">
-                                @if($user->role === 'admin')
-                                <span class="inline-flex items-center px-3 py-1 rounded-lg text-[10px] font-black bg-emerald-500 text-black uppercase tracking-widest shadow-[0_0_10px_rgba(16,185,129,0.3)]">
-                                    Administrator
+                            <td class="px-10 py-8 text-center">
+                                <span class="inline-flex items-center px-5 py-2 rounded-full text-[10px] font-black {{ $user->role === 'admin' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-100 border-emerald-400' : 'bg-white text-slate-600 border-2 border-slate-200' }} uppercase tracking-widest border">
+                                    <i class="fas {{ $user->role === 'admin' ? 'fa-crown' : 'fa-user-edit' }} mr-2"></i> {{ $user->role }}
                                 </span>
-                                @else
-                                <span class="inline-flex items-center px-3 py-1 rounded-lg text-[10px] font-black bg-gray-800 text-emerald-500 border border-emerald-500/30 uppercase tracking-widest">
-                                    Staff Intel
-                                </span>
-                                @endif
                             </td>
-                            <td class="px-6 py-5 text-xs text-gray-500 font-bold uppercase">
-                                {{ $user->created_at->format('d/m/Y') }}
-                            </td>
-                            <td class="px-6 py-5">
-                                <div class="flex justify-center gap-3">
-                                    <button wire:click="edit({{ $user->id }})" class="p-2.5 rounded-xl text-blue-400 hover:bg-blue-500/10 border border-transparent hover:border-blue-500/20 transition" title="Edit Data">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                        </svg>
+                            <td class="px-10 py-8">
+                                <div class="flex justify-center items-center gap-4">
+                                    <button wire:click="edit({{ $user->id }})" class="flex items-center gap-2 px-6 py-3 bg-blue-50 border-2 border-blue-200 rounded-xl text-blue-600 hover:bg-blue-600 hover:text-white transition-all font-black uppercase text-[10px] tracking-widest shadow-sm">
+                                        <i class="fas fa-edit"></i> Edit
                                     </button>
+
                                     @if(auth()->id() !== $user->id)
-                                    <button wire:confirm="PERINGATAN: Menghapus personil akan menghilangkan seluruh hak aksesnya ke sistem SI-INTEL. Lanjutkan?"
-                                        wire:click="delete({{ $user->id }})"
-                                        class="p-2.5 rounded-xl text-red-500 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition" title="Hapus User">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                        </svg>
+                                    <button wire:confirm="Hapus akun personil ini?" wire:click="delete({{ $user->id }})" class="flex items-center gap-2 px-6 py-3 bg-red-50 border-2 border-red-200 rounded-xl text-red-600 hover:bg-red-600 hover:text-white transition-all font-black uppercase text-[10px] tracking-widest shadow-sm">
+                                        <i class="fas fa-trash-alt"></i> Hapus
                                     </button>
                                     @endif
                                 </div>
@@ -213,13 +185,8 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-20 text-center">
-                                <div class="flex flex-col items-center">
-                                    <svg class="w-16 h-16 text-gray-800 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                    </svg>
-                                    <p class="text-gray-500 uppercase tracking-widest text-xs font-bold">Data personil tidak ditemukan</p>
-                                </div>
+                            <td colspan="3" class="px-10 py-32 text-center bg-slate-50/30 text-slate-300 font-black uppercase italic tracking-widest">
+                                Database Korps Kosong
                             </td>
                         </tr>
                         @endforelse
@@ -227,11 +194,10 @@
                 </table>
             </div>
 
-            <div class="p-6 border-t border-white/10 bg-black/20">
+            <div class="p-8 border-t-2 border-slate-50 bg-slate-50/50">
                 {{ $users->links() }}
             </div>
         </div>
         @endif
-
     </div>
 </div>
