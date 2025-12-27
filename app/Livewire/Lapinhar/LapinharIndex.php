@@ -13,8 +13,9 @@ class LapinharIndex extends Component
 {
     use WithPagination;
 
-    // Properti Model Lapinhar
-    public $nomor_surat, $tanggal_surat, $sumber_informasi, $bidang, $peristiwa, $pendapat, $status_keamanan = 'rahasia';
+    // Properti Data
+    public $nomor_surat, $tanggal_surat, $sumber_informasi, $bidang, $peristiwa, $pendapat;
+    public $status = 'rahasia';
     public $status_verifikasi = 'pending';
     public $lapinhar_id;
 
@@ -23,50 +24,55 @@ class LapinharIndex extends Component
     public $showForm = false;
     public $search = '';
 
-    // Aturan Validasi
+    // --- PROPERTI BARU UNTUK MODAL STATUS ---
+    public $showStatusModal = false; // Mengontrol munculnya modal
+    public $targetId = null;         // Menyimpan ID laporan yang akan diverifikasi
+
     protected $rules = [
+        'nomor_surat' => 'required',
         'tanggal_surat' => 'required|date',
+        'sumber_informasi' => 'required',
         'bidang' => 'required',
-        'peristiwa' => 'required|min:5',
-        'pendapat' => 'required|min:5',
+        'peristiwa' => 'required',
+        'pendapat' => 'required',
+        'status' => 'required|in:rahasia,biasa',
     ];
 
-    /**
-     * Fitur: Setujui Laporan (Hanya Admin)
-     */
-    public function approve($id)
+    // --- LOGIKA BARU: GANTI STATUS LEWAT MODAL ---
+
+    public function openStatusModal($id)
     {
-        if (Auth::user()->isAdmin()) {
-            $laporan = Lapinhar::findOrFail($id);
-            $laporan->update(['status_verifikasi' => 'disetujui']);
-            session()->flash('message', 'Laporan berhasil disetujui pimpinan.');
+        $this->targetId = $id;
+        $this->showStatusModal = true;
+    }
+
+    public function closeStatusModal()
+    {
+        $this->showStatusModal = false;
+        $this->targetId = null;
+    }
+
+    public function updateStatus($newStatus)
+    {
+        if (Auth::user()->isAdmin() && $this->targetId) {
+            Lapinhar::where('id', $this->targetId)->update(['status_verifikasi' => $newStatus]);
+            session()->flash('message', 'Status laporan berhasil diubah menjadi ' . strtoupper($newStatus));
+            $this->closeStatusModal();
         }
     }
 
-    /**
-     * Fitur: Tolak Laporan (Hanya Admin)
-     */
-    public function reject($id)
-    {
-        if (Auth::user()->isAdmin()) {
-            $laporan = Lapinhar::findOrFail($id);
-            $laporan->update(['status_verifikasi' => 'ditolak']);
-            session()->flash('message', 'Laporan telah ditolak/dikembalikan.');
-        }
-    }
+    // --- CRUD ---
 
-    /**
-     * Render Halaman
-     */
     #[Layout('layouts.app')]
     public function render()
     {
-        $lapinhars = Lapinhar::where(function ($query) {
-            $query->where('peristiwa', 'like', '%' . $this->search . '%')
-                ->orWhere('bidang', 'like', '%' . $this->search . '%')
-                ->orWhere('nomor_surat', 'like', '%' . $this->search . '%');
-        })
-            ->orderBy('tanggal_surat', 'desc')
+        $lapinhars = Lapinhar::query()
+            ->where(function ($query) {
+                $query->where('peristiwa', 'like', '%' . $this->search . '%')
+                    ->orWhere('bidang', 'like', '%' . $this->search . '%')
+                    ->orWhere('nomor_surat', 'like', '%' . $this->search . '%');
+            })
+            ->orderBy('created_at', 'desc')
             ->paginate(10);
 
         return view('livewire.lapinhar.lapinhar-index', [
@@ -74,9 +80,6 @@ class LapinharIndex extends Component
         ]);
     }
 
-    /**
-     * Buka Form Tambah
-     */
     public function create()
     {
         $this->resetInputFields();
@@ -84,69 +87,52 @@ class LapinharIndex extends Component
         $this->isEditMode = false;
     }
 
-    /**
-     * Simpan Data Baru
-     */
     public function store()
     {
         $this->validate();
 
         Lapinhar::create([
-            'user_id' => Auth::id(), // Mencatat user yang menginput
+            'user_id' => Auth::id(),
             'nomor_surat' => $this->nomor_surat,
             'tanggal_surat' => $this->tanggal_surat,
             'sumber_informasi' => $this->sumber_informasi,
             'bidang' => $this->bidang,
             'peristiwa' => $this->peristiwa,
             'pendapat' => $this->pendapat,
-            'status_keamanan' => $this->status_keamanan,
-            'status_verifikasi' => 'pending', // Default
+            'status' => $this->status,
+            'status_verifikasi' => 'pending',
         ]);
 
-        session()->flash('message', 'Laporan Lapinhar berhasil disimpan & menunggu verifikasi.');
+        session()->flash('message', 'Laporan berhasil disimpan.');
         $this->closeModal();
     }
 
-    /**
-     * Buka Form Edit
-     */
     public function edit($id)
     {
         $data = Lapinhar::findOrFail($id);
 
-        // Proteksi: Staff tidak bisa edit data yang sudah disetujui
         if ($data->status_verifikasi === 'disetujui' && !Auth::user()->isAdmin()) {
-            session()->flash('message', 'Akses ditolak: Laporan yang sudah disetujui tidak dapat diubah.');
+            session()->flash('message', 'Laporan yang sudah disetujui tidak dapat diedit.');
             return;
         }
 
         $this->lapinhar_id = $id;
         $this->nomor_surat = $data->nomor_surat;
-
-        // Memastikan format tanggal pas untuk input type="date"
-        $this->tanggal_surat = $data->tanggal_surat instanceof \Carbon\Carbon
-            ? $data->tanggal_surat->format('Y-m-d')
-            : Carbon::parse($data->tanggal_surat)->format('Y-m-d');
-
+        $this->tanggal_surat = Carbon::parse($data->tanggal_surat)->format('Y-m-d');
         $this->sumber_informasi = $data->sumber_informasi;
         $this->bidang = $data->bidang;
         $this->peristiwa = $data->peristiwa;
         $this->pendapat = $data->pendapat;
-        $this->status_keamanan = $data->status_keamanan;
+        $this->status = $data->status;
 
         $this->showForm = true;
         $this->isEditMode = true;
     }
 
-    /**
-     * Update Data
-     */
     public function update()
     {
         $this->validate();
-
         $data = Lapinhar::findOrFail($this->lapinhar_id);
-
         $data->update([
             'nomor_surat' => $this->nomor_surat,
             'tanggal_surat' => $this->tanggal_surat,
@@ -154,45 +140,35 @@ class LapinharIndex extends Component
             'bidang' => $this->bidang,
             'peristiwa' => $this->peristiwa,
             'pendapat' => $this->pendapat,
-            'status_keamanan' => $this->status_keamanan,
-            // Jika diedit oleh staf, status kembali ke pending
+            'status' => $this->status,
             'status_verifikasi' => Auth::user()->isAdmin() ? $data->status_verifikasi : 'pending',
         ]);
 
-        session()->flash('message', 'Laporan Lapinhar berhasil diperbarui.');
+        session()->flash('message', 'Laporan berhasil diperbarui.');
         $this->closeModal();
     }
 
-    /**
-     * Hapus Data
-     */
     public function delete($id)
     {
         Lapinhar::findOrFail($id)->delete();
-        session()->flash('message', 'Data Lapinhar telah dihapus dari sistem.');
+        session()->flash('message', 'Data dihapus.');
     }
 
-    /**
-     * Tutup Modal/Form
-     */
     public function closeModal()
     {
         $this->showForm = false;
         $this->resetInputFields();
     }
 
-    /**
-     * Reset Input
-     */
     private function resetInputFields()
     {
         $this->nomor_surat = '';
-        $this->tanggal_surat = '';
+        $this->tanggal_surat = date('Y-m-d');
         $this->sumber_informasi = '';
         $this->bidang = '';
         $this->peristiwa = '';
         $this->pendapat = '';
-        $this->status_keamanan = 'rahasia';
+        $this->status = 'rahasia';
         $this->lapinhar_id = null;
     }
 }

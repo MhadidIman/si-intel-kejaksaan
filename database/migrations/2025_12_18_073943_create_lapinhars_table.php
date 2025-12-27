@@ -10,13 +10,24 @@ return new class extends Migration
     {
         Schema::create('lapinhars', function (Blueprint $table) {
             $table->id();
-            $table->string('nomor_surat'); // No: R-01/...
+
+            // Kolom Data Utama
+            $table->string('nomor_surat'); // Contoh: R-01/...
             $table->date('tanggal_surat');
-            $table->string('sumber_informasi'); // Misal: Masyarakat/Cepu
-            $table->string('bidang'); // Ipoleksosbudhankam
-            $table->text('peristiwa'); // Apa yang terjadi
+            $table->string('sumber_informasi'); // Contoh: Masyarakat/Cepu
+            $table->string('bidang'); // Contoh: Ipoleksosbudhankam
+            $table->text('peristiwa'); // Uraian kejadian
             $table->text('pendapat'); // Analisa Intelijen
+
+            // Kolom Status & Kemananan
             $table->enum('status', ['rahasia', 'biasa'])->default('rahasia');
+
+            // Kolom Baru: Status Verifikasi untuk Alur Kerja
+            $table->enum('status_verifikasi', ['pending', 'disetujui', 'ditolak'])->default('pending');
+
+            // Opsional: Mencatat siapa yang menginput (jika ada relasi ke user)
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+
             $table->timestamps();
         });
     }
