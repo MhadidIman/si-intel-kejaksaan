@@ -21,7 +21,7 @@
                     </p>
 
                     <div class="pt-4 flex flex-wrap justify-center md:justify-start gap-4">
-                        <div class="px-6 py-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center gap-3 shadow-sm">
+                        <div class="px-6 py-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center gap-3 shadow-sm hover:border-emerald-300 transition-colors">
                             <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-lg shadow-emerald-200">
                                 <i class="fas fa-user-shield"></i>
                             </div>
@@ -30,7 +30,7 @@
                                 <p class="text-slate-700 font-bold">{{ auth()->user()->name }}</p>
                             </div>
                         </div>
-                        <div class="px-6 py-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center gap-3 shadow-sm">
+                        <div class="px-6 py-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center gap-3 shadow-sm hover:border-blue-300 transition-colors">
                             <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-200">
                                 <i class="fas fa-calendar-alt"></i>
                             </div>
@@ -181,9 +181,18 @@
                             </thead>
                             <tbody class="divide-y divide-gray-50">
                                 @forelse($recent_lapinhars as $item)
-                                <tr class="hover:bg-slate-50 transition">
-                                    <td class="px-8 py-5 font-bold text-slate-700">
-                                        {{ $item->tanggal_surat ? $item->tanggal_surat->format('d/m/Y') : '-' }}
+                                <tr class="hover:bg-slate-50 transition group cursor-pointer">
+                                    <td class="px-8 py-5 font-bold text-slate-700 whitespace-nowrap">
+                                        {{-- LOGO FILE DI SINI --}}
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                                                <i class="fas fa-file-contract text-xs"></i>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span>{{ $item->tanggal_surat ? $item->tanggal_surat->format('d/m/Y') : '-' }}</span>
+                                                <span class="text-[9px] text-slate-400 font-mono font-normal">{{ $item->nomor_surat ?? 'No Reg' }}</span>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td class="px-8 py-5 text-slate-600 font-medium line-clamp-1 italic">{{ $item->peristiwa }}</td>
                                     <td class="px-8 py-5 text-right">
@@ -204,43 +213,67 @@
             <div class="space-y-8">
                 <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
                     <div class="px-8 py-6 border-b border-gray-100 bg-slate-50/50 flex items-center justify-between">
-                        <h3 class="font-black text-slate-800 text-base uppercase tracking-widest italic">Signal Lapdu</h3>
+                        <h3 class="font-black text-slate-800 text-base uppercase tracking-widest italic flex items-center gap-2">
+                            <i class="fas fa-satellite-dish text-emerald-600"></i> Signal Lapdu
+                        </h3>
                         <span class="px-2 py-1 bg-red-100 text-red-600 text-[9px] font-black rounded uppercase animate-pulse">Live Monitor</span>
                     </div>
                     <div class="divide-y divide-gray-50 max-h-[480px] overflow-y-auto">
                         @forelse($recent_lapdus as $lapdu)
-                        <div class="p-8 hover:bg-slate-50 transition group cursor-pointer border-l-4 border-transparent hover:border-emerald-600">
-                            <div class="flex justify-between items-start mb-4">
-                                {{-- PERBAIKAN: status -> status_laporan --}}
-                                <span class="text-[9px] font-black text-white bg-emerald-600 px-3 py-1 rounded-full uppercase">{{ $lapdu->status_laporan }}</span>
+                        <div class="p-6 hover:bg-slate-50 transition group cursor-pointer border-l-4 border-transparent hover:border-emerald-600 flex gap-4 items-start">
 
-                                {{-- PERBAIKAN UTAMA: Tambahkan pengecekan null pada tanggal_terima atau gunakan created_at --}}
-                                <span class="text-[10px] font-mono text-slate-400">
-                                    {{ $lapdu->tanggal_terima ? $lapdu->tanggal_terima->format('d.m.Y') : ($lapdu->created_at ? $lapdu->created_at->format('d.m.Y') : '-') }}
-                                </span>
+                            {{-- LOGO SURAT / ICON UTAMA --}}
+                            <div class="shrink-0">
+                                <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center border border-emerald-100 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-sm">
+                                    <i class="fas fa-envelope-open-text text-lg"></i>
+                                </div>
                             </div>
 
-                            {{-- PERBAIKAN: terlapor -> nama_terlapor --}}
-                            <p class="text-sm font-black text-slate-800 mb-2 group-hover:text-emerald-700 transition uppercase">Terlapor: {{ $lapdu->nama_terlapor ?? 'N/A' }}</p>
-                            <p class="text-xs text-slate-500 leading-relaxed italic line-clamp-2">"{{ $lapdu->uraian_pengaduan }}"</p>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-[9px] font-black text-white bg-emerald-600 px-2 py-1 rounded-lg uppercase tracking-wider">{{ $lapdu->status_laporan }}</span>
+
+                                    <span class="text-[10px] font-bold text-slate-400 flex items-center gap-1">
+                                        <i class="far fa-calendar-alt"></i>
+                                        {{ $lapdu->tanggal_terima ? $lapdu->tanggal_terima->format('d/m/y') : ($lapdu->created_at ? $lapdu->created_at->format('d/m/y') : '-') }}
+                                    </span>
+                                </div>
+
+                                <h4 class="text-sm font-black text-slate-800 uppercase tracking-tight group-hover:text-emerald-700 transition flex items-center gap-2 truncate">
+                                    <i class="fas fa-user-tag text-slate-400 text-xs"></i>
+                                    {{ $lapdu->nama_terlapor ?? 'TERLAPOR TIDAK DIKETAHUI' }}
+                                </h4>
+                                <p class="text-xs text-slate-500 mt-2 line-clamp-2 italic leading-relaxed border-l-2 border-emerald-100 pl-3">
+                                    "{{ $lapdu->uraian_pengaduan }}"
+                                </p>
+                            </div>
                         </div>
                         @empty
-                        <div class="p-10 text-center text-slate-300 italic">Belum ada laporan masuk.</div>
+                        <div class="p-10 text-center text-slate-300 italic flex flex-col items-center gap-3">
+                            <i class="fas fa-inbox text-4xl opacity-20"></i>
+                            <p>Belum ada laporan masuk.</p>
+                        </div>
                         @endforelse
                     </div>
                     <div class="p-6 bg-slate-50 border-t border-gray-100">
-                        <a href="{{ route('lapdu.index') }}" wire:navigate class="w-full inline-block px-6 py-3 font-black text-center text-emerald-700 uppercase tracking-widest border-2 border-emerald-600 rounded-2xl hover:bg-emerald-600 hover:text-white transition-all duration-300 text-xs italic">
-                            Kelola Pengaduan
+                        <a href="{{ route('lapdu.index') }}" wire:navigate class="w-full inline-block px-6 py-3 font-black text-center text-emerald-700 uppercase tracking-widest border-2 border-emerald-600 rounded-2xl hover:bg-emerald-600 hover:text-white transition-all duration-300 text-xs italic group">
+                            <i class="fas fa-tasks mr-2 group-hover:rotate-12 transition-transform"></i> Kelola Pengaduan
                         </a>
                     </div>
                 </div>
 
                 {{-- Motto --}}
-                <div class="bg-slate-900 rounded-[2.5rem] p-10 shadow-xl relative overflow-hidden text-center">
-                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-amber-500 rounded-full opacity-10 blur-xl"></div>
-                    <h4 class="font-black text-2xl text-amber-400 mb-4 tracking-[0.3em] uppercase italic">SATYA ADHI WICAKSANA</h4>
-                    <div class="w-12 h-0.5 bg-amber-400/30 mx-auto mb-6"></div>
-                    <p class="text-sm text-slate-300 font-medium leading-loose italic">
+                <div class="bg-slate-900 rounded-[2.5rem] p-10 shadow-xl relative overflow-hidden text-center group">
+                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-amber-500 rounded-full opacity-10 blur-xl group-hover:opacity-20 transition duration-700"></div>
+                    <div class="absolute bottom-0 left-0 -mb-4 -ml-4 w-20 h-20 bg-emerald-500 rounded-full opacity-10 blur-xl group-hover:opacity-20 transition duration-700"></div>
+
+                    <div class="mb-4 text-amber-500 opacity-20 text-4xl">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+
+                    <h4 class="font-black text-2xl text-amber-400 mb-4 tracking-[0.3em] uppercase italic relative z-10">SATYA ADHI WICAKSANA</h4>
+                    <div class="w-12 h-0.5 bg-amber-400/30 mx-auto mb-6 relative z-10"></div>
+                    <p class="text-sm text-slate-300 font-medium leading-loose italic relative z-10">
                         "Setia, bijaksana, dan bertanggung jawab dalam menjalankan tugas penegakan hukum."
                     </p>
                 </div>

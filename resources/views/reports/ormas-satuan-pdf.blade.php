@@ -1,23 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
+    <meta charset="UTF-8">
     <title>Data Ormas - {{ $item->nama_organisasi }}</title>
     <style>
         /* Pengaturan Kertas */
         @page {
             size: A4 portrait;
-            margin: 1.5cm 2cm 2cm 2cm;
+            margin: 2cm;
         }
 
         body {
-            font-family: Arial, sans-serif;
-            font-size: 11pt;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
             line-height: 1.5;
             color: #000;
         }
 
-        /* --- STYLING KOP SURAT PRESISI --- */
+        /* --- STYLING KOP SURAT (SERAGAM) --- */
         .kop-table {
             width: 100%;
             border-collapse: collapse;
@@ -31,37 +32,33 @@
         }
 
         .logo-img {
-            width: 90px;
+            width: 80px;
             height: auto;
         }
 
         .teks-cell {
             text-align: center;
             vertical-align: middle;
-            padding-right: 90px;
-            /* Penyeimbang agar teks benar-benar di tengah */
+            padding-right: 80px;
         }
 
         .teks-cell h1 {
-            font-size: 13pt;
+            font-size: 14pt;
             margin: 0;
-            padding: 0;
+            font-weight: bold;
             text-transform: uppercase;
-            font-weight: normal;
         }
 
         .teks-cell h2 {
-            font-size: 15pt;
+            font-size: 16pt;
             margin: 0;
-            padding: 0;
-            text-transform: uppercase;
             font-weight: bold;
+            text-transform: uppercase;
         }
 
         .teks-cell p {
-            font-size: 8.5pt;
+            font-size: 9pt;
             margin: 1px 0;
-            padding: 0;
             line-height: 1.2;
         }
 
@@ -69,18 +66,26 @@
             border-top: 3px solid black;
             border-bottom: 1px solid black;
             height: 2px;
-            margin-top: 8px;
+            margin-top: 5px;
             margin-bottom: 25px;
         }
 
         /* --- STYLING ISI DOKUMEN --- */
         .judul {
             text-align: center;
-            font-size: 14pt;
             font-weight: bold;
             text-decoration: underline;
+            font-size: 14pt;
             margin-bottom: 30px;
             text-transform: uppercase;
+        }
+
+        .section-title {
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            text-decoration: underline;
         }
 
         .data-table {
@@ -90,71 +95,74 @@
         }
 
         .data-table td {
-            padding: 8px;
             vertical-align: top;
-            border-bottom: 1px solid #eee;
+            padding: 5px 0;
         }
 
         .label {
-            width: 200px;
+            width: 180px;
             font-weight: bold;
-            background-color: #fafafa;
         }
 
         .sep {
-            width: 10px;
+            width: 15px;
             text-align: center;
         }
 
+        /* Stampel Status */
         .status-box {
             margin-top: 30px;
             padding: 15px;
-            border: 3px solid black;
+            border: 3px double;
             text-align: center;
             font-weight: bold;
-            font-size: 14pt;
+            font-size: 12pt;
             text-transform: uppercase;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .dilarang {
-            border-color: red;
-            color: red;
-            background-color: #fff5f5;
+            border-color: #dc2626;
+            color: #dc2626;
+            background-color: #fef2f2;
         }
 
         .diawasi {
-            border-color: orange;
-            color: #d35400;
-            background-color: #fffaf0;
+            border-color: #d97706;
+            color: #d97706;
+            background-color: #fffbeb;
         }
 
         .aktif {
-            border-color: green;
-            color: green;
+            border-color: #16a34a;
+            color: #16a34a;
             background-color: #f0fdf4;
         }
 
         .vakum {
-            border-color: gray;
-            color: gray;
-            background-color: #f9f9f9;
+            border-color: #4b5563;
+            color: #4b5563;
+            background-color: #f9fafb;
         }
 
-        .section-title {
-            background-color: #eee;
-            padding: 5px 10px;
-            font-weight: bold;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            border-left: 5px solid #333;
-            text-transform: uppercase;
-        }
-
-        .ttd {
+        /* Tanda Tangan */
+        .ttd-container {
             float: right;
-            width: 280px;
+            width: 300px;
             text-align: center;
             margin-top: 50px;
+        }
+
+        .nama-terang {
+            font-weight: bold;
+            text-decoration: underline;
+            margin-top: 70px;
+        }
+
+        .clear {
+            clear: both;
         }
     </style>
 </head>
@@ -170,10 +178,8 @@
                 <h1>KEJAKSAAN REPUBLIK INDONESIA</h1>
                 <h1>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h1>
                 <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
-                <p>JALAN BRIG JEND H. HASAN BASRI NO. 3 RW.002 KELURAHAN PANGERAN KECAMATAN BANJARMASIN UTARA</p>
-                <p>KOTA BANJARMASIN PROVINSI KALIMANTAN SELATAN KODE POS 70124</p>
-                <p>TELPON : (0511) 3300402 / 6723314 FAX : (0511) 6723314</p>
-                <p>website : kejari-banjarmasin.go.id, email : kasubagbin@kejari-banjarmasin.go.id</p>
+                <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
+                <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
             </td>
         </tr>
     </table>
@@ -245,11 +251,12 @@
     </div>
     @endif
 
-    <div class="ttd">
-        <p>Banjarmasin, {{ \Carbon\Carbon::now()->isoFormat('DD MMMM YYYY') }}</p>
+    <div class="ttd-container">
+        <p>Banjarmasin, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</p>
         <p>Petugas Pendata,</p>
-        <br><br><br><br>
-        <p><strong>{{ auth()->user()->name }}</strong><br>Jaksa Fungsional / NIP. {{ auth()->user()->nip ?? '..........' }}</p>
+
+        <div class="nama-terang">{{ auth()->user()->name }}</div>
+        <div>Jaksa Fungsional / NIP. {{ auth()->user()->nip ?? '....................' }}</div>
     </div>
 
 </body>

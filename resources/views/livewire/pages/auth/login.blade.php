@@ -9,136 +9,78 @@ new #[Layout('layouts.guest')] class extends Component
 {
     public LoginForm $form;
 
+    /**
+     * Handle an incoming authentication request.
+     */
     public function login(): void
     {
         $this->validate();
+
         $this->form->authenticate();
+
         Session::regenerate();
+
         $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
     }
 }; ?>
 
-<div class="fixed inset-0 w-full h-full flex flex-col items-center justify-center bg-[#040d0c] overflow-hidden font-sans">
+<div>
+    <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <div class="absolute inset-0 overflow-hidden">
-        <div class="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] bg-emerald-900/20 blur-[140px] rounded-full animate-pulse"></div>
-        <div class="absolute -bottom-[10%] -right-[10%] w-[50%] h-[50%] bg-teal-800/10 blur-[140px] rounded-full animate-bounce" style="animation-duration: 10s"></div>
+    <form wire:submit="login" class="space-y-6">
 
-        <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(#10b981 0.5px, transparent 0.5px); background-size: 30px 30px;"></div>
-    </div>
+        <div class="text-center mb-8">
+            <h3 class="text-lg font-black text-slate-700 uppercase tracking-widest">Silakan Masuk</h3>
+            <p class="text-xs text-slate-400 font-medium">Gunakan NIP dan Password Anda.</p>
+        </div>
 
-    <div class="w-full max-w-[440px] z-10 px-6">
-        <div class="text-center mb-8 transform transition-all duration-700">
-            <div class="flex justify-center mb-6">
-                <div class="relative group">
-                    <div class="absolute -inset-1 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+        <div class="space-y-2">
+            <label for="nip" class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Nomor Induk Pegawai (NIP)</label>
+            <div class="relative">
+                <input wire:model="form.nip" id="nip" type="text" name="nip" required autofocus autocomplete="username"
+                    class="block w-full rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-900 font-bold focus:border-emerald-500 focus:bg-white focus:ring-0 transition-all py-3.5 px-4 shadow-sm placeholder-slate-300 text-sm"
+                    placeholder="Contoh: 198501012010011001">
 
-                    <div class="relative bg-[#0a1a18] backdrop-blur-sm border border-emerald-500/20 p-5 rounded-3xl shadow-2xl">
-                        <img src="{{ asset('img/logo-kejaksaan.png') }}" alt="Logo" class="w-20 h-20 object-contain filter drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]">
-                    </div>
+                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                        <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clip-rule="evenodd" />
+                    </svg>
                 </div>
             </div>
-
-            <h2 class="text-3xl font-black text-white tracking-tight leading-tight uppercase italic">
-                Si-Intelijen <span class="text-emerald-500 not-italic">Kejaksaan</span>
-            </h2>
-            <div class="flex items-center justify-center gap-4 mt-3">
-                <span class="h-[1px] w-10 bg-gradient-to-r from-transparent via-emerald-800 to-transparent"></span>
-                <p class="text-emerald-500/60 text-[10px] tracking-[0.5em] uppercase font-bold">Satya Adhi Wicaksana</p>
-                <span class="h-[1px] w-10 bg-gradient-to-r from-emerald-800 via-emerald-800 to-transparent"></span>
-            </div>
+            <x-input-error :messages="$errors->get('form.nip')" class="mt-2" />
         </div>
 
-        <div class="relative group">
-            <div class="absolute -inset-[1px] bg-gradient-to-b from-emerald-500/40 via-transparent to-emerald-500/10 rounded-[2.5rem] blur-[2px]"></div>
+        <div class="space-y-2">
+            <label for="password" class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Password</label>
+            <div class="relative">
+                <input wire:model="form.password" id="password" type="password" name="password" required autocomplete="current-password"
+                    class="block w-full rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-900 font-bold focus:border-emerald-500 focus:bg-white focus:ring-0 transition-all py-3.5 px-4 shadow-sm placeholder-slate-300 text-sm"
+                    placeholder="••••••••">
 
-            <div class="relative bg-[#0a1a18]/90 backdrop-blur-2xl border border-white/5 rounded-[2.5rem] p-10 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.7)] overflow-hidden">
-
-                <div class="absolute -top-24 -left-24 w-48 h-48 bg-emerald-500/10 blur-[60px] rounded-full"></div>
-
-                <x-auth-session-status class="mb-6 text-emerald-400 text-center text-sm font-medium" :status="session('status')" />
-
-                <form wire:submit="login" class="space-y-7">
-                    <div class="space-y-2">
-                        <label for="nip" class="block text-[11px] font-bold text-emerald-500/80 uppercase tracking-[0.2em] ml-2">Identitas NIP</label>
-                        <div class="relative group/input">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-emerald-900 group-focus-within/input:text-emerald-400 transition-colors">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
-                            </div>
-                            <input
-                                wire:model="form.nip"
-                                id="nip"
-                                type="text"
-                                required
-                                autofocus
-                                placeholder="Masukkan NIP Pegawai"
-                                class="w-full bg-white/[0.03] border-emerald-900/40 focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10 rounded-2xl py-4 pl-12 pr-4 text-emerald-50 text-sm transition-all duration-300 placeholder:text-emerald-900/30 shadow-inner" />
-                        </div>
-                        <x-input-error :messages="$errors->get('form.nip')" class="mt-2 text-[10px] text-red-400/80 font-medium italic ml-2" />
-                    </div>
-
-                    <div class="space-y-2">
-                        <label for="password" class="block text-[11px] font-bold text-emerald-500/80 uppercase tracking-[0.2em] ml-2">Kata Sandi</label>
-                        <div class="relative group/input">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-emerald-900 group-focus-within/input:text-emerald-400 transition-colors">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                </svg>
-                            </div>
-                            <input
-                                wire:model="form.password"
-                                id="password"
-                                type="password"
-                                required
-                                placeholder="••••••••"
-                                class="w-full bg-white/[0.03] border-emerald-900/40 focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10 rounded-2xl py-4 pl-12 pr-4 text-emerald-50 text-sm transition-all duration-300 placeholder:text-emerald-900/30 shadow-inner" />
-                        </div>
-                        <x-input-error :messages="$errors->get('form.password')" class="mt-2 text-[10px] text-red-400/80 font-medium italic ml-2" />
-                    </div>
-
-                    <div class="flex items-center px-2">
-                        <label class="flex items-center cursor-pointer group/check">
-                            <div class="relative flex items-center">
-                                <input wire:model="form.remember" type="checkbox" class="peer h-4 w-4 rounded border-emerald-900 bg-black/40 text-emerald-600 focus:ring-offset-0 focus:ring-emerald-500 transition cursor-pointer">
-                            </div>
-                            <span class="ml-3 text-[11px] font-bold text-emerald-900 group-hover/check:text-emerald-500 transition-colors uppercase tracking-widest italic">Ingat Sesi Akses</span>
-                        </label>
-                    </div>
-
-                    <div class="pt-2">
-                        <button type="submit" class="relative w-full group/btn overflow-hidden rounded-2xl bg-emerald-600 p-[1px] transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] active:scale-[0.97]">
-                            <div class="relative bg-emerald-600 hover:bg-emerald-500 text-[#061e1b] font-black py-4 rounded-2xl transition-all duration-300 uppercase tracking-[0.3em] text-[13px] flex justify-center items-center">
-                                <span wire:loading.remove wire:target="login" class="flex items-center gap-2">
-                                    Otorisasi Akses
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                    </svg>
-                                </span>
-                                <span wire:loading wire:target="login" class="flex items-center">
-                                    <svg class="animate-spin h-5 w-5 mr-3 text-[#061e1b]" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    Memverifikasi...
-                                </span>
-                            </div>
-                        </button>
-                    </div>
-                </form>
+                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                        <path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clip-rule="evenodd" />
+                    </svg>
+                </div>
             </div>
+            <x-input-error :messages="$errors->get('form.password')" class="mt-2" />
         </div>
 
-        <div class="mt-10 text-center">
-            <div class="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full bg-emerald-500/5 border border-emerald-500/10">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span class="text-[8px] text-emerald-500/70 font-bold uppercase tracking-[0.2em]">Secure Encryption Active</span>
-            </div>
-            <p class="text-[10px] text-emerald-900 uppercase tracking-[0.4em] font-bold leading-relaxed">
-                Kejaksaan Negeri Banjarmasin <br>
-                <span class="opacity-40 font-medium tracking-normal text-[9px]">&copy; 2025 • Intelligence Asset Management Portal</span>
-            </p>
+        <div class="flex items-center justify-between mt-4">
+            <label for="remember" class="inline-flex items-center cursor-pointer group">
+                <input wire:model="form.remember" id="remember" type="checkbox"
+                    class="rounded-lg border-slate-300 text-emerald-600 shadow-sm focus:ring-emerald-500 transition cursor-pointer group-hover:border-emerald-400">
+                <span class="ml-2 text-xs font-bold text-slate-500 uppercase tracking-wider group-hover:text-emerald-600 transition">Ingat Saya</span>
+            </label>
         </div>
-    </div>
+
+        <div class="pt-4">
+            <button type="submit" class="w-full flex items-center justify-center gap-3 px-4 py-4 bg-emerald-600 border border-transparent rounded-xl font-black text-xs text-white uppercase tracking-[0.15em] hover:bg-emerald-700 active:bg-emerald-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-300 shadow-lg shadow-emerald-200 transform hover:-translate-y-1">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                    <path fill-rule="evenodd" d="M12 2.25a.75.75 0 01.75.75v9a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM6.166 5.106a.75.75 0 010 1.06 8.25 8.25 0 1011.668 0 .75.75 0 111.06-1.06c3.808 3.807 3.808 9.98 0 13.788-3.809 3.808-9.98 3.808-13.788 0-3.808-3.809-3.808-9.98 0-13.788a.75.75 0 011.06 0z" clip-rule="evenodd" />
+                </svg>
+                Masuk Sistem
+            </button>
+        </div>
+    </form>
 </div>

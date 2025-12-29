@@ -9,19 +9,21 @@ use Livewire\Volt\Component;
 new class extends Component
 {
     public string $name = '';
-    public string $email = '';
+    public string $nip = ''; // GANTI EMAIL KE NIP
 
     /**
      * Mount the component.
      */
     public function mount(): void
     {
-        $this->name = Auth::user()->name;
-        $this->email = Auth::user()->email;
+        $user = Auth::user();
+
+        $this->name = $user->name;
+        $this->nip = $user->nip; // AMBIL NIP
     }
 
     /**
-     * Update the profile information for the currently authenticated user.
+     * Update the profile information.
      */
     public function updateProfileInformation(): void
     {
@@ -29,12 +31,14 @@ new class extends Component
 
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
+            // VALIDASI NIP (Harus unik kecuali punya sendiri)
+            'nip' => ['required', 'string', 'max:255', Rule::unique(User::class)->ignore($user->id)],
         ]);
 
         $user->fill($validated);
 
-        if ($user->isDirty('email')) {
+        // Jika NIP berubah, reset verifikasi (opsional, jika pakai verifikasi email/nip)
+        if ($user->isDirty('nip')) {
             $user->email_verified_at = null;
         }
 
@@ -44,7 +48,7 @@ new class extends Component
     }
 
     /**
-     * Send an email verification notification to the current user.
+     * Send an email verification notification. (Bisa dihapus jika tidak pakai email)
      */
     public function sendVerification(): void
     {
@@ -63,52 +67,39 @@ new class extends Component
 }; ?>
 
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Profile Information') }}
+    <header class="mb-6">
+        <h2 class="text-lg font-black text-slate-900 uppercase tracking-widest">
+            {{ __('Informasi Profil') }}
         </h2>
-
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __("Update your account's profile information and email address.") }}
+        <p class="mt-1 text-sm text-slate-500">
+            {{ __("Perbarui nama lengkap dan Nomor Induk Pegawai (NIP) akun Anda.") }}
         </p>
     </header>
 
-    <form wire:submit="updateProfileInformation" class="mt-6 space-y-6">
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input wire:model="name" id="name" name="name" type="text" class="mt-1 block w-full" required autofocus autocomplete="name" />
+    <form wire:submit="updateProfileInformation" class="space-y-6">
+        <div class="space-y-2">
+            <x-input-label for="name" :value="__('Nama Lengkap')" class="!text-xs !font-black !text-slate-500 !uppercase !tracking-widest" />
+            <x-text-input wire:model="name" id="name" name="name" type="text"
+                class="mt-1 block w-full !rounded-xl !border-2 !border-slate-200 !bg-slate-50 focus:!border-emerald-500 focus:!ring-0 font-bold text-slate-800"
+                required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input wire:model="email" id="email" name="email" type="email" class="mt-1 block w-full" required autocomplete="username" />
-            <x-input-error class="mt-2" :messages="$errors->get('email')" />
-
-            @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! auth()->user()->hasVerifiedEmail())
-                <div>
-                    <p class="text-sm mt-2 text-gray-800">
-                        {{ __('Your email address is unverified.') }}
-
-                        <button wire:click.prevent="sendVerification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            {{ __('Click here to re-send the verification email.') }}
-                        </button>
-                    </p>
-
-                    @if (session('status') === 'verification-link-sent')
-                        <p class="mt-2 font-medium text-sm text-green-600">
-                            {{ __('A new verification link has been sent to your email address.') }}
-                        </p>
-                    @endif
-                </div>
-            @endif
+        <div class="space-y-2">
+            <x-input-label for="nip" :value="__('Nomor Induk Pegawai (NIP)')" class="!text-xs !font-black !text-slate-500 !uppercase !tracking-widest" />
+            <x-text-input wire:model="nip" id="nip" name="nip" type="text"
+                class="mt-1 block w-full !rounded-xl !border-2 !border-slate-200 !bg-slate-50 focus:!border-emerald-500 focus:!ring-0 font-bold text-slate-800"
+                required autocomplete="username" />
+            <x-input-error class="mt-2" :messages="$errors->get('nip')" />
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+            <x-primary-button class="!bg-emerald-600 hover:!bg-emerald-700 !rounded-xl !py-3 !px-6 !font-black !uppercase !tracking-widest shadow-lg shadow-emerald-200 transition-transform hover:-translate-y-1">
+                {{ __('Simpan Perubahan') }}
+            </x-primary-button>
 
-            <x-action-message class="me-3" on="profile-updated">
-                {{ __('Saved.') }}
+            <x-action-message class="me-3 font-bold text-emerald-600" on="profile-updated">
+                {{ __('Tersimpan.') }}
             </x-action-message>
         </div>
     </form>

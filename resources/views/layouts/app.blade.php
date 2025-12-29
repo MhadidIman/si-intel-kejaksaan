@@ -8,53 +8,55 @@
 
     <title>{{ config('app.name', 'Si-Intel Kejaksaan') }}</title>
 
-    <linkpreconnect href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
 
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-        <style>
-            /* Loading Bar Emas */
-            #nprogress .bar {
-                background: #F59E0B !important;
-                height: 3px !important;
-                z-index: 9999;
-                box-shadow: 0 0 10px #F59E0B, 0 0 5px #F59E0B;
-            }
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-            #nprogress .spinner-icon {
-                border-top-color: #F59E0B !important;
-                border-left-color: #F59E0B !important;
-            }
+    <style>
+        /* Loading Bar Emas */
+        #nprogress .bar {
+            background: #F59E0B !important;
+            height: 3px !important;
+            z-index: 9999;
+            box-shadow: 0 0 10px #F59E0B, 0 0 5px #F59E0B;
+        }
 
-            /* Scrollbar Hijau */
-            ::-webkit-scrollbar {
-                width: 8px;
-            }
+        #nprogress .spinner-icon {
+            border-top-color: #F59E0B !important;
+            border-left-color: #F59E0B !important;
+        }
 
-            ::-webkit-scrollbar-track {
-                background: #0f172a;
-                /* Slate 900 */
-            }
+        /* Scrollbar Hijau */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
 
-            ::-webkit-scrollbar-thumb {
-                background: #10B981;
-                /* Emerald 500 */
-                border-radius: 4px;
-            }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+            /* Slate 900 */
+        }
 
-            ::-webkit-scrollbar-thumb:hover {
-                background: #059669;
-            }
+        ::-webkit-scrollbar-thumb {
+            background: #10B981;
+            /* Emerald 500 */
+            border-radius: 4px;
+        }
 
-            html {
-                scrollbar-gutter: stable;
-            }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #059669;
+        }
 
-            [x-cloak] {
-                display: none !important;
-            }
-        </style>
+        html {
+            scrollbar-gutter: stable;
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
 </head>
 
 <body class="font-sans antialiased text-gray-100 relative">

@@ -17,7 +17,7 @@ class LapduIndex extends Component
     // Properti Data
     public $nomor_surat, $tanggal_terima, $nama_pelapor, $nik, $no_hp_pelapor, $nama_terlapor, $kategori_laporan, $uraian_pengaduan, $keterangan_tindak_lanjut;
 
-    // PENTING: Ganti $status jadi $status_laporan
+    // Status
     public $status_laporan = 'menunggu';
     public $status_verifikasi = 'pending';
 
@@ -38,6 +38,7 @@ class LapduIndex extends Component
         'uraian_pengaduan' => 'required',
         'kategori_laporan' => 'required',
         'status_laporan' => 'required',
+        'tanggal_terima' => 'nullable|date', // Tambahkan validasi tanggal
         'bukti_dukung' => 'nullable|file|max:10240', // Max 10MB
     ];
 
@@ -69,7 +70,7 @@ class LapduIndex extends Component
         $data = Lapdu::where(function ($query) {
             $query->where('nama_pelapor', 'like', '%' . $this->search . '%')
                 ->orWhere('uraian_pengaduan', 'like', '%' . $this->search . '%')
-                ->orWhere('nama_terlapor', 'like', '%' . $this->search . '%'); // Sesuaikan dengan nama kolom di DB
+                ->orWhere('nama_terlapor', 'like', '%' . $this->search . '%');
         })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -95,18 +96,19 @@ class LapduIndex extends Component
             $path = $this->bukti_dukung->store('lapdu-files', 'public');
         }
 
+        // PERBAIKAN: Gunakan operator ?: null untuk menangani string kosong
         Lapdu::create([
-            'user_id' => Auth::id(), // Simpan siapa yang input
-            'nomor_surat' => $this->nomor_surat,
-            'tanggal_terima' => $this->tanggal_terima,
+            'user_id' => Auth::id(),
+            'nomor_surat' => $this->nomor_surat ?: null,
+            'tanggal_terima' => $this->tanggal_terima ?: null, // <-- Solusi Error Date
             'nama_pelapor' => $this->nama_pelapor,
-            'nik' => $this->nik,
-            'no_hp_pelapor' => $this->no_hp_pelapor,
-            'nama_terlapor' => $this->nama_terlapor, // Sesuaikan kolom DB
+            'nik' => $this->nik ?: null,
+            'no_hp_pelapor' => $this->no_hp_pelapor ?: null,
+            'nama_terlapor' => $this->nama_terlapor ?: null,
             'kategori_laporan' => $this->kategori_laporan,
             'uraian_pengaduan' => $this->uraian_pengaduan,
-            'status_laporan' => $this->status_laporan, // <-- Pakai variable baru
-            'keterangan_tindak_lanjut' => $this->keterangan_tindak_lanjut,
+            'status_laporan' => $this->status_laporan,
+            'keterangan_tindak_lanjut' => $this->keterangan_tindak_lanjut ?: null,
             'bukti_dukung' => $path,
             'status_verifikasi' => 'pending',
         ]);
@@ -133,7 +135,7 @@ class LapduIndex extends Component
         $this->nama_terlapor = $data->nama_terlapor;
         $this->kategori_laporan = $data->kategori_laporan;
         $this->uraian_pengaduan = $data->uraian_pengaduan;
-        $this->status_laporan = $data->status_laporan; // Load status
+        $this->status_laporan = $data->status_laporan;
         $this->keterangan_tindak_lanjut = $data->keterangan_tindak_lanjut;
         $this->bukti_lama = $data->bukti_dukung;
         $this->status_verifikasi = $data->status_verifikasi;
@@ -155,19 +157,19 @@ class LapduIndex extends Component
             $path = $this->bukti_dukung->store('lapdu-files', 'public');
         }
 
+        // PERBAIKAN: Gunakan operator ?: null disini juga
         $data->update([
-            'nomor_surat' => $this->nomor_surat,
-            'tanggal_terima' => $this->tanggal_terima,
+            'nomor_surat' => $this->nomor_surat ?: null,
+            'tanggal_terima' => $this->tanggal_terima ?: null, // <-- Solusi Error Date
             'nama_pelapor' => $this->nama_pelapor,
-            'nik' => $this->nik,
-            'no_hp_pelapor' => $this->no_hp_pelapor,
-            'nama_terlapor' => $this->nama_terlapor,
+            'nik' => $this->nik ?: null,
+            'no_hp_pelapor' => $this->no_hp_pelapor ?: null,
+            'nama_terlapor' => $this->nama_terlapor ?: null,
             'kategori_laporan' => $this->kategori_laporan,
             'uraian_pengaduan' => $this->uraian_pengaduan,
             'status_laporan' => $this->status_laporan,
-            'keterangan_tindak_lanjut' => $this->keterangan_tindak_lanjut,
+            'keterangan_tindak_lanjut' => $this->keterangan_tindak_lanjut ?: null,
             'bukti_dukung' => $path,
-            // Jika diedit admin, status verifikasi tetap. Jika staff, kembali pending.
             'status_verifikasi' => Auth::user()->isAdmin() ? $data->status_verifikasi : 'pending',
         ]);
 

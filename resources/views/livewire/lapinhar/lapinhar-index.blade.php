@@ -205,6 +205,10 @@
                                 <option value="Ipoleksosbudhankam">IPOLEKSOSBUDHANKAM</option>
                                 <option value="Hukum">HUKUM</option>
                                 <option value="Keamanan">KEAMANAN</option>
+                                <option value="Keamanan">KEUANGAN DAN EKONOMI</option>
+                                <option value="Keamanan">SOSIAL KEBUDAYAAN</option>
+                                <option value="Keamanan">KEMASYARAKATAN</option>
+                                <option value="Keamanan">POLITIK DAN PEMERINTAH</option>
                             </select>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 absolute right-4 top-4 text-slate-400 pointer-events-none">
                                 <path fill-rule="evenodd" d="M12.53 16.28a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06L12 14.69l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5z" clip-rule="evenodd" />

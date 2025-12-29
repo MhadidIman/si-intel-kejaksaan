@@ -12,19 +12,20 @@ use Livewire\Form;
 
 class LoginForm extends Form
 {
-    #[Validate('required|string|min:18')]
+    // GANTI EMAIL JADI NIP
+    #[Validate('required|string')]
     public string $nip = '';
 
     #[Validate('required|string')]
     public string $password = '';
 
-    #[Validate('boolean')]
     public bool $remember = false;
 
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
 
+        // AUTHENTICATE PAKAI NIP
         if (! Auth::attempt(['nip' => $this->nip, 'password' => $this->password], $this->remember)) {
             RateLimiter::hit($this->throttleKey());
 

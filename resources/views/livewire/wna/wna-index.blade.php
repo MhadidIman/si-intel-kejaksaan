@@ -232,7 +232,7 @@
                             <input wire:model="tanggal_tiba" type="date" class="block w-full rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-900 font-bold focus:border-blue-500 focus:bg-white transition-all py-3 px-4 shadow-sm text-sm">
                         </div>
                         <div class="space-y-2">
-                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Izin Tinggal s/d</label>
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Masa Berlaku Izin Tinggal</label>
                             <input wire:model="masa_berlaku_izin_tinggal" type="date" class="block w-full rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-900 font-bold focus:border-blue-500 focus:bg-white transition-all py-3 px-4 shadow-sm text-sm">
                         </div>
                     </div>

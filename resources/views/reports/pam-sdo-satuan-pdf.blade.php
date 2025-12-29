@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
+    <meta charset="UTF-8">
     <title>Laporan PAM SDO - {{ $item->nama_pegawai }}</title>
     <style>
-        /* Pengaturan Kertas dan Font Standar Dinas */
+        /* Pengaturan Kertas */
         @page {
             size: A4 portrait;
-            margin: 2cm 2cm 2cm 2cm;
+            margin: 2cm;
         }
 
         body {
@@ -39,7 +40,6 @@
             text-align: center;
             vertical-align: middle;
             padding-right: 80px;
-            /* Penyeimbang */
         }
 
         .teks-cell h1 {
@@ -67,21 +67,21 @@
             border-bottom: 1px solid black;
             height: 2px;
             margin-top: 5px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
-        /* --- STYLING ISI --- */
-        .rahasia {
+        /* --- STYLING ISI DOKUMEN --- */
+        .rahasia-top {
             font-weight: bold;
             text-decoration: underline;
             text-align: right;
-            margin-bottom: 10px;
             font-size: 11pt;
+            margin-bottom: 10px;
         }
 
         .judul {
             text-align: center;
-            font-size: 13pt;
+            font-size: 14pt;
             font-weight: bold;
             text-decoration: underline;
             margin-bottom: 30px;
@@ -113,11 +113,11 @@
 
         .table-info td {
             vertical-align: top;
-            padding: 3px 0;
+            padding: 4px 0;
         }
 
         .col-label {
-            width: 200px;
+            width: 220px;
             font-weight: bold;
         }
 
@@ -126,23 +126,36 @@
             text-align: center;
         }
 
-        /* FOTO PROFILE */
+        /* FOTO DI BAWAH */
+        .foto-wrapper {
+            margin-top: 20px;
+            text-align: center;
+            page-break-inside: avoid;
+        }
+
         .foto-container {
-            position: absolute;
-            top: 210px;
-            right: 0;
-            width: 110px;
-            height: 140px;
+            width: 300px;
+            height: auto;
             border: 1px solid #000;
-            padding: 3px;
+            padding: 5px;
+            margin: 0 auto;
+            background-color: #f9f9f9;
         }
 
         .foto-img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: auto;
+            display: block;
         }
 
+        .foto-label {
+            font-size: 10pt;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        /* STATUS BOX */
         .status-box {
             border: 2px solid black;
             padding: 10px;
@@ -153,18 +166,37 @@
             background-color: #f0f0f0;
         }
 
-        .ttd {
+        /* TANDA TANGAN */
+        .ttd-container {
             float: right;
             width: 300px;
             text-align: center;
-            margin-top: 40px;
+            margin-top: 50px;
+        }
+
+        .nama-terang {
+            font-weight: bold;
+            text-decoration: underline;
+            margin-top: 70px;
+        }
+
+        .rahasia-bottom {
+            font-weight: bold;
+            text-decoration: underline;
+            text-align: right;
+            font-size: 11pt;
+            margin-top: 30px;
+        }
+
+        .clear {
+            clear: both;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="rahasia">RAHASIA</div>
+    <div class="rahasia-top">RAHASIA</div>
 
     <table class="kop-table">
         <tr>
@@ -183,12 +215,6 @@
     <div class="garis-kop-ganda"></div>
 
     <div class="judul">LAPORAN PENGAMANAN SUMBER DAYA ORGANISASI (SDO)</div>
-
-    @if($item->foto)
-    <div class="foto-container">
-        <img src="{{ public_path('storage/' . $item->foto) }}" class="foto-img">
-    </div>
-    @endif
 
     <div class="content-block">
         <table class="table-info">
@@ -245,16 +271,27 @@
         @endif
     </div>
 
-    <div class="ttd">
+    @if($item->foto && file_exists(public_path('storage/' . $item->foto)))
+    <div class="foto-wrapper">
+        <div class="foto-label">Lampiran Dokumentasi</div>
+        <div class="foto-container">
+            <img src="{{ public_path('storage/' . $item->foto) }}" class="foto-img">
+        </div>
+    </div>
+    @endif
+
+    <div class="ttd-container">
         <p>Banjarmasin, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</p>
-        <p>Kasi Intelijen,</p>
+        <p>Kepala Seksi Intelijen,</p>
+
         <br><br><br><br>
-        <p style="text-decoration: underline; font-weight: bold;">(NAMA PEJABAT)</p>
-        <p>Jaksa Madya / NIP. ..........................</p>
+
+        <div class="nama-terang">( ...................................................... )</div>
+        <div>Jaksa Madya / NIP. ........................................</div>
     </div>
 
-    <div style="clear: both;"></div>
-    <div class="rahasia" style="margin-top: 30px;">RAHASIA</div>
+    <div class="clear"></div>
+    <div class="rahasia-bottom">RAHASIA</div>
 
 </body>
 

@@ -8,7 +8,7 @@
         /* Pengaturan Kertas dan Font Standar Dinas */
         @page {
             size: A4 portrait;
-            margin: 1.5cm 2cm 2cm 2cm;
+            margin: 2cm;
         }
 
         body {
@@ -18,7 +18,7 @@
             color: #000;
         }
 
-        /* --- STYLING KOP SURAT PRESISI --- */
+        /* --- STYLING KOP SURAT (SERAGAM) --- */
         .kop-table {
             width: 100%;
             border-collapse: collapse;
@@ -27,44 +27,39 @@
 
         .logo-cell {
             width: 100px;
-            /* Lebar kolom logo */
             vertical-align: middle;
             text-align: left;
         }
 
         .logo-img {
-            width: 90px;
-            /* Logo diperbesar agar lebih presisi */
+            width: 80px;
             height: auto;
         }
 
         .teks-cell {
             text-align: center;
             vertical-align: middle;
-            padding-right: 90px;
-            /* Penyeimbang agar teks benar-benar di tengah */
+            padding-right: 80px;
+            /* Penyeimbang agar teks di tengah */
         }
 
         .teks-cell h1 {
-            font-size: 13pt;
+            font-size: 14pt;
             margin: 0;
-            padding: 0;
+            font-weight: bold;
             text-transform: uppercase;
-            font-weight: normal;
         }
 
         .teks-cell h2 {
-            font-size: 15pt;
+            font-size: 16pt;
             margin: 0;
-            padding: 0;
-            text-transform: uppercase;
             font-weight: bold;
+            text-transform: uppercase;
         }
 
         .teks-cell p {
-            font-size: 8.5pt;
+            font-size: 9pt;
             margin: 1px 0;
-            padding: 0;
             line-height: 1.2;
         }
 
@@ -72,7 +67,7 @@
             border-top: 3px solid black;
             border-bottom: 1px solid black;
             height: 2px;
-            margin-top: 8px;
+            margin-top: 5px;
             margin-bottom: 25px;
         }
 
@@ -91,30 +86,34 @@
             text-decoration: underline;
             font-size: 14pt;
             margin-bottom: 2px;
+            text-transform: uppercase;
         }
 
         .nomor {
             text-align: center;
             text-transform: uppercase;
+            font-weight: bold;
             margin-bottom: 30px;
         }
 
         .meta-data {
             width: 100%;
             margin-bottom: 20px;
+            border-collapse: collapse;
         }
 
         .meta-data td {
             vertical-align: top;
-            padding-bottom: 2px;
+            padding-bottom: 4px;
         }
 
         .label {
-            width: 100px;
+            width: 140px;
+            font-weight: bold;
         }
 
         .sep {
-            width: 10px;
+            width: 15px;
             text-align: center;
         }
 
@@ -123,19 +122,21 @@
             text-transform: uppercase;
             margin-top: 15px;
             margin-bottom: 5px;
+            text-decoration: underline;
         }
 
         .content-text {
             text-align: justify;
             text-indent: 30px;
             margin-bottom: 10px;
+            min-height: 20px;
         }
 
         .ttd-container {
             float: right;
-            width: 280px;
+            width: 300px;
             text-align: center;
-            margin-top: 50px;
+            margin-top: 40px;
         }
 
         .nama-terang {
@@ -150,6 +151,10 @@
             text-align: right;
             font-size: 11pt;
             margin-top: 30px;
+        }
+
+        .clear {
+            clear: both;
         }
     </style>
 </head>
@@ -167,10 +172,8 @@
                 <h1>KEJAKSAAN REPUBLIK INDONESIA</h1>
                 <h1>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h1>
                 <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
-                <p>JALAN BRIG JEND H. HASAN BASRI NO. 3 RW.002 KELURAHAN PANGERAN KECAMATAN BANJARMASIN UTARA</p>
-                <p>KOTA BANJARMASIN PROVINSI KALIMANTAN SELATAN KODE POS 70124</p>
-                <p>TELPON : (0511) 3300402 / 6723314 FAX : (0511) 6723314</p>
-                <p>website : kejari-banjarmasin.go.id, email : kasubagbin@kejari-banjarmasin.go.id</p>
+                <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
+                <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
             </td>
         </tr>
     </table>
@@ -179,7 +182,7 @@
     <div class="judul">LAPORAN INFORMASI</div>
     <div class="nomor">NOMOR: {{ $item->nomor_surat ?? 'R-......./......./.......' }}</div>
 
-    <table class="meta-data" border="0" cellspacing="0" cellpadding="0">
+    <table class="meta-data">
         <tr>
             <td class="label">Kepada Yth.</td>
             <td class="sep">:</td>
@@ -201,46 +204,46 @@
             <td>-</td>
         </tr>
         <tr>
-            <td class="label">Bidang</td>
+            <td class="label">Perihal</td>
             <td class="sep">:</td>
-            <td>{{ $item->bidang }}</td>
+            <td style="text-transform: uppercase; font-weight: bold;">Laporan Informasi {{ $item->bidang }}</td>
         </tr>
     </table>
 
-    <div style="border-bottom: 1px solid black; margin-bottom: 20px;"></div>
+    <div style="border-bottom: 2px solid black; margin-bottom: 20px;"></div>
 
     <div class="section-title">I. PENDAHULUAN (SUMBER INFORMASI)</div>
     <div class="content-text">
-        Informasi ini diperoleh dari {{ $item->sumber_informasi }}. Informasi diterima pada tanggal {{ \Carbon\Carbon::parse($item->tanggal_surat)->isoFormat('D MMMM Y') }} terkait situasi di wilayah hukum Kejaksaan Negeri.
+        Informasi ini diperoleh dari sumber {{ $item->sumber_informasi }}. Informasi diterima pada tanggal {{ \Carbon\Carbon::parse($item->tanggal_surat)->isoFormat('D MMMM Y') }} mengenai situasi dan kondisi di wilayah hukum Kejaksaan Negeri Banjarmasin terkait bidang {{ $item->bidang }}.
     </div>
 
     <div class="section-title">II. FAKTA - FAKTA</div>
     <div class="content-text">
-        Telah dilaporkan mengenai peristiwa: <strong>{{ $item->peristiwa }}</strong>.
+        Berdasarkan pemantauan dan pengumpulan data di lapangan, diperoleh fakta-fakta sebagai berikut:
     </div>
-    <div class="content-text">
-        Adapun rincian kejadian dan data pendukung terkait peristiwa tersebut telah diverifikasi dan dicatat sesuai dengan temuan di lapangan.
+    <div class="content-text" style="text-indent: 0;">
+        {{ $item->peristiwa }}
     </div>
 
     <div class="section-title">III. PENDAPAT / ANALISA INTELIJEN</div>
-    <div class="content-text">
+    <div class="content-text" style="text-indent: 0;">
         {{ $item->pendapat }}
     </div>
 
     <div class="section-title">IV. KESIMPULAN DAN SARAN</div>
     <div class="content-text">
-        Berdasarkan fakta-fakta dan analisa di atas, disarankan kepada Pimpinan untuk menindaklanjuti informasi ini sesuai dengan prosedur yang berlaku dan melakukan monitoring perkembangan situasi lebih lanjut.
+        Berdasarkan uraian fakta dan analisa di atas, disarankan kepada Pimpinan untuk menindaklanjuti informasi ini sesuai dengan prosedur yang berlaku serta terus melakukan monitoring terhadap perkembangan situasi.
     </div>
 
     <div class="ttd-container">
-        <p>Banjarmasin, {{ \Carbon\Carbon::parse($item->tanggal_surat)->isoFormat('D MMMM Y') }}</p>
+        <p>Banjarmasin, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</p>
         <p>Pelapor,</p>
 
         <div class="nama-terang">{{ auth()->user()->name }}</div>
-        <div>Jaksa Pratama / NIP. {{ auth()->user()->nip ?? '....................' }}</div>
+        <div>Jaksa Intelijen / NIP. {{ auth()->user()->nip ?? '....................' }}</div>
     </div>
 
-    <div style="clear: both;"></div>
+    <div class="clear"></div>
     <div class="rahasia-bottom">RAHASIA</div>
 
 </body>

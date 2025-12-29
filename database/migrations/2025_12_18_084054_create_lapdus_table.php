@@ -10,13 +10,23 @@ return new class extends Migration
     {
         Schema::create('lapdus', function (Blueprint $table) {
             $table->id();
+
+            // TAMBAHAN: Kolom User ID (Relasi ke tabel users)
+            // Agar tahu siapa petugas yang menginput (sesuai error user_id not found)
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
+
+            // TAMBAHAN: Data Surat (sesuai error nomor_surat & tanggal_terima not found)
+            $table->string('nomor_surat')->nullable();
+            $table->date('tanggal_terima')->nullable();
+
             // Kolom Verifikasi Admin
             $table->enum('status_verifikasi', ['pending', 'disetujui', 'ditolak'])->default('pending');
 
             // Data Pelapor
             $table->string('nama_pelapor');
             $table->string('nik')->nullable();
-            $table->string('no_hp')->nullable();
+            // UBAH NAMA: no_hp menjadi no_hp_pelapor (sesuai error SQL)
+            $table->string('no_hp_pelapor')->nullable();
 
             // Data Pengaduan
             $table->string('nama_terlapor')->nullable(); // Siapa yang dilaporkan

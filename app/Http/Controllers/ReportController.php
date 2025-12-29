@@ -29,7 +29,10 @@ class ReportController extends Controller
     {
         $data = Dpo::findOrFail($id);
         $namaFile = str_replace([' ', '/', '\\'], '-', $data->nama_lengkap);
-        $pdf = Pdf::loadView('reports.dpo-satuan-pdf', ['item' => $data]);
+
+        // PERBAIKAN DI SINI: Menggunakan 'data' => $data (Bukan 'item')
+        $pdf = Pdf::loadView('reports.dpo-satuan-pdf', ['data' => $data]);
+
         $pdf->setPaper('a4', 'portrait');
         return $pdf->stream('Biodata-DPO-' . $namaFile . '.pdf');
     }
@@ -49,6 +52,7 @@ class ReportController extends Controller
     {
         $data = Wna::findOrFail($id);
         $namaFile = str_replace([' ', '/', '\\'], '-', $data->nama_lengkap);
+        // Pastikan view WNA Anda menggunakan $item atau ubah ini jadi 'data' jika error serupa
         $pdf = Pdf::loadView('reports.wna-satuan-pdf', ['item' => $data]);
         $pdf->setPaper('a4', 'portrait');
         return $pdf->stream('Biodata-WNA-' . $namaFile . '.pdf');
@@ -71,6 +75,7 @@ class ReportController extends Controller
         $nomorSurat = $data->nomor_surat ?? 'Tanpa-Nomor';
         $namaFileAman = str_replace(['/', '\\'], '-', $nomorSurat);
 
+        // View Lapinhar menggunakan $item, jadi ini sudah benar
         $pdf = Pdf::loadView('reports.lapinhar-satuan-pdf', ['item' => $data]);
         $pdf->setPaper('a4', 'portrait');
         return $pdf->stream('LI-No-' . $namaFileAman . '.pdf');
@@ -121,83 +126,56 @@ class ReportController extends Controller
     // ==========================================================
     public function cetakJms()
     {
-        // PERBAIKAN: Menggunakan JmsActivity
         $data = JmsActivity::orderBy('tanggal_kegiatan', 'desc')->get();
-
         $pdf = Pdf::loadView('reports.jms-pdf', ['data' => $data]);
         $pdf->setPaper('a4', 'landscape');
-
         return $pdf->stream('Laporan-JMS-Rekap.pdf');
     }
 
     public function cetakJmsSatuan($id)
     {
-        // Ambil data menggunakan Model yang benar
         $jmsData = JmsActivity::findOrFail($id);
-
         $namaFile = str_replace([' ', '/', '\\'], '-', $jmsData->nama_sekolah);
-
-        // KITA KIRIM SEBAGAI 'data' (BUKAN 'item')
         $pdf = Pdf::loadView('reports.jms-satuan-pdf', ['data' => $jmsData]);
-
         $pdf->setPaper('a4', 'portrait');
-
         return $pdf->stream('Laporan-Kegiatan-JMS-' . $namaFile . '.pdf');
     }
 
     // ==========================================================
-    // 7. MODUL PETA KERAWWANAN
+    // 7. MODUL PETA KERAWANAN
     // ==========================================================
     public function cetakKerawanan()
     {
-        // Sesuaikan nama kolom: tingkat_rawan
-        // Sesuaikan value: tinggi, sedang, rendah (huruf kecil sesuai migration)
         $data = Kerawanan::orderByRaw("FIELD(tingkat_rawan, 'tinggi', 'sedang', 'rendah')")->get();
-
         $pdf = Pdf::loadView('reports.kerawanan-pdf', ['data' => $data]);
         $pdf->setPaper('a4', 'landscape');
-
         return $pdf->stream('Rekap-Peta-Kerawanan.pdf');
     }
 
     public function cetakKerawananSatuan($id)
     {
         $data = Kerawanan::findOrFail($id);
-
         $pdf = Pdf::loadView('reports.kerawanan-satuan-pdf', ['data' => $data]);
         $pdf->setPaper('a4', 'portrait');
-
         return $pdf->stream('Analisa-Kerawanan-' . $data->kecamatan . '.pdf');
     }
 
     // ==========================================================
-    // 8. MODUL PENGADUAN MASYARAKAT (LAPDU) - FIXED
+    // 8. MODUL PENGADUAN MASYARAKAT (LAPDU)
     // ==========================================================
-
-    // Cetak Rekapitulasi (Tabel Landscape)
     public function cetakLapdu()
     {
-        // PERBAIKAN: Ganti 'tanggal_masuk' menjadi 'tanggal_terima'
         $data = \App\Models\Lapdu::orderBy('tanggal_terima', 'desc')->get();
-
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.lapdu-pdf', ['data' => $data]);
-
-        // Set kertas landscape agar tabel muat banyak kolom
         $pdf->setPaper('a4', 'landscape');
-
         return $pdf->stream('Rekap-Pengaduan-Masyarakat.pdf');
     }
 
-    // Cetak Lembar Disposisi (Satuan Portrait)
     public function cetakLapduSatuan($id)
     {
         $data = \App\Models\Lapdu::findOrFail($id);
-
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.lapdu-satuan-pdf', ['data' => $data]);
-
-        // Set kertas portrait untuk format surat disposisi
         $pdf->setPaper('a4', 'portrait');
-
         return $pdf->stream('Lembar-Disposisi-Lapdu-' . $data->id . '.pdf');
     }
 }
