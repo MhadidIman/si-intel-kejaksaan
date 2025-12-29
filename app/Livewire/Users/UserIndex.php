@@ -4,42 +4,83 @@ namespace App\Livewire\Users;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\Layout;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Livewire\Attributes\Layout;
 
 class UserIndex extends Component
 {
     use WithPagination;
 
-    // DEFINISI VARIABEL PUBLIK
-    // Menambahkan $nip dan $role agar data dapat ditangkap dari form dan disimpan ke database
-    public $name, $email, $password, $user_id, $nip, $role;
+    // Properti Form
+    public $name, $email, $nip, $role = 'staff', $password;
+    public $user_id;
 
-    // Variabel untuk mengontrol tampilan Form/Modal
+    // Properti Modal Statistik
+    public $selectedUser = null;
+    public $showStatsModal = false;
+
+    // UI State
     public $isEditMode = false;
     public $showForm = false;
-
     public $search = '';
 
-    // Reset pagination saat searching
-    public function updatedSearch()
-    {
-        $this->resetPage();
-    }
+    protected $rules = [
+        'name' => 'required',
+        'email' => 'required|email|unique:users,email',
+        'nip' => 'nullable|string',
+        'role' => 'required',
+        'password' => 'required|min:6',
+    ];
 
     #[Layout('layouts.app')]
     public function render()
     {
+        // Mengambil data user beserta jumlah laporan yang diinput (withCount)
+        $users = User::withCount([
+            'lapinhars',
+            'dpos',
+            'wnas',
+            'ormas',
+            'pamSdos',
+            'jmsActivities',
+            'kerawanans',
+            'lapdus'
+        ])
+            ->where('name', 'like', '%' . $this->search . '%')
+            ->orWhere('nip', 'like', '%' . $this->search . '%')
+            ->orderBy('role', 'asc') // Admin paling atas
+            ->paginate(10);
+
         return view('livewire.users.user-index', [
-            'users' => User::where('name', 'like', '%' . $this->search . '%')
-                ->orWhere('email', 'like', '%' . $this->search . '%')
-                ->orWhere('nip', 'like', '%' . $this->search . '%') // Menambahkan pencarian berdasarkan NIP
-                ->orderBy('created_at', 'desc')
-                ->paginate(8)
+            'users' => $users
         ]);
     }
 
+    // --- LOGIC MODAL STATISTIK ---
+    public function viewStats($id)
+    {
+        $this->selectedUser = User::withCount([
+            'lapinhars',
+            'dpos',
+            'wnas',
+            'ormas',
+            'pamSdos',
+            'jmsActivities',
+            'kerawanans',
+            'lapdus'
+        ])->findOrFail($id);
+
+        $this->showStatsModal = true;
+    }
+
+    public function closeStatsModal()
+    {
+        $this->showStatsModal = false;
+        $this->selectedUser = null;
+    }
+
+    // --- LOGIC CRUD USER ---
     public function create()
     {
         $this->resetInputFields();
@@ -51,21 +92,21 @@ class UserIndex extends Component
     {
         $this->validate([
             'name' => 'required|string|max:255',
-            'nip' => 'required|string|min:18|unique:users,nip', // Validasi NIP wajib diisi dan unik
             'email' => 'required|email|unique:users,email',
+            'nip' => 'required|string|unique:users,nip', // Validasi Unik NIP
+            'role' => 'required',
             'password' => 'required|min:6',
-            'role' => 'required|in:admin,staff', // Validasi role harus admin atau staff
         ]);
 
         User::create([
             'name' => $this->name,
-            'nip' => $this->nip, // Menyimpan data NIP
             'email' => $this->email,
+            'nip' => $this->nip,
+            'role' => $this->role,
             'password' => Hash::make($this->password),
-            'role' => $this->role, // Menyimpan data Role
         ]);
 
-        session()->flash('message', 'Personil berhasil ditambahkan.');
+        session()->flash('message', 'User berhasil ditambahkan.');
         $this->closeModal();
     }
 
@@ -74,11 +115,9 @@ class UserIndex extends Component
         $user = User::findOrFail($id);
         $this->user_id = $id;
         $this->name = $user->name;
-        $this->nip = $user->nip; // Memuat data NIP saat edit
         $this->email = $user->email;
-        $this->role = $user->role; // Memuat data Role saat edit
-        $this->password = '';
-
+        $this->nip = $user->nip;
+        $this->role = $user->role;
         $this->showForm = true;
         $this->isEditMode = true;
     }
@@ -86,19 +125,20 @@ class UserIndex extends Component
     public function update()
     {
         $this->validate([
-            'name' => 'required|string|max:255',
-            'nip' => 'required|string|min:18|unique:users,nip,' . $this->user_id,
+            'name' => 'required',
+            // Abaikan validasi unik untuk user ini sendiri saat update
             'email' => 'required|email|unique:users,email,' . $this->user_id,
-            'role' => 'required|in:admin,staff',
+            'nip' => 'required|string|unique:users,nip,' . $this->user_id,
+            'role' => 'required',
         ]);
 
-        $user = User::find($this->user_id);
+        $user = User::findOrFail($this->user_id);
 
         $data = [
             'name' => $this->name,
-            'nip' => $this->nip, // Memperbarui data NIP
             'email' => $this->email,
-            'role' => $this->role, // Memperbarui data Role
+            'nip' => $this->nip,
+            'role' => $this->role,
         ];
 
         if (!empty($this->password)) {
@@ -107,18 +147,20 @@ class UserIndex extends Component
 
         $user->update($data);
 
-        session()->flash('message', 'Data personil diperbarui.');
+        session()->flash('message', 'Data User diperbarui.');
         $this->closeModal();
     }
 
     public function delete($id)
     {
+        // Mencegah hapus diri sendiri
         if ($id == auth()->id()) {
+            session()->flash('error', 'Tidak dapat menghapus akun sendiri.');
             return;
         }
 
         User::find($id)->delete();
-        session()->flash('message', 'Personil dihapus.');
+        session()->flash('message', 'User dihapus.');
     }
 
     public function closeModal()
@@ -130,10 +172,10 @@ class UserIndex extends Component
     private function resetInputFields()
     {
         $this->name = '';
-        $this->nip = ''; // Reset field NIP
         $this->email = '';
+        $this->nip = '';
+        $this->role = 'staff';
         $this->password = '';
-        $this->role = ''; // Reset field Role
         $this->user_id = null;
     }
 }

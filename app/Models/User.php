@@ -5,34 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * Atribut yang dapat diisi secara massal.
-     */
     protected $fillable = [
         'name',
-        'nip',      // NIP Pegawai Kejaksaan
         'email',
+        'nip',
+        'role',
         'password',
-        'role',     // Role: admin atau staff
     ];
 
-    /**
-     * Atribut yang disembunyikan untuk serialisasi.
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Cast atribut ke tipe data tertentu.
-     */
     protected function casts(): array
     {
         return [
@@ -41,51 +31,51 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * Helper: Cek apakah user adalah Admin
-     */
-    public function isAdmin(): bool
+    public function isAdmin()
     {
         return $this->role === 'admin';
     }
 
+    // --- RELASI KE TABEL LAPORAN ---
+    // Pastikan tabel-tabel ini memiliki kolom 'user_id'
 
-
-    /**
-     * Helper: Cek apakah user adalah Staff
-     */
-    public function isStaff(): bool
+    public function lapinhars()
     {
-        return $this->role === 'staff';
+        return $this->hasMany(Lapinhar::class);
     }
 
-    /**
-     * RELASI UNTUK MONITORING PRODUKTIVITAS STAFF
-     * Menghubungkan User ke data yang mereka input.
-     */
-
-    public function lapinhars(): HasMany
+    public function dpos()
     {
-        return $this->hasMany(Lapinhar::class, 'user_id');
+        return $this->hasMany(Dpo::class);
     }
 
-    public function dpos(): HasMany
+    public function wnas()
     {
-        return $this->hasMany(Dpo::class, 'user_id');
+        return $this->hasMany(Wna::class);
     }
 
-    public function wnas(): HasMany
+    public function ormas()
     {
-        return $this->hasMany(Wna::class, 'user_id');
+        return $this->hasMany(Ormas::class);
     }
 
-    public function lapdus(): HasMany
+    public function pamSdos()
     {
-        return $this->hasMany(Lapdu::class, 'user_id');
+        return $this->hasMany(PamSdo::class);
     }
 
-    public function kerawanans(): HasMany
+    public function jmsActivities()
     {
-        return $this->hasMany(Kerawanan::class, 'user_id');
+        return $this->hasMany(JmsActivity::class);
+    }
+
+    public function kerawanans()
+    {
+        return $this->hasMany(Kerawanan::class);
+    }
+
+    public function lapdus()
+    {
+        return $this->hasMany(Lapdu::class);
     }
 }

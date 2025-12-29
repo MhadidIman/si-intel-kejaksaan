@@ -15,64 +15,64 @@ class WnaIndex extends Component
 {
     use WithPagination, WithFileUploads;
 
-    // Form Variables
-    public $nama_lengkap, $nomor_paspor, $kebangsaan, $tanggal_tiba, $masa_berlaku_izin_tinggal, $tujuan_kunjungan, $sponsor, $alamat_menginap;
-    public $foto_dokumen, $foto_lama;
+    // Properti Data
+    public $nama_lengkap, $nomor_paspor, $kebangsaan, $tanggal_tiba, $masa_berlaku_izin_tinggal;
+    public $tujuan_kunjungan, $sponsor, $alamat_menginap, $foto_dokumen, $foto_lama;
     public $wna_id;
 
-    // Status Verifikasi
-    public $status_verifikasi = 'pending';
-
-    // UI Variables
+    // UI & Search
     public $isEditMode = false;
     public $showForm = false;
     public $search = '';
-
-    // Modal Status
-    public $showStatusModal = false;
-    public $targetId = null;
+    public $filterStatus = ''; // Filter baru: all, aman, warning, overstay
 
     protected $rules = [
         'nama_lengkap' => 'required',
         'nomor_paspor' => 'required',
         'kebangsaan' => 'required',
         'masa_berlaku_izin_tinggal' => 'required|date',
+        'tujuan_kunjungan' => 'required',
         'alamat_menginap' => 'required',
         'foto_dokumen' => 'nullable|image|max:2048',
     ];
 
-    // --- LOGIKA VERIFIKASI ---
-    public function openStatusModal($id)
-    {
-        $this->targetId = $id;
-        $this->showStatusModal = true;
-    }
-
-    public function closeStatusModal()
-    {
-        $this->showStatusModal = false;
-        $this->targetId = null;
-    }
-
-    public function updateStatus($newStatus)
-    {
-        if (Auth::user()->isAdmin() && $this->targetId) {
-            Wna::where('id', $this->targetId)->update(['status_verifikasi' => $newStatus]);
-            session()->flash('message', 'Status WNA berhasil diubah menjadi ' . strtoupper($newStatus));
-            $this->closeStatusModal();
-        }
-    }
-    // -------------------------
-
     #[Layout('layouts.app')]
     public function render()
     {
+        $query = Wna::query();
+
+        // 1. Logic Search
+        if ($this->search) {
+            $query->where(function ($q) {
+                $q->where('nama_lengkap', 'like', '%' . $this->search . '%')
+                    ->orWhere('nomor_paspor', 'like', '%' . $this->search . '%')
+                    ->orWhere('kebangsaan', 'like', '%' . $this->search . '%');
+            });
+        }
+
+        // 2. Logic Filter Status (Perbaikan Perhitungan)
+        $today = Carbon::now()->startOfDay();
+        $warningLimit = Carbon::now()->addDays(30)->endOfDay(); // H-30 Warning
+
+        if ($this->filterStatus === 'overstay') {
+            // Tanggal izin < Hari ini
+            $query->whereDate('masa_berlaku_izin_tinggal', '<', $today);
+        } elseif ($this->filterStatus === 'warning') {
+            // Hari ini <= Tanggal Izin <= 30 Hari kedepan
+            $query->whereDate('masa_berlaku_izin_tinggal', '>=', $today)
+                ->whereDate('masa_berlaku_izin_tinggal', '<=', $warningLimit);
+        } elseif ($this->filterStatus === 'aman') {
+            // Tanggal Izin > 30 Hari kedepan
+            $query->whereDate('masa_berlaku_izin_tinggal', '>', $warningLimit);
+        }
+
+        $wnas = $query->orderBy('masa_berlaku_izin_tinggal', 'asc')->paginate(10);
+
         return view('livewire.wna.wna-index', [
-            'wnas' => Wna::where('nama_lengkap', 'like', '%' . $this->search . '%')
-                ->orWhere('nomor_paspor', 'like', '%' . $this->search . '%')
-                ->orWhere('kebangsaan', 'like', '%' . $this->search . '%')
-                ->orderBy('masa_berlaku_izin_tinggal', 'asc')
-                ->paginate(10)
+            'wnas' => $wnas,
+            'countOverstay' => Wna::whereDate('masa_berlaku_izin_tinggal', '<', $today)->count(),
+            'countWarning' => Wna::whereDate('masa_berlaku_izin_tinggal', '>=', $today)
+                ->whereDate('masa_berlaku_izin_tinggal', '<=', $warningLimit)->count()
         ]);
     }
 
@@ -89,10 +89,11 @@ class WnaIndex extends Component
 
         $path = null;
         if ($this->foto_dokumen) {
-            $path = $this->foto_dokumen->store('wna-docs', 'public');
+            $path = $this->foto_dokumen->store('wna-photos', 'public');
         }
 
         Wna::create([
+            'user_id' => Auth::id(),
             'nama_lengkap' => $this->nama_lengkap,
             'nomor_paspor' => $this->nomor_paspor,
             'kebangsaan' => $this->kebangsaan,
@@ -102,34 +103,26 @@ class WnaIndex extends Component
             'sponsor' => $this->sponsor,
             'alamat_menginap' => $this->alamat_menginap,
             'foto_dokumen' => $path,
-            'status_verifikasi' => 'pending', // Default
+            'status_verifikasi' => Auth::user()->isAdmin() ? 'disetujui' : 'pending',
         ]);
 
-        session()->flash('message', 'Data WNA berhasil disimpan.');
+        session()->flash('message', 'Data WNA berhasil ditambahkan.');
         $this->closeModal();
     }
 
     public function edit($id)
     {
-        $data = Wna::findOrFail($id);
-
-        // Proteksi Edit
-        if ($data->status_verifikasi === 'disetujui' && !Auth::user()->isAdmin()) {
-            session()->flash('message', 'Data yang sudah divalidasi tidak dapat diubah.');
-            return;
-        }
-
+        $wna = Wna::findOrFail($id);
         $this->wna_id = $id;
-        $this->nama_lengkap = $data->nama_lengkap;
-        $this->nomor_paspor = $data->nomor_paspor;
-        $this->kebangsaan = $data->kebangsaan;
-        $this->tanggal_tiba = $data->tanggal_tiba ? $data->tanggal_tiba->format('Y-m-d') : null;
-        $this->masa_berlaku_izin_tinggal = $data->masa_berlaku_izin_tinggal ? $data->masa_berlaku_izin_tinggal->format('Y-m-d') : null;
-        $this->tujuan_kunjungan = $data->tujuan_kunjungan;
-        $this->sponsor = $data->sponsor;
-        $this->alamat_menginap = $data->alamat_menginap;
-        $this->foto_lama = $data->foto_dokumen;
-        $this->status_verifikasi = $data->status_verifikasi;
+        $this->nama_lengkap = $wna->nama_lengkap;
+        $this->nomor_paspor = $wna->nomor_paspor;
+        $this->kebangsaan = $wna->kebangsaan;
+        $this->tanggal_tiba = $wna->tanggal_tiba ? Carbon::parse($wna->tanggal_tiba)->format('Y-m-d') : null;
+        $this->masa_berlaku_izin_tinggal = Carbon::parse($wna->masa_berlaku_izin_tinggal)->format('Y-m-d');
+        $this->tujuan_kunjungan = $wna->tujuan_kunjungan;
+        $this->sponsor = $wna->sponsor;
+        $this->alamat_menginap = $wna->alamat_menginap;
+        $this->foto_lama = $wna->foto_dokumen;
 
         $this->showForm = true;
         $this->isEditMode = true;
@@ -138,17 +131,17 @@ class WnaIndex extends Component
     public function update()
     {
         $this->validate();
-        $data = Wna::find($this->wna_id);
+        $wna = Wna::findOrFail($this->wna_id);
 
-        $path = $data->foto_dokumen;
+        $path = $wna->foto_dokumen;
         if ($this->foto_dokumen) {
-            if ($data->foto_dokumen && Storage::disk('public')->exists($data->foto_dokumen)) {
-                Storage::disk('public')->delete($data->foto_dokumen);
+            if ($path && Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
             }
-            $path = $this->foto_dokumen->store('wna-docs', 'public');
+            $path = $this->foto_dokumen->store('wna-photos', 'public');
         }
 
-        $data->update([
+        $wna->update([
             'nama_lengkap' => $this->nama_lengkap,
             'nomor_paspor' => $this->nomor_paspor,
             'kebangsaan' => $this->kebangsaan,
@@ -158,7 +151,6 @@ class WnaIndex extends Component
             'sponsor' => $this->sponsor,
             'alamat_menginap' => $this->alamat_menginap,
             'foto_dokumen' => $path,
-            'status_verifikasi' => Auth::user()->isAdmin() ? $data->status_verifikasi : 'pending',
         ]);
 
         session()->flash('message', 'Data WNA diperbarui.');
@@ -167,11 +159,11 @@ class WnaIndex extends Component
 
     public function delete($id)
     {
-        $data = Wna::find($id);
-        if ($data->foto_dokumen && Storage::disk('public')->exists($data->foto_dokumen)) {
-            Storage::disk('public')->delete($data->foto_dokumen);
+        $wna = Wna::findOrFail($id);
+        if ($wna->foto_dokumen && Storage::disk('public')->exists($wna->foto_dokumen)) {
+            Storage::disk('public')->delete($wna->foto_dokumen);
         }
-        $data->delete();
+        $wna->delete();
         session()->flash('message', 'Data WNA dihapus.');
     }
 
@@ -193,6 +185,5 @@ class WnaIndex extends Component
         $this->alamat_menginap = '';
         $this->foto_dokumen = null;
         $this->foto_lama = null;
-        $this->status_verifikasi = 'pending';
     }
 }

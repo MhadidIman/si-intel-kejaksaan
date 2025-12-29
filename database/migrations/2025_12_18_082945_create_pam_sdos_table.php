@@ -10,22 +10,19 @@ return new class extends Migration
     {
         Schema::create('pam_sdos', function (Blueprint $table) {
             $table->id();
-            // Kolom Verifikasi Baru
+
+            // TAMBAHAN: Kolom User ID
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+
             $table->enum('status_verifikasi', ['pending', 'disetujui', 'ditolak'])->default('pending');
 
-            // Data Personil
             $table->string('nama_pegawai');
             $table->string('nip_nrp')->nullable();
             $table->string('pangkat_jabatan');
-            $table->string('satuan_kerja'); // Kejari/Kejati mana
-
-            // Data Masalah/Pengamanan
-            $table->text('permasalahan'); // Uraian singkat masalah
-            $table->text('keterangan')->nullable(); // Tindak lanjut
-
-            // Status Pengamanan (Clear / Dalam Pengawasan)
+            $table->string('satuan_kerja');
+            $table->text('permasalahan');
+            $table->text('keterangan')->nullable();
             $table->enum('status_pam', ['clear', 'diawasi', 'ditindak'])->default('diawasi');
-
             $table->string('foto')->nullable();
             $table->timestamps();
         });

@@ -10,7 +10,10 @@ return new class extends Migration
     {
         Schema::create('wnas', function (Blueprint $table) {
             $table->id();
-            // Menambahkan kolom status_verifikasi
+
+            // TAMBAHAN: Kolom User ID
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+
             $table->enum('status_verifikasi', ['pending', 'disetujui', 'ditolak'])->default('pending');
 
             $table->string('nama_lengkap');
