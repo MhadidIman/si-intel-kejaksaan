@@ -38,7 +38,7 @@ class LapduIndex extends Component
         'uraian_pengaduan' => 'required',
         'kategori_laporan' => 'required',
         'status_laporan' => 'required',
-        'tanggal_terima' => 'nullable|date', // Tambahkan validasi tanggal
+        'tanggal_terima' => 'nullable|date',
         'bukti_dukung' => 'nullable|file|max:10240', // Max 10MB
     ];
 
@@ -57,7 +57,8 @@ class LapduIndex extends Component
 
     public function updateStatus($newStatus)
     {
-        if (Auth::user()->isAdmin() && $this->targetId) {
+        // Ganti isAdmin() dengan pengecekan manual
+        if (Auth::user()->role === 'admin' && $this->targetId) {
             Lapdu::where('id', $this->targetId)->update(['status_verifikasi' => $newStatus]);
             session()->flash('message', 'Status Verifikasi berhasil diubah menjadi ' . strtoupper($newStatus));
             $this->closeStatusModal();
@@ -96,11 +97,11 @@ class LapduIndex extends Component
             $path = $this->bukti_dukung->store('lapdu-files', 'public');
         }
 
-        // PERBAIKAN: Gunakan operator ?: null untuk menangani string kosong
         Lapdu::create([
-            'user_id' => Auth::id(),
+            'user_id' => Auth::id(), // <--- WAJIB: ID Penginput
+            // Gunakan operator ?: null agar string kosong disimpan sebagai NULL
             'nomor_surat' => $this->nomor_surat ?: null,
-            'tanggal_terima' => $this->tanggal_terima ?: null, // <-- Solusi Error Date
+            'tanggal_terima' => $this->tanggal_terima ?: null,
             'nama_pelapor' => $this->nama_pelapor,
             'nik' => $this->nik ?: null,
             'no_hp_pelapor' => $this->no_hp_pelapor ?: null,
@@ -121,7 +122,8 @@ class LapduIndex extends Component
     {
         $data = Lapdu::findOrFail($id);
 
-        if ($data->status_verifikasi === 'disetujui' && !Auth::user()->isAdmin()) {
+        // Cek Role Admin Manual
+        if ($data->status_verifikasi === 'disetujui' && Auth::user()->role !== 'admin') {
             session()->flash('message', 'Laporan yang sudah disetujui tidak dapat diubah.');
             return;
         }
@@ -157,10 +159,9 @@ class LapduIndex extends Component
             $path = $this->bukti_dukung->store('lapdu-files', 'public');
         }
 
-        // PERBAIKAN: Gunakan operator ?: null disini juga
         $data->update([
             'nomor_surat' => $this->nomor_surat ?: null,
-            'tanggal_terima' => $this->tanggal_terima ?: null, // <-- Solusi Error Date
+            'tanggal_terima' => $this->tanggal_terima ?: null,
             'nama_pelapor' => $this->nama_pelapor,
             'nik' => $this->nik ?: null,
             'no_hp_pelapor' => $this->no_hp_pelapor ?: null,
@@ -170,7 +171,8 @@ class LapduIndex extends Component
             'status_laporan' => $this->status_laporan,
             'keterangan_tindak_lanjut' => $this->keterangan_tindak_lanjut ?: null,
             'bukti_dukung' => $path,
-            'status_verifikasi' => Auth::user()->isAdmin() ? $data->status_verifikasi : 'pending',
+            // Reset ke pending jika diedit staff
+            'status_verifikasi' => Auth::user()->role === 'admin' ? $data->status_verifikasi : 'pending',
         ]);
 
         session()->flash('message', 'Data Pengaduan diperbarui.');

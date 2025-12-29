@@ -34,12 +34,8 @@ class KerawananIndex extends Component
     ];
 
     // --- FITUR OTOMATISASI UPAYA PENCEGAHAN ---
-    // Fungsi ini akan jalan otomatis saat Anda merubah pilihan dropdown "Tingkat Kerawanan"
     public function updatedTingkatRawan($value)
     {
-        // Jika sedang mode edit dan text area sudah ada isinya, kita tanya dulu atau biarkan (opsional).
-        // Disini kita buat otomatis menimpa untuk kemudahan.
-
         switch ($value) {
             case 'tinggi':
                 $this->upaya_pencegahan = "Melakukan penggalangan terhadap tokoh kunci, koordinasi intensif dengan aparat keamanan (TNI/Polri), dan pelaksanaan operasi intelijen pengamanan tertutup (Pam-Tup).";
@@ -74,7 +70,8 @@ class KerawananIndex extends Component
 
     public function updateStatus($newStatus)
     {
-        if (Auth::user()->isAdmin() && $this->targetId) {
+        // Ganti isAdmin() dengan pengecekan manual role
+        if (Auth::user()->role === 'admin' && $this->targetId) {
             Kerawanan::where('id', $this->targetId)->update(['status_verifikasi' => $newStatus]);
             session()->flash('message', 'Status pemetaan berhasil diubah menjadi ' . strtoupper($newStatus));
             $this->closeStatusModal();
@@ -107,7 +104,7 @@ class KerawananIndex extends Component
         $this->validate();
 
         Kerawanan::create([
-            'user_id' => Auth::id(), // <--- TAMBAHKAN INI
+            'user_id' => Auth::id(), // <--- WAJIB: ID Penginput
             'kecamatan' => $this->kecamatan,
             'bidang' => $this->bidang,
             'potensi_ancaman' => $this->potensi_ancaman,
@@ -125,7 +122,8 @@ class KerawananIndex extends Component
     {
         $data = Kerawanan::findOrFail($id);
 
-        if ($data->status_verifikasi === 'disetujui' && !Auth::user()->isAdmin()) {
+        // Cek Role Admin Manual
+        if ($data->status_verifikasi === 'disetujui' && Auth::user()->role !== 'admin') {
             session()->flash('message', 'Data yang sudah divalidasi tidak dapat diubah.');
             return;
         }
@@ -155,7 +153,8 @@ class KerawananIndex extends Component
             'sumber_informasi' => $this->sumber_informasi,
             'tingkat_rawan' => $this->tingkat_rawan,
             'upaya_pencegahan' => $this->upaya_pencegahan,
-            'status_verifikasi' => Auth::user()->isAdmin() ? $data->status_verifikasi : 'pending',
+            // Reset ke pending jika diedit staff
+            'status_verifikasi' => Auth::user()->role === 'admin' ? $data->status_verifikasi : 'pending',
         ]);
 
         session()->flash('message', 'Data Kerawanan diperbarui.');

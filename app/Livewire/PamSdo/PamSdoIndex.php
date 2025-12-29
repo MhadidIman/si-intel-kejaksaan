@@ -52,7 +52,8 @@ class PamSdoIndex extends Component
 
     public function updateStatus($newStatus)
     {
-        if (Auth::user()->isAdmin() && $this->targetId) {
+        // Pengecekan Manual Role Admin
+        if (Auth::user()->role === 'admin' && $this->targetId) {
             PamSdo::where('id', $this->targetId)->update(['status_verifikasi' => $newStatus]);
             session()->flash('message', 'Status PAM SDO berhasil diubah menjadi ' . strtoupper($newStatus));
             $this->closeStatusModal();
@@ -88,7 +89,7 @@ class PamSdoIndex extends Component
         }
 
         PamSdo::create([
-            'user_id' => Auth::id(), // <--- TAMBAHKAN BARIS INI (PENTING)
+            'user_id' => Auth::id(), // <--- WAJIB: ID Penginput
             'nama_pegawai' => $this->nama_pegawai,
             'nip_nrp' => $this->nip_nrp,
             'pangkat_jabatan' => $this->pangkat_jabatan,
@@ -108,7 +109,8 @@ class PamSdoIndex extends Component
     {
         $data = PamSdo::findOrFail($id);
 
-        if ($data->status_verifikasi === 'disetujui' && !Auth::user()->isAdmin()) {
+        // Cek Role Admin Manual
+        if ($data->status_verifikasi === 'disetujui' && Auth::user()->role !== 'admin') {
             session()->flash('message', 'Data yang sudah divalidasi tidak dapat diubah.');
             return;
         }
@@ -150,7 +152,8 @@ class PamSdoIndex extends Component
             'keterangan' => $this->keterangan,
             'status_pam' => $this->status_pam,
             'foto' => $path,
-            'status_verifikasi' => Auth::user()->isAdmin() ? $data->status_verifikasi : 'pending',
+            // Reset ke pending jika diedit staff
+            'status_verifikasi' => Auth::user()->role === 'admin' ? $data->status_verifikasi : 'pending',
         ]);
 
         session()->flash('message', 'Data PAM SDO diperbarui.');

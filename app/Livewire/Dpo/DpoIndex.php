@@ -40,7 +40,7 @@ class DpoIndex extends Component
         'foto' => 'nullable|image|max:2048',
     ];
 
-    // --- LOGIKA VERIFIKASI (SAMA SEPERTI LAPINHAR) ---
+    // --- LOGIKA VERIFIKASI ---
     public function openStatusModal($id)
     {
         $this->targetId = $id;
@@ -55,7 +55,8 @@ class DpoIndex extends Component
 
     public function updateStatus($newStatus)
     {
-        if (Auth::user()->isAdmin() && $this->targetId) {
+        // Ganti isAdmin() dengan pengecekan manual role agar lebih aman
+        if (Auth::user()->role === 'admin' && $this->targetId) {
             Dpo::where('id', $this->targetId)->update(['status_verifikasi' => $newStatus]);
             session()->flash('message', 'Status DPO berhasil diubah menjadi ' . strtoupper($newStatus));
             $this->closeStatusModal();
@@ -91,7 +92,7 @@ class DpoIndex extends Component
         }
 
         Dpo::create([
-            'user_id' => Auth::id(),
+            'user_id' => Auth::id(), // <--- PENTING: ID Penginput
             'nama_lengkap' => $this->nama_lengkap,
             'tempat_lahir' => $this->tempat_lahir,
             'tanggal_lahir' => $this->tanggal_lahir ?: null,
@@ -100,7 +101,7 @@ class DpoIndex extends Component
             'ciri_fisik' => $this->ciri_fisik,
             'status_pencarian' => $this->status_pencarian,
             'foto' => $path_foto,
-            'status_verifikasi' => 'pending', // Default
+            'status_verifikasi' => 'pending',
         ]);
 
         session()->flash('message', 'Data DPO berhasil ditambahkan & menunggu verifikasi.');
@@ -112,7 +113,8 @@ class DpoIndex extends Component
         $dpo = Dpo::findOrFail($id);
 
         // Proteksi: Staff tidak bisa edit jika sudah disetujui
-        if ($dpo->status_verifikasi === 'disetujui' && !Auth::user()->isAdmin()) {
+        // Gunakan role === 'admin'
+        if ($dpo->status_verifikasi === 'disetujui' && Auth::user()->role !== 'admin') {
             session()->flash('message', 'Data DPO yang sudah divalidasi tidak dapat diubah.');
             return;
         }
@@ -155,8 +157,8 @@ class DpoIndex extends Component
             'ciri_fisik' => $this->ciri_fisik,
             'status_pencarian' => $this->status_pencarian,
             'foto' => $path_foto,
-            // Reset ke pending jika diedit oleh staff
-            'status_verifikasi' => Auth::user()->isAdmin() ? $dpo->status_verifikasi : 'pending',
+            // Reset ke pending jika diedit oleh staff (bukan admin)
+            'status_verifikasi' => Auth::user()->role === 'admin' ? $dpo->status_verifikasi : 'pending',
         ]);
 
         session()->flash('message', 'Data DPO berhasil diperbarui.');

@@ -274,100 +274,94 @@
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        document.addEventListener('livewire:navigated', function() {
-            const ctx = document.getElementById('reportsChart');
-            if (ctx) {
-                // Hancurkan chart lama jika ada (opsional, untuk mencegah duplikasi)
-                if (window.myReportsChart) {
-                    window.myReportsChart.destroy();
-                }
-
-                window.myReportsChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: @json($chartLabels),
-                        datasets: [{
-                                label: 'Laporan Informasi (LI)',
-                                data: @json($chartLapinhar),
-                                borderColor: '#10b981', // Emerald 500
-                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                                borderWidth: 3,
-                                tension: 0.4,
-                                fill: true,
-                                pointBackgroundColor: '#fff',
-                                pointBorderColor: '#10b981',
-                                pointBorderWidth: 2,
-                                pointRadius: 4
-                            },
-                            {
-                                label: 'Pengaduan (Lapdu)',
-                                data: @json($chartLapdu),
-                                borderColor: '#3b82f6', // Blue 500
-                                backgroundColor: 'rgba(59, 130, 246, 0.0)',
-                                borderWidth: 3,
-                                tension: 0.4,
-                                borderDash: [5, 5],
-                                pointBackgroundColor: '#fff',
-                                pointBorderColor: '#3b82f6',
-                                pointBorderWidth: 2,
-                                pointRadius: 4
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    font: {
-                                        family: "'Inter', sans-serif",
-                                        size: 11,
-                                        weight: 'bold'
-                                    },
-                                    usePointStyle: true,
-                                    padding: 20
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                grid: {
-                                    color: '#f1f5f9'
-                                },
-                                ticks: {
-                                    font: {
-                                        family: "'Inter', sans-serif",
-                                        size: 10
-                                    },
-                                    stepSize: 1
-                                }
-                            },
-                            x: {
-                                grid: {
-                                    display: false
-                                },
-                                ticks: {
-                                    font: {
-                                        family: "'Inter', sans-serif",
-                                        size: 10
-                                    }
-                                }
-                            }
-                        },
-                        interaction: {
-                            mode: 'index',
-                            intersect: false,
-                        },
-                    }
-                });
-            }
-        });
-    </script>
-
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('livewire:navigated', function() {
+        const ctx = document.getElementById('reportsChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: @json($chartLabels),
+                    datasets: [{
+                            label: 'Laporan Informasi (LI)',
+                            data: @json($chartLapinhar),
+                            borderColor: '#10b981', // Emerald 500
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#10b981',
+                            pointBorderWidth: 2,
+                            pointRadius: 4
+                        },
+                        {
+                            label: 'Pengaduan (Lapdu)',
+                            data: @json($chartLapdu),
+                            borderColor: '#3b82f6', // Blue 500
+                            backgroundColor: 'rgba(59, 130, 246, 0.0)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            borderDash: [5, 5],
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#3b82f6',
+                            pointBorderWidth: 2,
+                            pointRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    family: "'Inter', sans-serif",
+                                    size: 11,
+                                    weight: 'bold'
+                                },
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#f1f5f9'
+                            },
+                            ticks: {
+                                font: {
+                                    family: "'Inter', sans-serif",
+                                    size: 10
+                                },
+                                stepSize: 1
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    family: "'Inter', sans-serif",
+                                    size: 10
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                }
+            });
+        }
+    });
+</script>

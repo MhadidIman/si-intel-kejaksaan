@@ -10,11 +10,15 @@ use App\Models\Dpo;
 use App\Models\Wna;
 use App\Models\Lapdu;
 use App\Models\Kerawanan;
+// Tambahkan Model yang sebelumnya kurang
+use App\Models\Ormas;
+use App\Models\PamSdo;
+use App\Models\JmsActivity;
 use Carbon\Carbon;
 
 class DashboardIndex extends Component
 {
-    // Properti Statistik Utama
+    // Properti Statistik Utama (Public agar bisa diakses View)
     public $total_lapinhar;
     public $total_dpo_buron;
     public $total_wna_overstay;
@@ -71,7 +75,8 @@ class DashboardIndex extends Component
         // Data Signal Lapdu Terbaru
         $recent_lapdus = Lapdu::latest('created_at')->take(5)->get();
 
-        // LOGIKA LEADERBOARD (Top 3 Kontributor)
+        // --- LOGIKA LEADERBOARD (Top 3 Kontributor) ---
+        // Kita ambil user selain admin agar kompetisi adil antar staff
         $users = User::where('role', '!=', 'admin')
             ->withCount([
                 'lapinhars',
@@ -84,13 +89,19 @@ class DashboardIndex extends Component
                 'lapdus'
             ])->get();
 
+        // Hitung Total Input & Urutkan
         $topContributors = $users->map(function ($user) {
-            $user->total_kontribusi =
-                $user->lapinhars_count + $user->dpos_count + $user->wnas_count +
-                $user->ormas_count + $user->pam_sdos_count + $user->jms_activities_count +
-                $user->kerawanans_count + $user->lapdus_count;
+            $user->total_input =
+                $user->lapinhars_count +
+                $user->dpos_count +
+                $user->wnas_count +
+                $user->ormas_count +
+                $user->pam_sdos_count +
+                $user->jms_activities_count +
+                $user->kerawanans_count +
+                $user->lapdus_count;
             return $user;
-        })->sortByDesc('total_kontribusi')->take(3);
+        })->sortByDesc('total_input')->take(3); // Ambil 3 Terbaik
 
         return view('livewire.dashboard.dashboard-index', [
             'recent_lapinhars' => $recent_lapinhars,

@@ -53,7 +53,8 @@ class JmsIndex extends Component
 
     public function updateStatus($newStatus)
     {
-        if (Auth::user()->isAdmin() && $this->targetId) {
+        // Ganti isAdmin() dengan pengecekan manual role === 'admin'
+        if (Auth::user()->role === 'admin' && $this->targetId) {
             JmsActivity::where('id', $this->targetId)->update(['status_verifikasi' => $newStatus]);
             session()->flash('message', 'Status kegiatan berhasil diubah menjadi ' . strtoupper($newStatus));
             $this->closeStatusModal();
@@ -89,7 +90,7 @@ class JmsIndex extends Component
         }
 
         JmsActivity::create([
-            'user_id' => Auth::id(),
+            'user_id' => Auth::id(), // <--- WAJIB: ID Penginput
             'nama_sekolah' => $this->nama_sekolah,
             'tanggal_kegiatan' => $this->tanggal_kegiatan,
             'materi' => $this->materi,
@@ -97,7 +98,7 @@ class JmsIndex extends Component
             'nama_jaksa' => $this->nama_jaksa,
             'keterangan' => $this->keterangan,
             'foto_kegiatan' => $path,
-            'status_verifikasi' => 'pending', // Default
+            'status_verifikasi' => 'pending',
         ]);
 
         session()->flash('message', 'Laporan JMS berhasil disimpan.');
@@ -108,14 +109,15 @@ class JmsIndex extends Component
     {
         $data = JmsActivity::findOrFail($id);
 
-        if ($data->status_verifikasi === 'disetujui' && !Auth::user()->isAdmin()) {
+        // Cek Role Admin Manual
+        if ($data->status_verifikasi === 'disetujui' && Auth::user()->role !== 'admin') {
             session()->flash('message', 'Data yang sudah divalidasi tidak dapat diubah.');
             return;
         }
 
         $this->jms_id = $id;
         $this->nama_sekolah = $data->nama_sekolah;
-        $this->tanggal_kegiatan = $data->tanggal_kegiatan->format('Y-m-d');
+        $this->tanggal_kegiatan = $data->tanggal_kegiatan ? $data->tanggal_kegiatan->format('Y-m-d') : null;
         $this->materi = $data->materi;
         $this->jumlah_siswa = $data->jumlah_siswa;
         $this->nama_jaksa = $data->nama_jaksa;
@@ -148,7 +150,8 @@ class JmsIndex extends Component
             'nama_jaksa' => $this->nama_jaksa,
             'keterangan' => $this->keterangan,
             'foto_kegiatan' => $path,
-            'status_verifikasi' => Auth::user()->isAdmin() ? $data->status_verifikasi : 'pending',
+            // Reset ke pending jika diedit staff
+            'status_verifikasi' => Auth::user()->role === 'admin' ? $data->status_verifikasi : 'pending',
         ]);
 
         session()->flash('message', 'Data JMS diperbarui.');

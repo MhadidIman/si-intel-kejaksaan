@@ -11,29 +11,34 @@ class Lapdu extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'user_id',                  // Relasi ke User (Petugas Input)
         'nomor_surat',
-        'tanggal_terima', // Pastikan sesuai database
+        'tanggal_terima',
+        'status_verifikasi',        // pending / disetujui / ditolak
         'nama_pelapor',
-        'no_hp_pelapor',
-        'nik',            // Tambahan sesuai form baru
-        'terlapor',       // Di controller baru kita pakai 'nama_terlapor', tapi di db lama 'terlapor'. Kita samakan jadi 'nama_terlapor' agar konsisten.
-        'nama_terlapor',  // <-- Gunakan ini jika di migration pakai nama_terlapor
-        'kategori_laporan',
+        'nik',
+        'no_hp_pelapor',            // Sesuai migration
+        'nama_terlapor',            // Sesuai migration
+        'kategori_laporan',         // Korupsi / Umum / Pegawai
         'uraian_pengaduan',
-        'bukti_dukung',   // Ganti bukti_pendukung jadi bukti_dukung
-        'status_laporan', // <-- PENTING: Ganti 'status' jadi 'status_laporan'
+        'bukti_dukung',             // File Upload
+        'status_laporan',           // menunggu / proses / selesai
         'keterangan_tindak_lanjut',
-        'disposisi_pimpinan',
-        'status_verifikasi', // Tambahan wajib untuk admin
     ];
 
     protected $casts = [
         'tanggal_terima' => 'date',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
-    public function creator(): BelongsTo
+    /**
+     * Relasi ke tabel User.
+     * Menggunakan nama 'user' agar konsisten dengan model lain (DPO, WNA, dll)
+     * sehingga mudah dipanggil di Dashboard ($lapdu->user->name).
+     */
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
     }
 }

@@ -10,21 +10,29 @@ class PamSdo extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nama_pegawai',
+        'user_id',            // <--- WAJIB ADA (Agar terhitung di dashboard)
+        'nama_pegawai',       // Sesuai migration
         'nip_nrp',
         'pangkat_jabatan',
         'satuan_kerja',
         'permasalahan',
         'keterangan',
-        'status_pam',        // Status Operasional
+        'status_pam',         // clear / diawasi / ditindak
         'foto',
-        'status_verifikasi', // Status Admin
+        'status_verifikasi',  // pending / disetujui / ditolak
     ];
 
-
     protected $casts = [
-        'tanggal_kegiatan' => 'date',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    /**
+     * Relasi ke tabel User
+     * Agar kita tahu siapa pegawai yang menginput laporan ini.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
