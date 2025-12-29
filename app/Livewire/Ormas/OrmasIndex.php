@@ -80,6 +80,7 @@ class OrmasIndex extends Component
         $this->validate();
 
         Ormas::create([
+            'user_id' => Auth::id(), // <--- TAMBAHKAN INI
             'nama_organisasi' => $this->nama_organisasi,
             'ketua' => $this->ketua,
             'alamat_sekretariat' => $this->alamat_sekretariat,
@@ -88,7 +89,7 @@ class OrmasIndex extends Component
             'jumlah_anggota' => $this->jumlah_anggota,
             'kegiatan_terakhir' => $this->kegiatan_terakhir,
             'status' => $this->status,
-            'status_verifikasi' => 'pending', // Default
+            'status_verifikasi' => 'pending',
         ]);
 
         session()->flash('message', 'Data Organisasi berhasil ditambahkan.');

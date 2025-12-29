@@ -88,6 +88,7 @@ class PamSdoIndex extends Component
         }
 
         PamSdo::create([
+            'user_id' => Auth::id(), // <--- TAMBAHKAN INI
             'nama_pegawai' => $this->nama_pegawai,
             'nip_nrp' => $this->nip_nrp,
             'pangkat_jabatan' => $this->pangkat_jabatan,
@@ -96,7 +97,7 @@ class PamSdoIndex extends Component
             'keterangan' => $this->keterangan,
             'status_pam' => $this->status_pam,
             'foto' => $path,
-            'status_verifikasi' => 'pending', // Default
+            'status_verifikasi' => 'pending',
         ]);
 
         session()->flash('message', 'Data PAM SDO berhasil ditambahkan.');

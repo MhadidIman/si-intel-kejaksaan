@@ -89,11 +89,11 @@ class WnaIndex extends Component
 
         $path = null;
         if ($this->foto_dokumen) {
-            $path = $this->foto_dokumen->store('wna-photos', 'public');
+            $path = $this->foto_dokumen->store('wna-docs', 'public');
         }
 
         Wna::create([
-            'user_id' => Auth::id(),
+            'user_id' => Auth::id(), // <--- TAMBAHKAN INI
             'nama_lengkap' => $this->nama_lengkap,
             'nomor_paspor' => $this->nomor_paspor,
             'kebangsaan' => $this->kebangsaan,
@@ -103,10 +103,10 @@ class WnaIndex extends Component
             'sponsor' => $this->sponsor,
             'alamat_menginap' => $this->alamat_menginap,
             'foto_dokumen' => $path,
-            'status_verifikasi' => Auth::user()->isAdmin() ? 'disetujui' : 'pending',
+            'status_verifikasi' => 'pending',
         ]);
 
-        session()->flash('message', 'Data WNA berhasil ditambahkan.');
+        session()->flash('message', 'Data WNA berhasil disimpan.');
         $this->closeModal();
     }
 

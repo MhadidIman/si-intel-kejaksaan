@@ -107,6 +107,7 @@ class KerawananIndex extends Component
         $this->validate();
 
         Kerawanan::create([
+            'user_id' => Auth::id(), // <--- TAMBAHKAN INI
             'kecamatan' => $this->kecamatan,
             'bidang' => $this->bidang,
             'potensi_ancaman' => $this->potensi_ancaman,
