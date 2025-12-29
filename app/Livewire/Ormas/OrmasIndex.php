@@ -49,7 +49,8 @@ class OrmasIndex extends Component
 
     public function updateStatus($newStatus)
     {
-        if (Auth::user()->isAdmin() && $this->targetId) {
+        // Pastikan User model punya fungsi isAdmin() atau cek role manual
+        if (Auth::user()->role === 'admin' && $this->targetId) {
             Ormas::where('id', $this->targetId)->update(['status_verifikasi' => $newStatus]);
             session()->flash('message', 'Status verifikasi berhasil diubah menjadi ' . strtoupper($newStatus));
             $this->closeStatusModal();
@@ -80,7 +81,7 @@ class OrmasIndex extends Component
         $this->validate();
 
         Ormas::create([
-            'user_id' => Auth::id(), // <--- TAMBAHKAN INI
+            'user_id' => Auth::id(), // <--- SUDAH DIPERBAIKI (PENTING)
             'nama_organisasi' => $this->nama_organisasi,
             'ketua' => $this->ketua,
             'alamat_sekretariat' => $this->alamat_sekretariat,
@@ -100,7 +101,8 @@ class OrmasIndex extends Component
     {
         $data = Ormas::findOrFail($id);
 
-        if ($data->status_verifikasi === 'disetujui' && !Auth::user()->isAdmin()) {
+        // Cek Role Admin Manual agar tidak error method isAdmin()
+        if ($data->status_verifikasi === 'disetujui' && Auth::user()->role !== 'admin') {
             session()->flash('message', 'Data yang sudah divalidasi tidak dapat diubah.');
             return;
         }
@@ -125,6 +127,7 @@ class OrmasIndex extends Component
         $this->validate();
 
         $data = Ormas::find($this->ormas_id);
+
         $data->update([
             'nama_organisasi' => $this->nama_organisasi,
             'ketua' => $this->ketua,
@@ -134,7 +137,8 @@ class OrmasIndex extends Component
             'jumlah_anggota' => $this->jumlah_anggota,
             'kegiatan_terakhir' => $this->kegiatan_terakhir,
             'status' => $this->status,
-            'status_verifikasi' => Auth::user()->isAdmin() ? $data->status_verifikasi : 'pending',
+            // Cek role admin manual
+            'status_verifikasi' => Auth::user()->role === 'admin' ? $data->status_verifikasi : 'pending',
         ]);
 
         session()->flash('message', 'Data Organisasi diperbarui.');

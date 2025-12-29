@@ -10,6 +10,7 @@ class Ormas extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id', // <--- INI WAJIB ADA
         'nama_organisasi',
         'ketua',
         'alamat_sekretariat',
@@ -17,7 +18,13 @@ class Ormas extends Model
         'nomor_legalitas',
         'jumlah_anggota',
         'kegiatan_terakhir',
-        'status',             // Status Aktivitas (Aktif/Vakum)
-        'status_verifikasi',  // Status Admin (Pending/Acc)
+        'status',
+        'status_verifikasi',
     ];
+
+    // Relasi ke User (Opsional tapi bagus untuk dashboard)
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

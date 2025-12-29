@@ -10,7 +10,8 @@ class Wna extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nama_lengkap',
+        'user_id',
+        'nama_lengkap', // <--- PASTIKAN TULISANNYA INI (Bukan 'nama_wna')
         'nomor_paspor',
         'kebangsaan',
         'tanggal_tiba',
@@ -19,16 +20,19 @@ class Wna extends Model
         'sponsor',
         'alamat_menginap',
         'foto_dokumen',
+        'status_verifikasi',
     ];
 
+    // Casting tanggal agar tidak error format() di dashboard
     protected $casts = [
         'tanggal_tiba' => 'date',
         'masa_berlaku_izin_tinggal' => 'date',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
-    // Helper untuk mengecek Overstay
-    public function getIsOverstayAttribute()
+    public function user()
     {
-        return $this->masa_berlaku_izin_tinggal < now();
+        return $this->belongsTo(User::class);
     }
 }

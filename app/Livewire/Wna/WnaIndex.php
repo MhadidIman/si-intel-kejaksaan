@@ -15,7 +15,7 @@ class WnaIndex extends Component
 {
     use WithPagination, WithFileUploads;
 
-    // Properti Data
+    // Properti Data (Sesuai dengan database Anda)
     public $nama_lengkap, $nomor_paspor, $kebangsaan, $tanggal_tiba, $masa_berlaku_izin_tinggal;
     public $tujuan_kunjungan, $sponsor, $alamat_menginap, $foto_dokumen, $foto_lama;
     public $wna_id;
@@ -24,10 +24,10 @@ class WnaIndex extends Component
     public $isEditMode = false;
     public $showForm = false;
     public $search = '';
-    public $filterStatus = ''; // Filter baru: all, aman, warning, overstay
+    public $filterStatus = '';
 
     protected $rules = [
-        'nama_lengkap' => 'required',
+        'nama_lengkap' => 'required', // Gunakan nama_lengkap
         'nomor_paspor' => 'required',
         'kebangsaan' => 'required',
         'masa_berlaku_izin_tinggal' => 'required|date',
@@ -44,25 +44,22 @@ class WnaIndex extends Component
         // 1. Logic Search
         if ($this->search) {
             $query->where(function ($q) {
-                $q->where('nama_lengkap', 'like', '%' . $this->search . '%')
+                $q->where('nama_lengkap', 'like', '%' . $this->search . '%') // Gunakan nama_lengkap
                     ->orWhere('nomor_paspor', 'like', '%' . $this->search . '%')
                     ->orWhere('kebangsaan', 'like', '%' . $this->search . '%');
             });
         }
 
-        // 2. Logic Filter Status (Perbaikan Perhitungan)
+        // 2. Logic Filter Status
         $today = Carbon::now()->startOfDay();
-        $warningLimit = Carbon::now()->addDays(30)->endOfDay(); // H-30 Warning
+        $warningLimit = Carbon::now()->addDays(30)->endOfDay();
 
         if ($this->filterStatus === 'overstay') {
-            // Tanggal izin < Hari ini
             $query->whereDate('masa_berlaku_izin_tinggal', '<', $today);
         } elseif ($this->filterStatus === 'warning') {
-            // Hari ini <= Tanggal Izin <= 30 Hari kedepan
             $query->whereDate('masa_berlaku_izin_tinggal', '>=', $today)
                 ->whereDate('masa_berlaku_izin_tinggal', '<=', $warningLimit);
         } elseif ($this->filterStatus === 'aman') {
-            // Tanggal Izin > 30 Hari kedepan
             $query->whereDate('masa_berlaku_izin_tinggal', '>', $warningLimit);
         }
 
@@ -93,8 +90,8 @@ class WnaIndex extends Component
         }
 
         Wna::create([
-            'user_id' => Auth::id(), // <--- TAMBAHKAN INI
-            'nama_lengkap' => $this->nama_lengkap,
+            'user_id' => Auth::id(), // ID Penginput (M. Hadid dll)
+            'nama_lengkap' => $this->nama_lengkap, // Konsisten pakai nama_lengkap
             'nomor_paspor' => $this->nomor_paspor,
             'kebangsaan' => $this->kebangsaan,
             'tanggal_tiba' => $this->tanggal_tiba ?: null,
@@ -114,7 +111,7 @@ class WnaIndex extends Component
     {
         $wna = Wna::findOrFail($id);
         $this->wna_id = $id;
-        $this->nama_lengkap = $wna->nama_lengkap;
+        $this->nama_lengkap = $wna->nama_lengkap; // Konsisten
         $this->nomor_paspor = $wna->nomor_paspor;
         $this->kebangsaan = $wna->kebangsaan;
         $this->tanggal_tiba = $wna->tanggal_tiba ? Carbon::parse($wna->tanggal_tiba)->format('Y-m-d') : null;
@@ -142,7 +139,7 @@ class WnaIndex extends Component
         }
 
         $wna->update([
-            'nama_lengkap' => $this->nama_lengkap,
+            'nama_lengkap' => $this->nama_lengkap, // Konsisten
             'nomor_paspor' => $this->nomor_paspor,
             'kebangsaan' => $this->kebangsaan,
             'tanggal_tiba' => $this->tanggal_tiba ?: null,
@@ -175,7 +172,7 @@ class WnaIndex extends Component
 
     private function resetInputFields()
     {
-        $this->nama_lengkap = '';
+        $this->nama_lengkap = ''; // Konsisten
         $this->nomor_paspor = '';
         $this->kebangsaan = '';
         $this->tanggal_tiba = '';

@@ -10,22 +10,27 @@ class Lapinhar extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',            // Pastikan ini ada jika menggunakan relasi user
+        'user_id',            // <--- WAJIB ADA (Agar terhitung di dashboard)
         'nomor_surat',
         'tanggal_surat',
         'sumber_informasi',
-        'bidang',
-        'peristiwa',
-        'pendapat',
-        'status',             // Status kerahasiaan
-        'status_verifikasi',  // <--- WAJIB DITAMBAHKAN
+        'bidang',             // Sesuaikan dengan input form Anda
+        'peristiwa',          // Sesuaikan dengan input form Anda
+        'pendapat',           // Sesuaikan dengan input form Anda
+        'status',             // rahasia/biasa
+        'status_verifikasi',  // pending/disetujui
     ];
 
+    /**
+     * Casting kolom tanggal agar bisa menggunakan ->format('d M Y') di View.
+     * INI SOLUSI ERROR "Call to a member function format() on string"
+     */
     protected $casts = [
         'tanggal_surat' => 'date',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
-    // Opsional: Relasi ke User
     public function user()
     {
         return $this->belongsTo(User::class);

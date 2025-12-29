@@ -54,7 +54,8 @@ class LapinharIndex extends Component
 
     public function updateStatus($newStatus)
     {
-        if (Auth::user()->isAdmin() && $this->targetId) {
+        // Pengecekan Manual Role Admin agar lebih aman
+        if (Auth::user()->role === 'admin' && $this->targetId) {
             Lapinhar::where('id', $this->targetId)->update(['status_verifikasi' => $newStatus]);
             session()->flash('message', 'Status laporan berhasil diubah menjadi ' . strtoupper($newStatus));
             $this->closeStatusModal();
@@ -92,7 +93,7 @@ class LapinharIndex extends Component
         $this->validate();
 
         Lapinhar::create([
-            'user_id' => Auth::id(),
+            'user_id' => Auth::id(), // <--- SUDAH BENAR (Pencatat ID Penginput)
             'nomor_surat' => $this->nomor_surat,
             'tanggal_surat' => $this->tanggal_surat,
             'sumber_informasi' => $this->sumber_informasi,
@@ -111,7 +112,8 @@ class LapinharIndex extends Component
     {
         $data = Lapinhar::findOrFail($id);
 
-        if ($data->status_verifikasi === 'disetujui' && !Auth::user()->isAdmin()) {
+        // Cek Role Admin Manual
+        if ($data->status_verifikasi === 'disetujui' && Auth::user()->role !== 'admin') {
             session()->flash('message', 'Laporan yang sudah disetujui tidak dapat diedit.');
             return;
         }
@@ -133,6 +135,7 @@ class LapinharIndex extends Component
     {
         $this->validate();
         $data = Lapinhar::findOrFail($this->lapinhar_id);
+
         $data->update([
             'nomor_surat' => $this->nomor_surat,
             'tanggal_surat' => $this->tanggal_surat,
@@ -141,7 +144,8 @@ class LapinharIndex extends Component
             'peristiwa' => $this->peristiwa,
             'pendapat' => $this->pendapat,
             'status' => $this->status,
-            'status_verifikasi' => Auth::user()->isAdmin() ? $data->status_verifikasi : 'pending',
+            // Cek Role Admin Manual
+            'status_verifikasi' => Auth::user()->role === 'admin' ? $data->status_verifikasi : 'pending',
         ]);
 
         session()->flash('message', 'Laporan berhasil diperbarui.');

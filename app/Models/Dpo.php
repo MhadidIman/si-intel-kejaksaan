@@ -24,5 +24,7 @@ class Dpo extends Model
 
     protected $casts = [
         'tanggal_lahir' => 'date',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 }

@@ -12,21 +12,28 @@ use Livewire\Form;
 
 class LoginForm extends Form
 {
-    // GANTI EMAIL JADI NIP
+    // KITA UBAH DARI EMAIL KE NIP DISINI
     #[Validate('required|string')]
     public string $nip = '';
 
     #[Validate('required|string')]
     public string $password = '';
 
+    #[Validate('boolean')]
     public bool $remember = false;
 
+    /**
+     * Attempt to authenticate the request's credentials.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
 
-        // AUTHENTICATE PAKAI NIP
-        if (! Auth::attempt(['nip' => $this->nip, 'password' => $this->password], $this->remember)) {
+        // LOGIKA LOGIN UTAMA:
+        // Kita memaksa Auth untuk mengecek kolom 'nip' dan 'password'
+        if (! Auth::attempt($this->only(['nip', 'password']), $this->remember)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -37,6 +44,9 @@ class LoginForm extends Form
         RateLimiter::clear($this->throttleKey());
     }
 
+    /**
+     * Ensure the authentication request is not rate limited.
+     */
     protected function ensureIsNotRateLimited(): void
     {
         if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
@@ -55,8 +65,12 @@ class LoginForm extends Form
         ]);
     }
 
+    /**
+     * Get the authentication rate limiting throttle key.
+     */
     protected function throttleKey(): string
     {
+        // Rate limiter sekarang mencatat berdasarkan NIP
         return Str::transliterate(Str::lower($this->nip) . '|' . request()->ip());
     }
 }

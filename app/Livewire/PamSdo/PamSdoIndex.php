@@ -88,7 +88,7 @@ class PamSdoIndex extends Component
         }
 
         PamSdo::create([
-            'user_id' => Auth::id(), // <--- TAMBAHKAN INI
+            'user_id' => Auth::id(), // <--- TAMBAHKAN BARIS INI (PENTING)
             'nama_pegawai' => $this->nama_pegawai,
             'nip_nrp' => $this->nip_nrp,
             'pangkat_jabatan' => $this->pangkat_jabatan,

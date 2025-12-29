@@ -20,4 +20,11 @@ class PamSdo extends Model
         'foto',
         'status_verifikasi', // Status Admin
     ];
+
+
+    protected $casts = [
+        'tanggal_kegiatan' => 'date',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 }

@@ -14,12 +14,20 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('nip')->nullable()->unique(); // Tambahan untuk Kejaksaan
+            // Tambahkan NIP dan Role di sini agar permanen
+            $table->string('nip')->unique()->nullable();
+            $table->string('role')->default('staff'); // Default role staff
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            // Role: admin (Kasi Intel), staff (Jaksa/Tata Usaha)
-            $table->enum('role', ['admin', 'staff'])->default('staff');
+
+            // Atribut Pegawai Tambahan (yang kita bahas sebelumnya)
+            $table->string('satuan_kerja')->default('Kejari Banjarmasin');
+            $table->string('pangkat')->nullable();
+            $table->string('jabatan')->nullable();
+            $table->string('no_hp')->nullable();
+            $table->string('foto_profile')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
         });
