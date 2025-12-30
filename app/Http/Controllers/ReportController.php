@@ -30,7 +30,6 @@ class ReportController extends Controller
         $data = Dpo::findOrFail($id);
         $namaFile = str_replace([' ', '/', '\\'], '-', $data->nama_lengkap);
 
-        // PERBAIKAN DI SINI: Menggunakan 'data' => $data (Bukan 'item')
         $pdf = Pdf::loadView('reports.dpo-satuan-pdf', ['data' => $data]);
 
         $pdf->setPaper('a4', 'portrait');
@@ -52,7 +51,7 @@ class ReportController extends Controller
     {
         $data = Wna::findOrFail($id);
         $namaFile = str_replace([' ', '/', '\\'], '-', $data->nama_lengkap);
-        // Pastikan view WNA Anda menggunakan $item atau ubah ini jadi 'data' jika error serupa
+
         $pdf = Pdf::loadView('reports.wna-satuan-pdf', ['item' => $data]);
         $pdf->setPaper('a4', 'portrait');
         return $pdf->stream('Biodata-WNA-' . $namaFile . '.pdf');
@@ -75,7 +74,6 @@ class ReportController extends Controller
         $nomorSurat = $data->nomor_surat ?? 'Tanpa-Nomor';
         $namaFileAman = str_replace(['/', '\\'], '-', $nomorSurat);
 
-        // View Lapinhar menggunakan $item, jadi ini sudah benar
         $pdf = Pdf::loadView('reports.lapinhar-satuan-pdf', ['item' => $data]);
         $pdf->setPaper('a4', 'portrait');
         return $pdf->stream('LI-No-' . $namaFileAman . '.pdf');
@@ -106,7 +104,9 @@ class ReportController extends Controller
     // ==========================================================
     public function cetakPamSdo()
     {
-        $data = PamSdo::orderBy('tanggal_laporan', 'desc')->get();
+        // PERBAIKAN: Menggunakan 'created_at' karena 'tanggal_laporan' tidak ada di tabel pam_sdos
+        $data = PamSdo::orderBy('created_at', 'desc')->get();
+
         $pdf = Pdf::loadView('reports.pam-sdo-pdf', ['data' => $data]);
         $pdf->setPaper('a4', 'landscape');
         return $pdf->stream('Laporan-PAM-SDO.pdf');
@@ -115,7 +115,10 @@ class ReportController extends Controller
     public function cetakPamSdoSatuan($id)
     {
         $data = PamSdo::findOrFail($id);
-        $namaFile = str_replace([' ', '/', '\\'], '-', $data->target);
+        // Catatan: Pastikan menggunakan field yang benar untuk nama file.
+        // Di tabel pam_sdos kolomnya adalah 'nama_pegawai', bukan 'target'.
+        $namaFile = str_replace([' ', '/', '\\'], '-', $data->nama_pegawai);
+
         $pdf = Pdf::loadView('reports.pam-sdo-satuan-pdf', ['item' => $data]);
         $pdf->setPaper('a4', 'portrait');
         return $pdf->stream('Laporan-Pengamanan-' . $namaFile . '.pdf');

@@ -1,6 +1,7 @@
 <div class="py-10 bg-[#f8fafc] min-h-screen">
     <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 space-y-10">
 
+        {{-- HEADER --}}
         <div class="relative overflow-hidden bg-white rounded-[2.5rem] p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.05)] border-b-4 border-emerald-600">
             <div class="absolute -top-24 -right-24 w-96 h-96 bg-emerald-50 blur-[100px] rounded-full"></div>
 
@@ -48,6 +49,7 @@
             </div>
         </div>
 
+        {{-- STATS CARDS --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {{-- DPO --}}
             <div class="bg-red-600 rounded-[2rem] p-7 shadow-xl shadow-red-200 flex flex-col justify-between h-48 relative overflow-hidden group hover:-translate-y-2 transition duration-500">
@@ -99,8 +101,13 @@
             </div>
         </div>
 
+        {{-- MAIN CONTENT GRID --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            {{-- LEFT COLUMN (2/3) --}}
             <div class="lg:col-span-2 space-y-8">
+
+                {{-- QUICK LINKS --}}
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <a href="{{ route('lapinhar.index') }}" wire:navigate class="group bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-lg hover:border-emerald-500 transition-all duration-500 text-center flex flex-col items-center justify-center gap-3 h-40">
                         <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition duration-500 border border-emerald-100"><i class="fas fa-file-signature text-2xl"></i></div>
@@ -120,6 +127,7 @@
                     </a>
                 </div>
 
+                {{-- RECENT LAPINHAR TABLE --}}
                 <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
                     <div class="px-8 py-6 border-b border-gray-100 flex justify-between items-center bg-slate-50/50">
                         <h3 class="font-black text-slate-800 text-base uppercase tracking-widest italic flex items-center gap-3">
@@ -165,6 +173,7 @@
                     </div>
                 </div>
 
+                {{-- CHART --}}
                 <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden relative">
                     <div class="px-8 py-6 border-b border-gray-100 flex justify-between items-center bg-slate-50/50">
                         <h3 class="font-black text-slate-800 text-base uppercase tracking-widest italic flex items-center gap-3">
@@ -178,43 +187,12 @@
                         <canvas id="reportsChart"></canvas>
                     </div>
                 </div>
-
             </div>
 
+            {{-- RIGHT COLUMN (1/3) --}}
             <div class="space-y-8">
-                <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden relative group hover:shadow-lg transition duration-500">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-amber-50 rounded-bl-full opacity-50"></div>
-                    <div class="absolute bottom-0 left-0 w-32 h-32 bg-emerald-50 rounded-tr-full opacity-50"></div>
 
-                    <div class="px-8 py-6 border-b border-gray-100 bg-slate-50/50 flex items-center justify-between relative z-10">
-                        <h3 class="font-black text-slate-800 text-base uppercase tracking-widest italic flex items-center gap-2">
-                            <i class="fas fa-trophy text-amber-500"></i> Top Kontributor
-                        </h3>
-                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Bulan Ini</span>
-                    </div>
-                    <div class="p-6 space-y-4 relative z-10">
-                        @forelse($topContributors as $index => $user)
-                        <div class="flex items-center justify-between p-4 rounded-2xl border transition-all duration-300 {{ $index == 0 ? 'bg-amber-50 border-amber-100 shadow-sm scale-105' : 'bg-white border-slate-100 hover:bg-slate-50' }}">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 flex items-center justify-center rounded-full font-black text-sm shadow-md {{ $index == 0 ? 'bg-amber-400 text-white ring-4 ring-amber-100' : '' }} {{ $index == 1 ? 'bg-slate-300 text-slate-600 ring-4 ring-slate-100' : '' }} {{ $index == 2 ? 'bg-orange-300 text-orange-800 ring-4 ring-orange-100' : '' }}">
-                                    @if($index == 0) <i class="fas fa-crown text-xs"></i> @else {{ $index + 1 }} @endif
-                                </div>
-                                <div>
-                                    <p class="font-black text-slate-800 text-xs uppercase tracking-tight line-clamp-1">{{ $user->name }}</p>
-                                    <p class="text-[9px] font-bold text-slate-400 mt-0.5">{{ $user->nip ?? 'NIP: -' }}</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-xl font-black text-slate-800 leading-none">{{ $user->total_kontribusi }}</p>
-                                <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Data</p>
-                            </div>
-                        </div>
-                        @empty
-                        <div class="text-center py-6 text-slate-400 text-xs italic">Belum ada data kontribusi.</div>
-                        @endforelse
-                    </div>
-                </div>
-
+                {{-- SIGNAL LAPDU --}}
                 <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
                     <div class="px-8 py-6 border-b border-gray-100 bg-slate-50/50 flex items-center justify-between">
                         <h3 class="font-black text-slate-800 text-base uppercase tracking-widest italic flex items-center gap-2">
@@ -222,7 +200,7 @@
                         </h3>
                         <span class="px-2 py-1 bg-red-100 text-red-600 text-[9px] font-black rounded uppercase animate-pulse">Live Monitor</span>
                     </div>
-                    <div class="divide-y divide-gray-50 max-h-[350px] overflow-y-auto">
+                    <div class="divide-y divide-gray-50 max-h-[400px] overflow-y-auto">
                         @forelse($recent_lapdus as $lapdu)
                         <div class="p-6 hover:bg-slate-50 transition group cursor-pointer border-l-4 border-transparent hover:border-emerald-600 flex gap-4 items-start">
                             <div class="shrink-0">
@@ -261,6 +239,7 @@
                     </div>
                 </div>
 
+                {{-- QUOTE --}}
                 <div class="bg-slate-900 rounded-[2.5rem] p-10 shadow-xl relative overflow-hidden text-center group">
                     <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-amber-500 rounded-full opacity-10 blur-xl group-hover:opacity-20 transition duration-700"></div>
                     <div class="absolute bottom-0 left-0 -mb-4 -ml-4 w-20 h-20 bg-emerald-500 rounded-full opacity-10 blur-xl group-hover:opacity-20 transition duration-700"></div>
@@ -271,6 +250,7 @@
                         "Setia, bijaksana, dan bertanggung jawab dalam menjalankan tugas penegakan hukum."
                     </p>
                 </div>
+
             </div>
         </div>
     </div>

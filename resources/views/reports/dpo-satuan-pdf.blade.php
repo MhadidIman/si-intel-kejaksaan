@@ -18,7 +18,7 @@
             color: #000;
         }
 
-        /* --- STYLING KOP SURAT (SERAGAM) --- */
+        /* --- STYLING KOP SURAT --- */
         .kop-table {
             width: 100%;
             border-collapse: collapse;
@@ -70,7 +70,7 @@
             margin-bottom: 25px;
         }
 
-        /* --- STYLING ISI DPO --- */
+        /* --- STYLING ISI --- */
         .rahasia-top {
             font-weight: bold;
             text-decoration: underline;
@@ -96,42 +96,27 @@
             text-transform: uppercase;
         }
 
-        /* Layout Foto & Data */
-        .container-info {
+        /* --- PERBAIKAN LAYOUT UTAMA (AGAR TIDAK KEPOTONG) --- */
+        .main-layout {
             width: 100%;
+            border-collapse: collapse;
             margin-bottom: 20px;
         }
 
-        .foto-container {
-            float: right;
-            width: 160px;
-            height: 220px;
-            border: 2px solid #000;
-            padding: 5px;
-            text-align: center;
-            margin-left: 20px;
+        /* Kolom Kiri (Biodata) dapat 68% lebar agar teks panjang bisa turun ke bawah */
+        .col-left {
+            width: 68%;
+            vertical-align: top;
+            padding-right: 15px;
         }
 
-        .foto-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        /* Kolom Kanan (Foto) dapat 32% */
+        .col-right {
+            width: 32%;
+            vertical-align: top;
         }
 
-        .no-foto {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #f3f4f6;
-            font-size: 10pt;
-            color: #666;
-            text-align: center;
-            padding-top: 80px;
-            /* Hack vertikal align untuk dompdf */
-        }
-
+        /* TABEL DATA (Di dalam kolom kiri) */
         .table-data {
             width: 100%;
             border-collapse: collapse;
@@ -143,7 +128,7 @@
         }
 
         .label {
-            width: 160px;
+            width: 150px;
             font-weight: bold;
         }
 
@@ -152,7 +137,38 @@
             text-align: center;
         }
 
-        /* Stampel Status */
+        /* Text-align justify agar ciri-ciri rapi */
+        .val {
+            text-align: justify;
+        }
+
+        /* FOTO */
+        .foto-box {
+            width: 100%;
+            border: 2px solid #000;
+            padding: 5px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .foto-img {
+            width: 150px;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .no-foto {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f3f4f6;
+            font-size: 10pt;
+            color: #666;
+            padding-top: 90px;
+        }
+
+        /* STATUS STAMP */
         .status-stamp {
             margin-top: 20px;
             text-align: center;
@@ -160,24 +176,22 @@
             font-weight: bold;
             border: 3px double;
             padding: 10px;
-            width: 200px;
-            margin-left: auto;
-            margin-right: auto;
             transform: rotate(-5deg);
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .status-buron {
             color: #dc2626;
-            /* Merah */
             border-color: #dc2626;
         }
 
         .status-tertangkap {
             color: #16a34a;
-            /* Hijau */
             border-color: #16a34a;
         }
 
+        /* LAINNYA */
         .section-title {
             font-weight: bold;
             text-transform: uppercase;
@@ -193,7 +207,6 @@
             min-height: 80px;
         }
 
-        /* Tanda Tangan */
         .ttd-container {
             float: right;
             width: 300px;
@@ -236,53 +249,56 @@
     <div class="judul">DAFTAR PENCARIAN ORANG (DPO)</div>
     <div class="sub-judul">TINDAK PIDANA {{ strtoupper($data->status_hukum) }}</div>
 
-    <div class="container-info">
-        <div class="foto-container">
-            @if($data->foto)
-            <img src="{{ public_path('storage/' . $data->foto) }}" class="foto-img">
-            @else
-            <div class="no-foto">FOTO TIDAK TERSEDIA</div>
-            @endif
-        </div>
+    <table class="main-layout">
+        <tr>
+            <td class="col-left">
+                <table class="table-data">
+                    <tr>
+                        <td class="label">Nama Lengkap</td>
+                        <td class="sep">:</td>
+                        <td class="val"><strong>{{ strtoupper($data->nama_lengkap) }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="label">Tempat Lahir</td>
+                        <td class="sep">:</td>
+                        <td class="val">{{ $data->tempat_lahir }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Tanggal Lahir</td>
+                        <td class="sep">:</td>
+                        <td class="val">{{ $data->tanggal_lahir ? \Carbon\Carbon::parse($data->tanggal_lahir)->isoFormat('D MMMM Y') : '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Status Hukum</td>
+                        <td class="sep">:</td>
+                        <td class="val">{{ $data->status_hukum }}</td>
+                    </tr>
+                    {{-- CIRI FISIK: Sekarang aman karena ada di kolom sendiri --}}
+                    <tr>
+                        <td class="label">Ciri-Ciri Fisik</td>
+                        <td class="sep">:</td>
+                        <td class="val">{{ $data->ciri_fisik ?? '-' }}</td>
+                    </tr>
+                </table>
+            </td>
 
-        <table class="table-data">
-            <tr>
-                <td class="label">Nama Lengkap</td>
-                <td class="sep">:</td>
-                <td><strong>{{ strtoupper($data->nama_lengkap) }}</strong></td>
-            </tr>
-            <tr>
-                <td class="label">Tempat Lahir</td>
-                <td class="sep">:</td>
-                <td>{{ $data->tempat_lahir }}</td>
-            </tr>
-            <tr>
-                <td class="label">Tanggal Lahir</td>
-                <td class="sep">:</td>
-                <td>{{ $data->tanggal_lahir ? \Carbon\Carbon::parse($data->tanggal_lahir)->isoFormat('D MMMM Y') : '-' }}</td>
-            </tr>
-            <tr>
-                <td class="label">Status Hukum</td>
-                <td class="sep">:</td>
-                <td>{{ $data->status_hukum }}</td>
-            </tr>
-            <tr>
-                <td class="label">Ciri-Ciri Fisik</td>
-                <td class="sep">:</td>
-                <td>{{ $data->ciri_fisik ?? '-' }}</td>
-            </tr>
-        </table>
-    </div>
+            <td class="col-right">
+                <div class="foto-box">
+                    @if($data->foto)
+                    <img src="{{ public_path('storage/' . $data->foto) }}" class="foto-img">
+                    @else
+                    <div class="no-foto">FOTO TIDAK TERSEDIA</div>
+                    @endif
+                </div>
 
-    <div style="margin: 20px 0;">
-        @if($data->status_pencarian == 'buron')
-        <div class="status-stamp status-buron">STATUS: BURON</div>
-        @else
-        <div class="status-stamp status-tertangkap">TERTANGKAP</div>
-        @endif
-    </div>
-
-    <div class="clear"></div>
+                @if($data->status_pencarian == 'buron')
+                <div class="status-stamp status-buron">STATUS: BURON</div>
+                @else
+                <div class="status-stamp status-tertangkap">TERTANGKAP</div>
+                @endif
+            </td>
+        </tr>
+    </table>
 
     <div class="section-title">KASUS POSISI / URAIAN PERKARA</div>
     <div class="box-text">
@@ -293,8 +309,10 @@
         <p>Banjarmasin, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</p>
         <p>Kepala Seksi Intelijen,</p>
 
-        <div class="nama-terang">{{ auth()->user()->name }}</div>
-        <div>Jaksa Madya / NIP. {{ auth()->user()->nip ?? '....................' }}</div>
+        <br><br><br>
+
+        <div class="nama-terang">Dimas Purnama Putra, S.H.,M.H</div>
+        <div>Jaksa Madya / NIP. 19850101 201001 1 001</div>
     </div>
 
     <div class="clear"></div>

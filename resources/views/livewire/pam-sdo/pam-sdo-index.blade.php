@@ -221,7 +221,7 @@
                     </div>
                     <div class="space-y-2">
                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Satuan Kerja</label>
-                        <input wire:model="satuan_kerja" type="text" class="block w-full rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-900 font-bold focus:border-amber-500 focus:bg-white transition-all py-3 px-4 shadow-sm placeholder-slate-400 text-sm" placeholder="Misal: Kejari Banjarbaru">
+                        <input wire:model="satuan_kerja" type="text" class="block w-full rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-900 font-bold focus:border-amber-500 focus:bg-white transition-all py-3 px-4 shadow-sm placeholder-slate-400 text-sm" placeholder">
                     </div>
                 </div>
 
@@ -238,6 +238,7 @@
                                 <option value="diawasi">Dalam Pengawasan</option>
                                 <option value="ditindak">Ditindak Lanjuti</option>
                                 <option value="clear">Clear / Aman</option>
+                                <option value="clear">Teguan Tulis</option>
                             </select>
                         </div>
                         <div class="space-y-2">

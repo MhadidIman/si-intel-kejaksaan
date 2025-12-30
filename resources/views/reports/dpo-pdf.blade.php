@@ -4,25 +4,68 @@
 <head>
     <title>Laporan Data DPO</title>
     <style>
+        /* PENGATURAN KERTAS & FONT */
         body {
-            font-family: sans-serif;
-            font-size: 12px;
+            font-family: Arial, sans-serif;
+            font-size: 11pt;
+            line-height: 1.3;
+            margin: 0;
+            padding: 0;
         }
 
-        .header {
+        /* KOP SURAT (STANDAR RESMI) */
+        .header-container {
             text-align: center;
+            position: relative;
             margin-bottom: 20px;
+            border-bottom: 3px double black;
+            /* Garis ganda tebal tipis */
+            padding-bottom: 10px;
         }
 
-        .header h2,
-        .header h3 {
+        .logo {
+            width: 85px;
+            position: absolute;
+            left: 0;
+            top: 5px;
+        }
+
+        .header-text h3 {
+            margin: 0;
+            font-size: 14pt;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header-text h2 {
             margin: 2px 0;
+            font-size: 16pt;
+            font-weight: bold;
+            text-transform: uppercase;
         }
 
+        .header-text p {
+            margin: 0;
+            font-size: 9pt;
+            font-weight: normal;
+        }
+
+        /* JUDUL DOKUMEN */
+        .title-doc {
+            text-align: center;
+            font-weight: bold;
+            text-decoration: underline;
+            font-size: 12pt;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        /* TABEL DATA */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            font-size: 10pt;
         }
 
         table,
@@ -31,42 +74,81 @@
             border: 1px solid black;
         }
 
-        th,
+        th {
+            background-color: #f2f2f2;
+            text-align: center;
+            font-weight: bold;
+            padding: 8px 5px;
+            vertical-align: middle;
+        }
+
         td {
-            padding: 8px;
+            padding: 6px 8px;
             text-align: left;
             vertical-align: top;
         }
 
-        th {
-            background-color: #f2f2f2;
+        /* STATUS BADGE */
+        .status-badge {
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 8pt;
+            padding: 3px 6px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-top: 5px;
         }
 
-        .ttd {
-            margin-top: 50px;
+        .buron {
+            color: #dc2626;
+            border: 1px solid #dc2626;
+            background-color: #fef2f2;
+        }
+
+        .tertangkap {
+            color: #16a34a;
+            border: 1px solid #16a34a;
+            background-color: #f0fdf4;
+        }
+
+        /* TANDA TANGAN */
+        .ttd-container {
             float: right;
-            width: 200px;
+            width: 40%;
             text-align: center;
+            margin-top: 40px;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="header">
-        <h2>KEJAKSAAN REPUBLIK INDONESIA</h2>
-        <h3>DAFTAR PENCARIAN ORANG (DPO)</h3>
-        <p>Tanggal Cetak: {{ date('d F Y') }}</p>
+    {{-- KOP SURAT --}}
+    <div class="header-container">
+        <img src="{{ public_path('img/logo-kejaksaan.png') }}" class="logo">
+        <div class="header-text">
+            <h3>KEJAKSAAN REPUBLIK INDONESIA</h3>
+            <h3>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h3>
+            <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
+            <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
+            <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
+        </div>
     </div>
 
+    {{-- JUDUL DOKUMEN --}}
+    <div class="title-doc">
+        DAFTAR PENCARIAN ORANG (DPO)
+    </div>
+
+    {{-- TABEL DATA --}}
     <table>
         <thead>
             <tr>
                 <th style="width: 5%">No</th>
-                <th style="width: 20%">Nama Lengkap</th>
+                <th style="width: 22%">Identitas Buronan</th>
                 <th style="width: 15%">Tempat/Tgl Lahir</th>
                 <th style="width: 30%">Kasus Posisi</th>
-                <th style="width: 15%">Status Hukum</th>
+                <th style="width: 13%">Status Hukum</th>
                 <th style="width: 15%">Status DPO</th>
             </tr>
         </thead>
@@ -75,20 +157,31 @@
             <tr>
                 <td style="text-align: center">{{ $index + 1 }}</td>
                 <td>
-                    <strong>{{ $item->nama_lengkap }}</strong><br>
-                    <small>Ciri: {{ $item->ciri_fisik ?? '-' }}</small>
+                    <strong style="text-transform: uppercase;">{{ $item->nama_lengkap }}</strong><br>
+                    @if($item->ciri_fisik)
+                    <div style="margin-top: 4px; font-size: 9pt; color: #444; font-style: italic;">
+                        Ciri: {{ \Illuminate\Support\Str::limit($item->ciri_fisik, 60) }}
+                    </div>
+                    @endif
                 </td>
                 <td>
-                    {{ $item->tempat_lahir }}<br>
-                    {{ $item->tanggal_lahir ? \Carbon\Carbon::parse($item->tanggal_lahir)->format('d-m-Y') : '-' }}
+                    {{ $item->tempat_lahir ?? '-' }}<br>
+                    <span style="font-size: 9pt;">
+                        {{ $item->tanggal_lahir ? \Carbon\Carbon::parse($item->tanggal_lahir)->translatedFormat('d F Y') : '-' }}
+                    </span>
                 </td>
-                <td>{{ $item->kasus }}</td>
-                <td>{{ $item->status_hukum }}</td>
-                <td>
+                <td style="text-align: justify;">
+                    {{-- Pastikan nama kolom 'kasus_posisi' sesuai database --}}
+                    {{ \Illuminate\Support\Str::limit($item->kasus_posisi, 200) }}
+                </td>
+                <td style="text-align: center;">
+                    {{ $item->status_hukum }}
+                </td>
+                <td style="text-align: center;">
                     @if($item->status_pencarian == 'buron')
-                    <span style="color: red; font-weight: bold;">BURON</span>
+                    <span class="status-badge buron">MASIH BURON</span>
                     @else
-                    <span style="color: green; font-weight: bold;">TERTANGKAP</span>
+                    <span class="status-badge tertangkap">TERTANGKAP</span>
                     @endif
                 </td>
             </tr>
@@ -96,10 +189,13 @@
         </tbody>
     </table>
 
-    <div class="ttd">
-        <p>Mengetahui,<br>Kepala Seksi Intelijen</p>
+    {{-- TANDA TANGAN --}}
+    <div class="ttd-container">
+        <p>Banjarmasin, {{ now()->translatedFormat('d F Y') }}</p>
+        <p>Kepala Seksi Intelijen,</p>
         <br><br><br>
-        <p><strong>(M. Hadid Iman Firdaus)</strong><br>NIP. 221001006875622</p>
+        <p style="font-weight: bold; text-decoration: underline; margin-bottom: 0;">Dimas Purnama Putra, S.H.,M.H</p>
+        <p style="margin-top: 2px;">Jaksa Madya NIP. 19850101 201001 1 001</p>
     </div>
 
 </body>

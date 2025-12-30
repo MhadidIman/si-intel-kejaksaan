@@ -234,13 +234,14 @@
     <div class="content-text">
         Berdasarkan uraian fakta dan analisa di atas, disarankan kepada Pimpinan untuk menindaklanjuti informasi ini sesuai dengan prosedur yang berlaku serta terus melakukan monitoring terhadap perkembangan situasi.
     </div>
-
     <div class="ttd-container">
         <p>Banjarmasin, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</p>
-        <p>Pelapor,</p>
+        <p>Kepala Seksi Intelijen,</p>
 
-        <div class="nama-terang">{{ auth()->user()->name }}</div>
-        <div>Jaksa Intelijen / NIP. {{ auth()->user()->nip ?? '....................' }}</div>
+        <br><br><br>
+
+        <div class="nama-terang">Dimas Purnama Putra, S.H.,M.H</div>
+        <div>Jaksa Madya / NIP. 19850101 201001 1 001</div>
     </div>
 
     <div class="clear"></div>

@@ -279,15 +279,14 @@
         </div>
     </div>
     @endif
-
     <div class="ttd-container">
         <p>Banjarmasin, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</p>
         <p>Kepala Seksi Intelijen,</p>
 
-        <br><br><br><br>
+        <br><br><br>
 
-        <div class="nama-terang">( ...................................................... )</div>
-        <div>Jaksa Madya / NIP. ........................................</div>
+        <div class="nama-terang">Dimas Purnama Putra, S.H.,M.H</div>
+        <div>Jaksa Madya / NIP. 19850101 201001 1 001</div>
     </div>
 
     <div class="clear"></div>

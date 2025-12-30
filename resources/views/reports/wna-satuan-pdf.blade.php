@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Biodata WNA - {{ $item->nama_lengkap }}</title>
     <style>
-        /* Pengaturan Kertas */
+        /* PENGATURAN KERTAS */
         @page {
             size: A4 portrait;
             margin: 2cm;
@@ -14,68 +14,46 @@
         body {
             font-family: 'Times New Roman', Times, serif;
             font-size: 12pt;
-            line-height: 1.5;
+            line-height: 1.4;
             color: #000;
         }
 
-        /* --- STYLING KOP SURAT (SERAGAM) --- */
-        .kop-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 0;
-        }
-
-        .logo-cell {
-            width: 100px;
-            vertical-align: middle;
-            text-align: left;
-        }
-
-        .logo-img {
-            width: 80px;
-            height: auto;
-        }
-
-        .teks-cell {
+        /* KOP SURAT */
+        .header {
             text-align: center;
-            vertical-align: middle;
-            padding-right: 80px;
+            border-bottom: 3px double black;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            position: relative;
         }
 
-        .teks-cell h1 {
-            font-size: 14pt;
-            margin: 0;
+        .logo {
+            width: 80px;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .header h3,
+        .header h2,
+        .header p {
+            margin: 2px 0;
             font-weight: bold;
             text-transform: uppercase;
         }
 
-        .teks-cell h2 {
-            font-size: 16pt;
-            margin: 0;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .teks-cell p {
+        .header p {
             font-size: 9pt;
-            margin: 1px 0;
-            line-height: 1.2;
+            font-weight: normal;
+            text-transform: none;
         }
 
-        .garis-kop-ganda {
-            border-top: 3px solid black;
-            border-bottom: 1px solid black;
-            height: 2px;
-            margin-top: 5px;
-            margin-bottom: 25px;
-        }
-
-        /* --- STYLING ISI DOKUMEN --- */
+        /* JUDUL */
         .rahasia-top {
+            text-align: right;
             font-weight: bold;
             text-decoration: underline;
-            text-align: right;
-            font-size: 11pt;
+            font-size: 10pt;
             margin-bottom: 10px;
         }
 
@@ -84,57 +62,42 @@
             font-weight: bold;
             text-decoration: underline;
             font-size: 14pt;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             text-transform: uppercase;
         }
 
-        /* Layout Foto & Data */
-        .container-info {
+        /* LAYOUT UTAMA (TABEL 2 KOLOM) */
+        .main-layout {
             width: 100%;
+            border-collapse: collapse;
             margin-bottom: 20px;
         }
 
-        .foto-container {
-            float: right;
-            width: 160px;
-            height: 220px;
-            border: 2px solid #000;
-            padding: 5px;
+        .col-left {
+            width: 68%;
+            vertical-align: top;
+            padding-right: 15px;
+        }
+
+        .col-right {
+            width: 32%;
+            vertical-align: top;
             text-align: center;
-            margin-left: 20px;
-            background-color: #f9f9f9;
         }
 
-        .foto-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .no-foto {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10pt;
-            color: #666;
-            text-align: center;
-            padding-top: 80px;
-        }
-
-        .table-data {
+        /* TABEL BIODATA */
+        .bio-table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .table-data td {
+        .bio-table td {
             vertical-align: top;
-            padding: 5px 0;
+            padding: 4px 0;
         }
 
         .label {
-            width: 170px;
+            width: 150px;
             font-weight: bold;
         }
 
@@ -143,50 +106,67 @@
             text-align: center;
         }
 
-        /* Stampel Status */
+        .val {
+            text-align: justify;
+        }
+
+        /* FOTO */
+        .photo-box {
+            width: 150px;
+            height: 200px;
+            border: 2px solid black;
+            padding: 4px;
+            object-fit: cover;
+        }
+
+        .no-photo {
+            width: 150px;
+            height: 200px;
+            border: 2px solid black;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10pt;
+        }
+
+        /* STATUS BOX */
         .status-box {
-            margin-top: 30px;
-            padding: 15px;
+            margin-top: 15px;
+            padding: 10px;
             border: 3px double;
             text-align: center;
             font-weight: bold;
-            text-transform: uppercase;
-            width: 80%;
-            margin-left: auto;
-            margin-right: auto;
+            font-size: 11pt;
         }
 
         .overstay {
-            border-color: #dc2626;
-            color: #dc2626;
-            background-color: #fef2f2;
+            border-color: red;
+            color: red;
+            background-color: #ffe6e6;
         }
 
         .aman {
-            border-color: #16a34a;
-            color: #16a34a;
-            background-color: #f0fdf4;
+            border-color: green;
+            color: green;
+            background-color: #e6fffa;
         }
 
+        /* SECTION SUB */
         .section-sub {
             font-weight: bold;
+            text-decoration: underline;
             margin-top: 20px;
-            margin-bottom: 5px;
-            text-decoration: underline;
+            margin-bottom: 10px;
+            text-transform: uppercase;
         }
 
-        /* Tanda Tangan */
-        .ttd-container {
+        /* TANDA TANGAN */
+        .signature {
             float: right;
-            width: 300px;
+            width: 40%;
             text-align: center;
-            margin-top: 50px;
-        }
-
-        .nama-terang {
-            font-weight: bold;
-            text-decoration: underline;
-            margin-top: 70px;
+            margin-top: 40px;
         }
 
         .clear {
@@ -199,83 +179,87 @@
 
     <div class="rahasia-top">RAHASIA</div>
 
-    <table class="kop-table">
-        <tr>
-            <td class="logo-cell">
-                <img src="{{ public_path('img/logo-kejaksaan.png') }}" class="logo-img">
-            </td>
-            <td class="teks-cell">
-                <h1>KEJAKSAAN REPUBLIK INDONESIA</h1>
-                <h1>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h1>
-                <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
-                <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
-                <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
-            </td>
-        </tr>
-    </table>
-    <div class="garis-kop-ganda"></div>
+    <div class="header">
+        <img src="{{ public_path('img/logo-kejaksaan.png') }}" class="logo">
+        <h3>KEJAKSAAN REPUBLIK INDONESIA</h3>
+        <h3>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h3>
+        <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
+        <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
+        <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
+    </div>
 
     <div class="judul">LEMBAR DATA PENGAWASAN ORANG ASING</div>
 
-    <div class="container-info">
-        <div class="foto-container">
-            @if($item->foto_dokumen && file_exists(public_path('storage/' . $item->foto_dokumen)))
-            <img src="{{ public_path('storage/' . $item->foto_dokumen) }}" class="foto-img">
-            @else
-            <div class="no-foto">FOTO TIDAK TERSEDIA</div>
-            @endif
-        </div>
+    {{-- LAYOUT UTAMA: BIODATA KIRI - FOTO KANAN --}}
+    <table class="main-layout">
+        <tr>
+            {{-- KOLOM KIRI --}}
+            <td class="col-left">
+                <table class="bio-table">
+                    <tr>
+                        <td class="label">Nama Lengkap</td>
+                        <td class="sep">:</td>
+                        <td class="val"><strong>{{ strtoupper($item->nama_lengkap) }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="label">Kebangsaan</td>
+                        <td class="sep">:</td>
+                        <td class="val">{{ $item->kebangsaan }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Nomor Paspor</td>
+                        <td class="sep">:</td>
+                        <td class="val">{{ $item->nomor_paspor }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Tujuan Kunjungan</td>
+                        <td class="sep">:</td>
+                        <td class="val">{{ $item->tujuan_kunjungan }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Sponsor / Penjamin</td>
+                        <td class="sep">:</td>
+                        <td class="val">{{ $item->sponsor ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Alamat Menginap</td>
+                        <td class="sep">:</td>
+                        <td class="val">{{ $item->alamat_menginap }}</td>
+                    </tr>
+                </table>
+            </td>
 
-        <table class="table-data">
-            <tr>
-                <td class="label">Nama Lengkap</td>
-                <td class="sep">:</td>
-                <td><strong>{{ strtoupper($item->nama_lengkap) }}</strong></td>
-            </tr>
-            <tr>
-                <td class="label">Kebangsaan</td>
-                <td class="sep">:</td>
-                <td>{{ $item->kebangsaan }}</td>
-            </tr>
-            <tr>
-                <td class="label">Nomor Paspor</td>
-                <td class="sep">:</td>
-                <td>{{ $item->nomor_paspor }}</td>
-            </tr>
-            <tr>
-                <td class="label">Tujuan Kunjungan</td>
-                <td class="sep">:</td>
-                <td>{{ $item->tujuan_kunjungan }}</td>
-            </tr>
-            <tr>
-                <td class="label">Sponsor / Penjamin</td>
-                <td class="sep">:</td>
-                <td>{{ $item->sponsor ?? '-' }}</td>
-            </tr>
-            <tr>
-                <td class="label">Alamat Menginap</td>
-                <td class="sep">:</td>
-                <td>{{ $item->alamat_menginap }}</td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="clear"></div>
+            {{-- KOLOM KANAN --}}
+            <td class="col-right">
+                @if($item->foto_dokumen && file_exists(public_path('storage/' . $item->foto_dokumen)))
+                <img src="{{ public_path('storage/' . $item->foto_dokumen) }}" class="photo-box">
+                @else
+                <div class="photo-box" style="display:inline-block; line-height:200px; text-align:center; background:#eee;">FOTO TIDAK ADA</div>
+                @endif
+            </td>
+        </tr>
+    </table>
 
     <div class="section-sub">STATUS IZIN TINGGAL</div>
-    <table class="table-data">
+
+    <table class="bio-table" style="width: 100%;">
         <tr>
-            <td class="label">Tanggal Tiba</td>
+            <td class="label" style="width: 150px;">Tanggal Tiba</td>
             <td class="sep">:</td>
-            <td>{{ $item->tanggal_tiba ? \Carbon\Carbon::parse($item->tanggal_tiba)->isoFormat('D MMMM Y') : '-' }}</td>
+            <td class="val">
+                {{ $item->tanggal_tiba ? \Carbon\Carbon::parse($item->tanggal_tiba)->translatedFormat('d F Y') : '-' }}
+            </td>
         </tr>
         <tr>
             <td class="label">Masa Berlaku Izin</td>
             <td class="sep">:</td>
-            <td><strong>{{ \Carbon\Carbon::parse($item->masa_berlaku_izin_tinggal)->isoFormat('D MMMM Y') }}</strong></td>
+            <td class="val">
+                <strong>{{ \Carbon\Carbon::parse($item->masa_berlaku_izin_tinggal)->translatedFormat('d F Y') }}</strong>
+            </td>
         </tr>
     </table>
 
+    {{-- LOGIKA OVERSTAY --}}
     @php
     $tglIzin = \Carbon\Carbon::parse($item->masa_berlaku_izin_tinggal)->startOfDay();
     $tglSkrg = \Carbon\Carbon::now()->startOfDay();
@@ -294,12 +278,15 @@
     </div>
     @endif
 
-    <div class="ttd-container">
-        <p>Banjarmasin, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</p>
-        <p>Petugas Pengawas,</p>
+    {{-- TANDA TANGAN --}}
+    <div class="signature">
+        <p>Banjarmasin, {{ now()->translatedFormat('d F Y') }}</p>
+        <p>Kepala Seksi Intelijen,</p>
 
-        <div class="nama-terang">{{ auth()->user()->name }}</div>
-        <div>Jaksa Intelijen / NIP. {{ auth()->user()->nip ?? '....................' }}</div>
+        <br><br><br>
+
+        <p style="font-weight: bold; text-decoration: underline; margin-bottom: 0;">Dimas Purnama Putra, S.H.,M.H</p>
+        <p style="margin-top: 0;">Jaksa Madya / NIP. 19850101 201001 1 001</p>
     </div>
 
     <div class="clear"></div>

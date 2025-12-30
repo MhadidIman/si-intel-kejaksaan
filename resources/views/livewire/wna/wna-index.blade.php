@@ -1,74 +1,43 @@
 <div class="py-10 bg-[#f8fafc] min-h-screen">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
+        {{-- HEADER SECTION --}}
         <div class="flex flex-col md:flex-row justify-between items-center gap-6 bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
-
             <div class="flex items-center gap-5">
-
                 <div class="bg-blue-50 p-3 rounded-2xl border border-blue-100 shadow-sm transition-transform hover:scale-105 duration-500">
-
                     <img src="{{ asset('img/logo-kejaksaan.png') }}" class="h-12 w-12 object-contain" alt="Logo">
-
                 </div>
-
                 <div class="relative">
-
                     <h2 class="text-3xl font-black text-slate-900 tracking-tighter italic uppercase">
-
                         Pengawasan <span class="text-blue-600">ORANG ASING (WNA)</span>
-
                     </h2>
-
                     <p class="text-[10px] text-slate-500 mt-1 font-black tracking-[0.2em] uppercase flex items-center gap-2">
-
                         <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_8px_rgba(59,130,246,0.6)]"></span>
-
                         Data Warga Negara Asing & Izin Tinggal
-
                     </p>
-
                 </div>
-
             </div>
-
-
 
             <div class="flex flex-col sm:flex-row gap-3">
-
                 <a href="{{ route('cetak.wna') }}" target="_blank" class="group bg-white hover:bg-slate-50 text-slate-600 font-black py-3 px-6 rounded-xl shadow-sm border-2 border-slate-200 transition-all flex items-center gap-3 text-[10px] uppercase tracking-widest">
-
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-slate-400 group-hover:text-slate-600">
-
                         <path fill-rule="evenodd" d="M7.875 1.5a.75.75 0 01.75.75v2.25h6.75a.75.75 0 01.75.75v3h3a3 3 0 013 3v9a3 3 0 01-3 3h-18a3 3 0 01-3-3v-9a3 3 0 013-3h3v-3a.75.75 0 01.75-.75h6.75zM6 6v3.75h12V6H6zM3.75 12a.75.75 0 01.75-.75h15a.75.75 0 01.75.75v6a.75.75 0 01-.75.75h-15a.75.75 0 01-.75-.75v-6z" clip-rule="evenodd" />
-
                     </svg>
-
                     <span>Cetak Rekap</span>
-
                 </a>
 
-
-
                 @if(!$showForm)
-
                 <button wire:click="create" class="group relative overflow-hidden bg-blue-600 hover:bg-blue-700 text-white font-black py-3 px-8 rounded-xl shadow-lg shadow-blue-200 border-2 border-blue-500 transition-all flex items-center gap-3 text-[10px] uppercase tracking-widest">
-
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
-
                         <path fill-rule="evenodd" d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" clip-rule="evenodd" />
-
                     </svg>
-
                     <span>Input WNA Baru</span>
-
                 </button>
-
                 @endif
-
             </div>
-
         </div>
 
+        {{-- ALERT MESSAGE --}}
         @if (session()->has('message'))
         <div class="bg-emerald-100 border-l-4 border-emerald-500 text-emerald-700 p-4 rounded-r shadow-sm flex items-center gap-2">
             <i class="fas fa-check-circle"></i>
@@ -78,6 +47,7 @@
 
         @if(!$showForm)
 
+        {{-- STATISTIK CARDS --}}
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <button wire:click="$set('filterStatus', '')" class="p-4 rounded-2xl border transition-all duration-200 text-left group {{ $filterStatus == '' ? 'bg-slate-800 text-white border-slate-900 shadow-lg' : 'bg-white border-slate-100 hover:border-slate-300' }}">
                 <div class="text-[10px] font-black uppercase tracking-widest opacity-60">Total Data</div>
@@ -108,11 +78,13 @@
             </div>
         </div>
 
+        {{-- TABEL DATA --}}
         <div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead class="bg-slate-50 text-slate-500 uppercase text-[10px] font-black tracking-widest">
                         <tr>
+                            <th class="px-6 py-4 w-16">Foto</th>
                             <th class="px-6 py-4">Identitas WNA</th>
                             <th class="px-6 py-4">Status Izin Tinggal</th>
                             <th class="px-6 py-4">Tujuan & Sponsor</th>
@@ -122,24 +94,45 @@
                     <tbody class="divide-y divide-slate-50 text-sm">
                         @forelse($wnas as $wna)
                         <tr class="hover:bg-slate-50/80 transition duration-300">
+
+                            {{-- FOTO --}}
                             <td class="px-6 py-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-black text-xs border border-blue-100 uppercase">
-                                        {{ substr($wna->kebangsaan, 0, 2) }}
+                                <div class="relative w-12 h-12 group cursor-pointer">
+                                    @if($wna->foto_dokumen)
+                                    <img src="{{ asset('storage/' . $wna->foto_dokumen) }}" class="w-12 h-12 rounded-lg object-cover border border-slate-200 shadow-sm" alt="Foto">
+                                    {{-- Efek Zoom Saat Hover --}}
+                                    <div class="absolute left-14 top-0 w-32 h-32 bg-white p-1 rounded-xl shadow-xl border border-slate-200 hidden group-hover:block z-50">
+                                        <img src="{{ asset('storage/' . $wna->foto_dokumen) }}" class="w-full h-full object-cover rounded-lg">
                                     </div>
-                                    <div>
-                                        <p class="font-black text-slate-800 uppercase">{{ $wna->nama_lengkap }}</p>
-                                        <p class="text-xs text-slate-400 font-mono mt-0.5">PASPOR: {{ $wna->nomor_paspor }}</p>
-                                        <p class="text-[10px] text-slate-400 mt-0.5 uppercase">{{ $wna->kebangsaan }}</p>
+                                    @else
+                                    <div class="w-12 h-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 border border-slate-200">
+                                        <i class="fas fa-user text-xs"></i>
+                                    </div>
+                                    @endif
+                                </div>
+                            </td>
+
+                            {{-- IDENTITAS (TANPA LOGO INISIAL) --}}
+                            <td class="px-6 py-4">
+                                <div>
+                                    <p class="font-black text-slate-800 uppercase text-sm">{{ $wna->nama_lengkap }}</p>
+                                    <div class="flex flex-col mt-1 gap-0.5">
+                                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">
+                                            {{ $wna->kebangsaan }}
+                                        </span>
+                                        <span class="text-[10px] text-slate-400 font-mono">
+                                            Pass: {{ $wna->nomor_paspor }}
+                                        </span>
                                     </div>
                                 </div>
                             </td>
 
+                            {{-- STATUS IZIN --}}
                             <td class="px-6 py-4">
                                 @php
                                 $tglExp = \Carbon\Carbon::parse($wna->masa_berlaku_izin_tinggal)->startOfDay();
                                 $today = \Carbon\Carbon::now()->startOfDay();
-                                $diff = $today->diffInDays($tglExp, false); // False agar hasil negatif jika lewat
+                                $diff = $today->diffInDays($tglExp, false);
                                 @endphp
 
                                 <div class="mb-1">
@@ -162,11 +155,13 @@
                                 </p>
                             </td>
 
+                            {{-- TUJUAN --}}
                             <td class="px-6 py-4">
                                 <p class="font-bold text-slate-700 text-xs uppercase">{{ $wna->tujuan_kunjungan }}</p>
                                 <p class="text-[10px] text-slate-400 mt-0.5">Sponsor: {{ $wna->sponsor ?? '-' }}</p>
                             </td>
 
+                            {{-- AKSI --}}
                             <td class="px-6 py-4 text-center">
                                 <div class="flex justify-center gap-2">
                                     <a href="{{ route('cetak.wna.satuan', $wna->id) }}" target="_blank" class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-800 hover:text-white transition shadow-sm border border-slate-200" title="Cetak">
@@ -183,7 +178,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="px-6 py-10 text-center text-slate-400 italic">Tidak ada data WNA ditemukan.</td>
+                            <td colspan="5" class="px-6 py-10 text-center text-slate-400 italic">Tidak ada data WNA ditemukan.</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -195,6 +190,7 @@
         </div>
         @endif
 
+        {{-- FORM MODAL (INPUT / EDIT) --}}
         @if($showForm)
         <div class="bg-white rounded-[2rem] shadow-lg border border-blue-100 overflow-hidden max-w-4xl mx-auto animate-fade-in-up">
             <div class="bg-blue-50 px-8 py-6 border-b border-blue-100 flex justify-between items-center">

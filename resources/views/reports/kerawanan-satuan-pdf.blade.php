@@ -89,8 +89,16 @@
             margin-bottom: 20px;
         }
 
+        /* PERBAIKAN CSS STATUS AGAR TIDAK MENUTUPI TABEL */
+        .status-container {
+            text-align: right;
+            margin-bottom: 15px;
+            /* Memberi jarak ke bawah agar tidak nempel tabel */
+        }
+
         .status-tag {
-            float: right;
+            display: inline-block;
+            /* Supaya kotak mengikuti isi teks */
             padding: 5px 15px;
             border: 2px solid #000;
             font-weight: bold;
@@ -177,65 +185,67 @@
     <div class="judul">LEMBAR ANALISA POTENSI KERAWANAN WILAYAH</div>
 
     <div class="section">
-        {{-- LOGIKA WARNA DILETAKKAN LANGSUNG DENGAN IF/ELSE BIASA AGAR LEBIH STABIL --}}
-        @if($data->tingkat_rawan == 'tinggi')
-        <div class="status-tag" style="background-color: #fee2e2;">
-            @elseif($data->tingkat_rawan == 'sedang')
-            <div class="status-tag" style="background-color: #ffedd5;">
-                @else
-                <div class="status-tag" style="background-color: #dcfce7;">
-                    @endif
-                    TINGKAT: {{ strtoupper($data->tingkat_rawan) }}
-                </div>
+        {{-- PERBAIKAN HTML: Menggunakan Container khusus untuk Status --}}
+        <div class="status-container">
+            @if($data->tingkat_rawan == 'tinggi')
+            <span class="status-tag" style="background-color: #fee2e2;">
+                @elseif($data->tingkat_rawan == 'sedang')
+                <span class="status-tag" style="background-color: #ffedd5;">
+                    @else
+                    <span class="status-tag" style="background-color: #dcfce7;">
+                        @endif
+                        TINGKAT: {{ strtoupper($data->tingkat_rawan) }}
+                    </span>
+        </div>
 
-                <table class="table-info">
-                    <tr>
-                        <td class="label-field">Wilayah Kecamatan</td>
-                        <td class="separator">:</td>
-                        <td><strong>{{ strtoupper($data->kecamatan) }}</strong></td>
-                    </tr>
-                    <tr>
-                        <td class="label-field">Bidang Intelijen</td>
-                        <td class="separator">:</td>
-                        <td>{{ $data->bidang }}</td>
-                    </tr>
-                    <tr>
-                        <td class="label-field">Sumber Informasi</td>
-                        <td class="separator">:</td>
-                        <td>{{ $data->sumber_informasi ?? 'Terbuka / Tertutup' }}</td>
-                    </tr>
-                    <tr>
-                        <td class="label-field">Tanggal Analisa</td>
-                        <td class="separator">:</td>
-                        <td>{{ \Carbon\Carbon::parse($data->created_at)->isoFormat('dddd, D MMMM Y') }}</td>
-                    </tr>
-                </table>
-            </div>
+        <table class="table-info">
+            <tr>
+                <td class="label-field">Wilayah Kecamatan</td>
+                <td class="separator">:</td>
+                <td><strong>{{ strtoupper($data->kecamatan) }}</strong></td>
+            </tr>
+            <tr>
+                <td class="label-field">Bidang Intelijen</td>
+                <td class="separator">:</td>
+                <td>{{ $data->bidang }}</td>
+            </tr>
+            <tr>
+                <td class="label-field">Sumber Informasi</td>
+                <td class="separator">:</td>
+                <td>{{ $data->sumber_informasi ?? 'Terbuka / Tertutup' }}</td>
+            </tr>
+            <tr>
+                <td class="label-field">Tanggal Analisa</td>
+                <td class="separator">:</td>
+                <td>{{ \Carbon\Carbon::parse($data->created_at)->isoFormat('dddd, D MMMM Y') }}</td>
+            </tr>
+        </table>
+    </div>
 
-            <div class="section">
-                <span class="title-sub">I. URAIAN POTENSI ANCAMAN / PERMASALAHAN</span>
-                <div class="box-text">
-                    {{ $data->potensi_ancaman }}
-                </div>
-            </div>
+    <div class="section">
+        <span class="title-sub">I. URAIAN POTENSI ANCAMAN / PERMASALAHAN</span>
+        <div class="box-text">
+            {{ $data->potensi_ancaman }}
+        </div>
+    </div>
 
-            <div class="section">
-                <span class="title-sub">II. REKOMENDASI / UPAYA PENCEGAHAN</span>
-                <div class="box-text">
-                    {{ $data->upaya_pencegahan ?? 'Belum ada rekomendasi khusus yang dicatat.' }}
-                </div>
-            </div>
+    <div class="section">
+        <span class="title-sub">II. REKOMENDASI / UPAYA PENCEGAHAN</span>
+        <div class="box-text">
+            {{ $data->upaya_pencegahan ?? 'Belum ada rekomendasi khusus yang dicatat.' }}
+        </div>
+    </div>
 
-            <div class="ttd">
-                <p>Banjarmasin, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</p>
-                <p>Petugas Analis Intelijen,</p>
+    <div class="ttd">
+        <p>Banjarmasin, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</p>
+        <p>Petugas Analis Intelijen,</p>
 
-                <div class="nama-pejabat">{{ auth()->user()->name }}</div>
-                <div>Jaksa Intelijen / NIP. {{ auth()->user()->nip ?? '....................' }}</div>
-            </div>
+        <div class="nama-pejabat">{{ auth()->user()->name }}</div>
+        <div>Jaksa Intelijen / NIP. {{ auth()->user()->nip ?? '....................' }}</div>
+    </div>
 
-            <div class="clear"></div>
-            <div class="rahasia" style="margin-top: 20px;">RAHASIA</div>
+    <div class="clear"></div>
+    <div class="rahasia" style="margin-top: 20px;">RAHASIA</div>
 
 </body>
 
