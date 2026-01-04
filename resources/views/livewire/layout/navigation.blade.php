@@ -72,6 +72,7 @@ new class extends Component
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-20">
             <div class="flex">
+                {{-- LOGO SECTION --}}
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-3 group transition-all duration-300">
                         <div class="bg-emerald-500 p-2 rounded-xl group-hover:rotate-12 transition-transform shadow-lg shadow-emerald-500/20">
@@ -86,18 +87,48 @@ new class extends Component
 
                 <div class="hidden space-x-2 sm:-my-px sm:ms-12 sm:flex sm:items-center">
 
+                    {{-- DASHBOARD --}}
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate
                         class="px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 border-none hover:bg-white/5 {{ request()->routeIs('dashboard') ? 'bg-emerald-500/20 !text-emerald-400 shadow-inner' : 'text-gray-400 hover:text-white' }}">
                         <i class="fas fa-home-alt mr-2 opacity-50"></i>{{ __('Dashboard') }}
                     </x-nav-link>
 
+                    {{-- DROPDOWN PERSONIL (KHUSUS ADMIN) --}}
                     @if(auth()->user()->isAdmin())
-                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')" wire:navigate
-                        class="px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 border-none hover:bg-white/5 {{ request()->routeIs('users.*') ? 'bg-emerald-500/20 !text-emerald-400 shadow-inner' : 'text-gray-400 hover:text-white' }}">
-                        <i class="fas fa-users mr-2 opacity-50"></i>{{ __('Personil') }}
-                    </x-nav-link>
+                    <div class="ms-2 relative">
+                        <x-dropdown align="right" width="64">
+                            <x-slot name="trigger">
+                                <button class="relative inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 backdrop-blur-sm group
+                                    {{ request()->routeIs('users.*') ? 'bg-emerald-500/20 text-emerald-400' : 'text-gray-400 hover:text-white hover:bg-white/5' }}">
+                                    <i class="fas fa-users mr-2 opacity-50 group-hover:rotate-12 transition-transform"></i>
+                                    <div>Personil</div>
+                                    <div class="ms-2 opacity-50 group-hover:translate-y-0.5 transition-transform">
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                </button>
+                            </x-slot>
+                            <x-slot name="content">
+                                <div class="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-emerald-500/50 border-b border-white/5">Manajemen Pegawai</div>
+
+                                <x-dropdown-link :href="route('users.index', ['viewMode' => 'list'])" wire:navigate class="hover:bg-emerald-500/10 flex items-center group">
+                                    <i class="fas fa-user-cog w-5 opacity-50 text-xs"></i> Kelola Akun Staff
+                                </x-dropdown-link>
+
+                                <x-dropdown-link :href="route('users.index', ['viewMode' => 'stats'])" wire:navigate class="hover:bg-emerald-500/10 flex items-center group">
+                                    <i class="fas fa-analytics w-5 opacity-50 text-xs"></i> Statistik Kinerja (Bank Data)
+                                </x-dropdown-link>
+
+                                <x-dropdown-link :href="route('users.index', ['viewMode' => 'logs'])" wire:navigate class="hover:bg-emerald-500/10 flex items-center group border-t border-white/5">
+                                    <i class="fas fa-user-shield w-5 opacity-50 text-xs text-blue-400"></i> Log Aktifitas Keamanan
+                                </x-dropdown-link>
+                            </x-slot>
+                        </x-dropdown>
+                    </div>
                     @endif
 
+                    {{-- DROPDOWN OPERASIONAL --}}
                     <div class="ms-2 relative">
                         @php
                         $operasionalRoutes = ['lapinhar.*', 'dpo.*', 'wna.*', 'ormas.*'];
@@ -158,6 +189,7 @@ new class extends Component
                         </x-dropdown>
                     </div>
 
+                    {{-- DROPDOWN GIAT & PELAYANAN --}}
                     <div class="ms-2 relative">
                         @php
                         $pelayananRoutes = ['pam-sdo.*', 'jms.*', 'kerawanan.*', 'lapdu.*'];
@@ -218,10 +250,10 @@ new class extends Component
                             </x-slot>
                         </x-dropdown>
                     </div>
-
                 </div>
             </div>
 
+            {{-- USER PROFILE DROPDOWN --}}
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
@@ -231,7 +263,7 @@ new class extends Component
                             </div>
                             <div class="text-start hidden lg:block">
                                 <p class="text-[10px] font-black text-emerald-400 uppercase tracking-tighter leading-none">{{ auth()->user()->role }}</p>
-                                <div x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name" class="text-sm font-bold text-white leading-none mt-1"></div>
+                                <div x-data="{{ json_encode(['name' => Auth::user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name" class="text-sm font-bold text-white leading-none mt-1"></div>
                             </div>
                             <svg class="fill-current h-4 w-4 text-gray-500 group-hover:text-white transition-colors" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />

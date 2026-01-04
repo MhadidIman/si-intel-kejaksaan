@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 use App\Models\Dpo;
 use App\Models\Wna;
 use App\Models\Lapinhar;
@@ -180,5 +181,32 @@ class ReportController extends Controller
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.lapdu-satuan-pdf', ['data' => $data]);
         $pdf->setPaper('a4', 'portrait');
         return $pdf->stream('Lembar-Disposisi-Lapdu-' . $data->id . '.pdf');
+    }
+
+
+    // ==========================================================
+    // 9. Cetak Statistik Kinerja Staff
+    // ==========================================================
+    public function cetakUserStats()
+    {
+        // Ambil data staff dengan hitungan laporan dari tiap modul
+        $data = User::where('role', '!=', 'admin')
+            ->withCount([
+                'lapinhars',
+                'dpos',
+                'wnas',
+                'ormas',
+                'pamSdos',
+                'jmsActivities',
+                'kerawanans',
+                'lapdus'
+            ])
+            ->orderBy('name', 'asc')
+            ->get();
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.user-stats-pdf', compact('data'))
+            ->setPaper('a4', 'landscape'); // Gunakan landscape agar tabel muat
+
+        return $pdf->stream('Rekap_Kinerja_Staff_' . date('Y-m-d') . '.pdf');
     }
 }

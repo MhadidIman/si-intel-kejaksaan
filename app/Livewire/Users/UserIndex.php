@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
 use App\Models\User;
+use App\Models\ActivityLog;
 use Illuminate\Support\Facades\Hash;
 
 class UserIndex extends Component
@@ -14,77 +15,89 @@ class UserIndex extends Component
 
     // --- PROPERTI FORM ---
     public $name, $email, $password, $nip, $role = 'staff';
-    public $jabatan, $no_hp, $pangkat; // Menggunakan $pangkat agar konsisten
-
+    public $jabatan, $no_hp, $pangkat;
     public $user_id;
 
-    // --- PROPERTI MODAL ---
-    public $selectedUser = null;
-    public $showStatsModal = false;
-    public $isEditMode = false;
+    // --- PROPERTI UI & MODAL ---
     public $showForm = false;
+    public $isEditMode = false;
+    public $viewMode = 'list'; // Pilihan: 'list' (Kelola), 'stats' (Kinerja), 'logs' (Keamanan)
     public $search = '';
 
-    protected $rules = [
-        'name' => 'required',
-        'email' => 'required|email',
-        'nip' => 'nullable',
-        'role' => 'required',
-        'jabatan' => 'nullable',
-        'no_hp' => 'nullable',
-        'pangkat' => 'nullable',
+    // Menjaga agar filter tetap ada saat halaman di-refresh
+    protected $queryString = [
+        'viewMode' => ['except' => 'list'],
+        'search' => ['except' => ''],
     ];
 
     #[Layout('layouts.app')]
     public function render()
     {
-        $users = User::withCount([
-            'lapinhars',
-            'dpos',
-            'wnas',
-            'ormas',
-            'pamSdos',
-            'jmsActivities',
-            'kerawanans',
-            'lapdus'
-        ])
-            ->where(function ($q) {
-                $q->where('name', 'like', '%' . $this->search . '%')
-                    ->orWhere('nip', 'like', '%' . $this->search . '%');
-            })
-            ->orderBy('role', 'asc') // Admin selalu di atas
-            ->orderBy('name', 'asc')
-            ->paginate(10);
+        $users = collect();
+        $logs = collect();
+
+        // 1. Logika untuk Tampilan Kelola Personil & Statistik Kinerja
+        if ($this->viewMode === 'list' || $this->viewMode === 'stats') {
+            $query = User::withCount([
+                'lapinhars',
+                'dpos',
+                'wnas',
+                'ormas',
+                'pamSdos',
+                'jmsActivities',
+                'kerawanans',
+                'lapdus'
+            ]);
+
+            // Filter Pencarian (Nama atau NIP)
+            if ($this->search) {
+                $query->where(function ($q) {
+                    $q->where('name', 'like', '%' . $this->search . '%')
+                        ->orWhere('nip', 'like', '%' . $this->search . '%');
+                });
+            }
+
+            // Jika mode Statistik, biasanya fokus ke kinerja Staff (Admin disembunyikan)
+            if ($this->viewMode === 'stats') {
+                $query->where('role', '!=', 'admin');
+            }
+
+            $users = $query->orderBy('role', 'asc')
+                ->orderBy('name', 'asc')
+                ->paginate(10, ['*'], 'usersPage');
+        }
+
+        // 2. Logika untuk Tampilan Log Aktivitas (Keamanan)
+        if ($this->viewMode === 'logs') {
+            $logQuery = ActivityLog::with('user');
+
+            if ($this->search) {
+                $logQuery->whereHas('user', function ($q) {
+                    $q->where('name', 'like', '%' . $this->search . '%');
+                })->orWhere('activity', 'like', '%' . $this->search . '%')
+                    ->orWhere('ip_address', 'like', '%' . $this->search . '%');
+            }
+
+            $logs = $logQuery->latest()->paginate(15, ['*'], 'logsPage');
+        }
 
         return view('livewire.users.user-index', [
-            'users' => $users
+            'users' => $users,
+            'logs'  => $logs
         ]);
     }
 
-    // --- FITUR STATISTIK USER ---
-    public function viewStats($id)
+    // --- NAVIGATION SWITCHER ---
+    public function setView($mode)
     {
-        $this->selectedUser = User::withCount([
-            'lapinhars',
-            'dpos',
-            'wnas',
-            'ormas',
-            'pamSdos',
-            'jmsActivities',
-            'kerawanans',
-            'lapdus'
-        ])->findOrFail($id);
-
-        $this->showStatsModal = true;
+        $this->viewMode = $mode;
+        $this->showForm = false;
+        $this->search = ''; // Reset pencarian saat pindah tab
+        $this->resetPage('usersPage');
+        $this->resetPage('logsPage');
     }
 
-    public function closeStatsModal()
-    {
-        $this->showStatsModal = false;
-        $this->selectedUser = null;
-    }
-
-    // --- CRUD ---
+    // --- CRUD ACTIONS ---
     public function create()
     {
         $this->resetInputFields();
@@ -95,24 +108,25 @@ class UserIndex extends Component
     public function store()
     {
         $this->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email',
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            'role' => 'required',
+            'role'     => 'required',
+            'nip'      => 'nullable|numeric|unique:users,nip',
         ]);
 
         User::create([
-            'name' => $this->name,
-            'email' => $this->email,
+            'name'     => $this->name,
+            'email'    => $this->email,
             'password' => Hash::make($this->password),
-            'nip' => $this->nip,
-            'role' => $this->role,
-            'jabatan' => $this->jabatan,
-            'no_hp' => $this->no_hp,
-            'pangkat' => $this->pangkat,
+            'nip'      => $this->nip,
+            'role'     => $this->role,
+            'jabatan'  => $this->jabatan,
+            'no_hp'    => $this->no_hp,
+            'pangkat'  => $this->pangkat,
         ]);
 
-        session()->flash('message', 'Personil berhasil ditambahkan.');
+        session()->flash('message', 'Personil berhasil didaftarkan ke sistem.');
         $this->closeModal();
     }
 
@@ -121,35 +135,36 @@ class UserIndex extends Component
         $user = User::findOrFail($id);
 
         $this->user_id = $id;
-        $this->name = $user->name;
-        $this->email = $user->email;
-        $this->nip = $user->nip;
-        $this->role = $user->role;
+        $this->name    = $user->name;
+        $this->email   = $user->email;
+        $this->nip     = $user->nip;
+        $this->role    = $user->role;
         $this->jabatan = $user->jabatan;
-        $this->no_hp = $user->no_hp;
+        $this->no_hp   = $user->no_hp;
         $this->pangkat = $user->pangkat;
 
-        $this->showForm = true;
+        $this->showForm   = true;
         $this->isEditMode = true;
     }
 
     public function update()
     {
         $this->validate([
-            'name' => 'required',
+            'name'  => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $this->user_id,
-            'role' => 'required',
+            'role'  => 'required',
+            'nip'   => 'nullable|numeric|unique:users,nip,' . $this->user_id,
         ]);
 
         $user = User::find($this->user_id);
 
         $data = [
-            'name' => $this->name,
-            'email' => $this->email,
-            'nip' => $this->nip,
-            'role' => $this->role,
+            'name'    => $this->name,
+            'email'   => $this->email,
+            'nip'     => $this->nip,
+            'role'    => $this->role,
             'jabatan' => $this->jabatan,
-            'no_hp' => $this->no_hp,
+            'no_hp'   => $this->no_hp,
             'pangkat' => $this->pangkat,
         ];
 
@@ -159,18 +174,19 @@ class UserIndex extends Component
 
         $user->update($data);
 
-        session()->flash('message', 'Data Personil diperbarui.');
+        session()->flash('message', 'Data personil berhasil diperbarui.');
         $this->closeModal();
     }
 
     public function delete($id)
     {
         if ($id == auth()->id()) {
-            session()->flash('error', 'Tidak dapat menghapus akun sendiri.');
+            session()->flash('error', 'Keamanan: Anda tidak diperbolehkan menghapus akun sendiri.');
             return;
         }
+
         User::find($id)->delete();
-        session()->flash('message', 'Personil dihapus.');
+        session()->flash('message', 'Akun personil telah dihapus dari sistem.');
     }
 
     public function closeModal()
@@ -181,14 +197,7 @@ class UserIndex extends Component
 
     private function resetInputFields()
     {
-        $this->name = '';
-        $this->email = '';
-        $this->password = '';
-        $this->nip = '';
+        $this->reset(['name', 'email', 'password', 'nip', 'role', 'jabatan', 'no_hp', 'pangkat', 'user_id']);
         $this->role = 'staff';
-        $this->jabatan = '';
-        $this->no_hp = '';
-        $this->pangkat = '';
-        $this->user_id = null;
     }
 }
