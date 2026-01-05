@@ -7,13 +7,13 @@
         /* PENGATURAN KERTAS & FONT */
         body {
             font-family: Arial, sans-serif;
-            font-size: 10px;
+            font-size: 10pt;
             line-height: 1.3;
             margin: 0;
             padding: 0;
         }
 
-        /* KOP SURAT */
+        /* KOP SURAT (STANDAR RESMI) */
         .header-container {
             text-align: center;
             position: relative;
@@ -23,29 +23,29 @@
         }
 
         .logo {
-            width: 70px;
+            width: 80px;
             position: absolute;
             left: 0;
-            top: 0;
+            top: 5px;
         }
 
         .header-text h3 {
             margin: 0;
-            font-size: 12pt;
+            font-size: 14pt;
             font-weight: bold;
             text-transform: uppercase;
         }
 
         .header-text h2 {
             margin: 2px 0;
-            font-size: 14pt;
+            font-size: 16pt;
             font-weight: bold;
             text-transform: uppercase;
         }
 
         .header-text p {
             margin: 0;
-            font-size: 8pt;
+            font-size: 9pt;
             font-weight: normal;
         }
 
@@ -54,7 +54,7 @@
             text-align: center;
             font-weight: bold;
             text-decoration: underline;
-            font-size: 11pt;
+            font-size: 12pt;
             margin-bottom: 5px;
             text-transform: uppercase;
         }
@@ -63,7 +63,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 15px;
             font-size: 9pt;
         }
 
@@ -77,30 +77,43 @@
             background-color: #f2f2f2;
             text-align: center;
             font-weight: bold;
-            padding: 6px 4px;
+            padding: 8px 4px;
             vertical-align: middle;
+            text-transform: uppercase;
         }
 
         td {
-            padding: 5px 6px;
+            padding: 6px 8px;
             text-align: left;
             vertical-align: top;
         }
 
         /* STATUS BADGE */
-        .badge-tinggi {
-            color: red;
+        .badge {
             font-weight: bold;
+            text-transform: uppercase;
+            font-size: 8pt;
+            padding: 2px 5px;
+            border-radius: 3px;
+            display: inline-block;
         }
 
-        .badge-sedang {
-            color: #d97706;
-            font-weight: bold;
+        .tinggi {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #b91c1c;
         }
 
-        .badge-rendah {
-            color: green;
-            font-weight: bold;
+        .sedang {
+            background-color: #ffedd5;
+            color: #c2410c;
+            border: 1px solid #c2410c;
+        }
+
+        .rendah {
+            background-color: #dcfce7;
+            color: #15803d;
+            border: 1px solid #15803d;
         }
 
         /* TANDA TANGAN */
@@ -123,7 +136,7 @@
             <h3>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h3>
             <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
             <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
-            <p>Website: kejari-banjarmasin.go.id</p>
+            <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
         </div>
     </div>
 
@@ -139,36 +152,51 @@
     <table>
         <thead>
             <tr>
-                <th style="width: 5%">No</th>
-                <th style="width: 20%">Lokasi (Kec/Desa)</th>
-                <th style="width: 15%">Jenis Ancaman</th>
+                <th style="width: 4%">No</th>
+                <th style="width: 20%">Lokasi (Kecamatan)</th>
+                <th style="width: 15%">Bidang Intelijen</th>
                 <th style="width: 10%">Tingkat</th>
-                <th style="width: 30%">Deskripsi Kerawanan</th>
-                <th style="width: 20%">Tokoh Kunci</th>
+                <th style="width: 31%">Potensi Ancaman</th>
+                <th style="width: 20%">Sumber Informasi</th>
             </tr>
         </thead>
         <tbody>
             @foreach($data as $index => $row)
             <tr>
                 <td style="text-align: center">{{ $index + 1 }}</td>
+
+                {{-- Lokasi --}}
                 <td>
-                    <strong>{{ strtoupper($row->kecamatan) }}</strong><br>
-                    <span style="font-size: 8pt; color: #555;">Desa: {{ $row->desa }}</span>
-                </td>
-                <td>{{ $row->jenis_ancaman }}</td>
-                <td style="text-align: center;">
-                    @if($row->tingkat_rawan == 'tinggi')
-                    <span class="badge-tinggi">TINGGI</span>
-                    @elseif($row->tingkat_rawan == 'sedang')
-                    <span class="badge-sedang">SEDANG</span>
-                    @else
-                    <span class="badge-rendah">RENDAH</span>
+                    <strong style="text-transform: uppercase;">{{ $row->kecamatan }}</strong>
+                    {{-- Jika ada kolom desa, tampilkan. Jika tidak, hapus baris ini --}}
+                    @if(!empty($row->desa))
+                    <br><span style="font-size: 8pt; color: #555;">Desa: {{ $row->desa }}</span>
                     @endif
                 </td>
-                <td style="text-align: justify;">
-                    {{ \Illuminate\Support\Str::limit($row->deskripsi_singkat, 150) }}
+
+                {{-- Bidang --}}
+                <td>{{ $row->bidang }}</td>
+
+                {{-- Tingkat Kerawanan --}}
+                <td style="text-align: center;">
+                    @if(strtolower($row->tingkat_rawan) == 'tinggi')
+                    <span class="badge tinggi">TINGGI</span>
+                    @elseif(strtolower($row->tingkat_rawan) == 'sedang')
+                    <span class="badge sedang">SEDANG</span>
+                    @else
+                    <span class="badge rendah">RENDAH</span>
+                    @endif
                 </td>
-                <td>{{ $row->tokoh_kunci ?? '-' }}</td>
+
+                {{-- Potensi Ancaman (Gunakan nl2br agar enter terbaca) --}}
+                <td style="text-align: justify;">
+                    {{ \Illuminate\Support\Str::limit($row->potensi_ancaman, 200) }}
+                </td>
+
+                {{-- Sumber Info --}}
+                <td>
+                    {{ $row->sumber_informasi ?? 'Tertutup / Terbuka' }}
+                </td>
             </tr>
             @endforeach
         </tbody>

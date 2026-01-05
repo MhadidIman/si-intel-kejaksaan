@@ -7,7 +7,8 @@
         /* PENGATURAN KERTAS & FONT */
         body {
             font-family: Arial, sans-serif;
-            font-size: 11pt;
+            font-size: 10pt;
+            /* Ukuran font standar surat dinas */
             line-height: 1.3;
             margin: 0;
             padding: 0;
@@ -24,7 +25,7 @@
         }
 
         .logo {
-            width: 85px;
+            width: 80px;
             position: absolute;
             left: 0;
             top: 5px;
@@ -65,7 +66,8 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
-            font-size: 10pt;
+            font-size: 9pt;
+            /* Font tabel sedikit lebih kecil agar muat */
         }
 
         table,
@@ -80,43 +82,47 @@
             font-weight: bold;
             padding: 8px 5px;
             vertical-align: middle;
+            text-transform: uppercase;
         }
 
         td {
             padding: 6px 8px;
             text-align: left;
             vertical-align: top;
+            /* Teks rata atas */
         }
 
         /* STATUS BADGE */
         .status-badge {
             font-weight: bold;
             text-transform: uppercase;
-            font-size: 8pt;
-            padding: 3px 6px;
+            font-size: 7pt;
+            padding: 2px 5px;
             border-radius: 3px;
             display: inline-block;
-            margin-top: 5px;
+            margin-top: 0;
         }
 
         .buron {
-            color: #dc2626;
-            border: 1px solid #dc2626;
+            color: #b91c1c;
+            /* Merah gelap */
+            border: 1px solid #b91c1c;
             background-color: #fef2f2;
         }
 
         .tertangkap {
-            color: #16a34a;
-            border: 1px solid #16a34a;
+            color: #15803d;
+            /* Hijau gelap */
+            border: 1px solid #15803d;
             background-color: #f0fdf4;
         }
 
         /* TANDA TANGAN */
         .ttd-container {
             float: right;
-            width: 40%;
+            width: 35%;
             text-align: center;
-            margin-top: 40px;
+            margin-top: 30px;
         }
     </style>
 </head>
@@ -144,10 +150,10 @@
     <table>
         <thead>
             <tr>
-                <th style="width: 5%">No</th>
-                <th style="width: 22%">Identitas Buronan</th>
-                <th style="width: 15%">Tempat/Tgl Lahir</th>
-                <th style="width: 30%">Kasus Posisi</th>
+                <th style="width: 4%">No</th>
+                <th style="width: 20%">Identitas Buronan</th>
+                <th style="width: 14%">Tempat/Tgl Lahir</th>
+                <th style="width: 34%">Kasus Posisi</th> {{-- Kolom diperlebar --}}
                 <th style="width: 13%">Status Hukum</th>
                 <th style="width: 15%">Status DPO</th>
             </tr>
@@ -156,29 +162,39 @@
             @foreach($data as $index => $item)
             <tr>
                 <td style="text-align: center">{{ $index + 1 }}</td>
+
+                {{-- Identitas --}}
                 <td>
                     <strong style="text-transform: uppercase;">{{ $item->nama_lengkap }}</strong><br>
-                    @if($item->ciri_fisik)
-                    <div style="margin-top: 4px; font-size: 9pt; color: #444; font-style: italic;">
-                        Ciri: {{ \Illuminate\Support\Str::limit($item->ciri_fisik, 60) }}
+                    @if(!empty($item->ciri_fisik) || !empty($item->ciri_ciri))
+                    <div style="margin-top: 4px; font-size: 8.5pt; color: #333; font-style: italic;">
+                        Ciri: {{ \Illuminate\Support\Str::limit($item->ciri_fisik ?? $item->ciri_ciri, 80) }}
                     </div>
                     @endif
                 </td>
+
+                {{-- TTL --}}
                 <td>
                     {{ $item->tempat_lahir ?? '-' }}<br>
                     <span style="font-size: 9pt;">
                         {{ $item->tanggal_lahir ? \Carbon\Carbon::parse($item->tanggal_lahir)->translatedFormat('d F Y') : '-' }}
                     </span>
                 </td>
+
+                {{-- Kasus Posisi (FIX: Cek beberapa kemungkinan nama kolom) --}}
                 <td style="text-align: justify;">
-                    {{-- Pastikan nama kolom 'kasus_posisi' sesuai database --}}
-                    {{ \Illuminate\Support\Str::limit($item->kasus_posisi, 200) }}
+                    {{ \Illuminate\Support\Str::limit($item->kasus_posisi ?? $item->kronologi ?? $item->kasus ?? '-', 250) }}
                 </td>
+
+                {{-- Status Hukum --}}
                 <td style="text-align: center;">
-                    {{ $item->status_hukum }}
+                    {{ $item->status_hukum ?? '-' }}
                 </td>
+
+                {{-- Status DPO --}}
                 <td style="text-align: center;">
-                    @if($item->status_pencarian == 'buron')
+                    {{-- Cek berbagai kemungkinan value status (buron, DPO, tertangkap) --}}
+                    @if(in_array(strtolower($item->status_dpo ?? $item->status_pencarian), ['buron', 'dpo', 'masih buron']))
                     <span class="status-badge buron">MASIH BURON</span>
                     @else
                     <span class="status-badge tertangkap">TERTANGKAP</span>

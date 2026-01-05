@@ -5,16 +5,18 @@
     <meta charset="UTF-8">
     <title>Lembar DPO - {{ $data->nama_lengkap }}</title>
     <style>
-        /* Pengaturan Kertas */
+        /* PENGATURAN KERTAS & PAGE BREAK */
         @page {
             size: A4 portrait;
-            margin: 2cm;
+            margin: 1.5cm 2cm;
+            /* Margin sedikit diperkecil agar muat */
         }
 
         body {
             font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
-            line-height: 1.5;
+            font-size: 11pt;
+            /* Font sedikit diperkecil agar hemat ruang */
+            line-height: 1.3;
             color: #000;
         }
 
@@ -26,7 +28,7 @@
         }
 
         .logo-cell {
-            width: 100px;
+            width: 90px;
             vertical-align: middle;
             text-align: left;
         }
@@ -39,18 +41,19 @@
         .teks-cell {
             text-align: center;
             vertical-align: middle;
-            padding-right: 80px;
+            padding-right: 90px;
+            /* Kompensasi lebar logo agar teks tetap di tengah */
         }
 
         .teks-cell h1 {
-            font-size: 14pt;
+            font-size: 13pt;
             margin: 0;
             font-weight: bold;
             text-transform: uppercase;
         }
 
         .teks-cell h2 {
-            font-size: 16pt;
+            font-size: 15pt;
             margin: 0;
             font-weight: bold;
             text-transform: uppercase;
@@ -59,7 +62,7 @@
         .teks-cell p {
             font-size: 9pt;
             margin: 1px 0;
-            line-height: 1.2;
+            line-height: 1.1;
         }
 
         .garis-kop-ganda {
@@ -67,7 +70,7 @@
             border-bottom: 1px solid black;
             height: 2px;
             margin-top: 5px;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
         }
 
         /* --- STYLING ISI --- */
@@ -75,15 +78,15 @@
             font-weight: bold;
             text-decoration: underline;
             text-align: right;
-            font-size: 11pt;
-            margin-bottom: 10px;
+            font-size: 10pt;
+            margin-bottom: 5px;
         }
 
         .judul {
             text-align: center;
             font-weight: bold;
             text-decoration: underline;
-            font-size: 14pt;
+            font-size: 13pt;
             margin-bottom: 5px;
             text-transform: uppercase;
         }
@@ -91,32 +94,31 @@
         .sub-judul {
             text-align: center;
             font-weight: bold;
-            font-size: 12pt;
-            margin-bottom: 30px;
+            font-size: 11pt;
+            margin-bottom: 20px;
             text-transform: uppercase;
         }
 
-        /* --- PERBAIKAN LAYOUT UTAMA (AGAR TIDAK KEPOTONG) --- */
+        /* --- LAYOUT BIODATA & FOTO --- */
         .main-layout {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
-        /* Kolom Kiri (Biodata) dapat 68% lebar agar teks panjang bisa turun ke bawah */
         .col-left {
-            width: 68%;
+            width: 65%;
             vertical-align: top;
-            padding-right: 15px;
+            padding-right: 10px;
         }
 
-        /* Kolom Kanan (Foto) dapat 32% */
         .col-right {
-            width: 32%;
+            width: 35%;
             vertical-align: top;
+            text-align: center;
         }
 
-        /* TABEL DATA (Di dalam kolom kiri) */
+        /* TABEL BIODATA */
         .table-data {
             width: 100%;
             border-collapse: collapse;
@@ -124,103 +126,120 @@
 
         .table-data td {
             vertical-align: top;
-            padding: 5px 0;
+            padding: 3px 0;
+            /* Padding diperkecil */
         }
 
         .label {
-            width: 150px;
+            width: 130px;
             font-weight: bold;
         }
 
         .sep {
-            width: 15px;
+            width: 10px;
             text-align: center;
         }
 
-        /* Text-align justify agar ciri-ciri rapi */
         .val {
             text-align: justify;
         }
 
-        /* FOTO */
+        /* FOTO & STAMP */
         .foto-box {
             width: 100%;
             border: 2px solid #000;
-            padding: 5px;
-            text-align: center;
+            padding: 4px;
             box-sizing: border-box;
+            display: inline-block;
         }
 
         .foto-img {
-            width: 150px;
-            height: 200px;
+            width: 140px;
+            height: 190px;
             object-fit: cover;
         }
 
         .no-foto {
-            height: 200px;
+            height: 190px;
+            width: 140px;
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: #f3f4f6;
-            font-size: 10pt;
+            font-size: 9pt;
             color: #666;
-            padding-top: 90px;
+            margin: 0 auto;
+            border: 1px dashed #ccc;
+            line-height: 190px;
+            /* Vertikal center trick untuk dompdf */
         }
 
-        /* STATUS STAMP */
         .status-stamp {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 18pt;
+            margin-top: 15px;
+            font-size: 14pt;
             font-weight: bold;
             border: 3px double;
-            padding: 10px;
+            padding: 5px;
             transform: rotate(-5deg);
-            width: 100%;
-            box-sizing: border-box;
+            display: inline-block;
+            width: 90%;
         }
 
         .status-buron {
-            color: #dc2626;
-            border-color: #dc2626;
+            color: #b91c1c;
+            border-color: #b91c1c;
         }
 
         .status-tertangkap {
-            color: #16a34a;
-            border-color: #16a34a;
+            color: #15803d;
+            border-color: #15803d;
         }
 
-        /* LAINNYA */
+        /* KASUS POSISI */
         .section-title {
             font-weight: bold;
             text-transform: uppercase;
-            margin-top: 20px;
+            margin-top: 15px;
             margin-bottom: 5px;
             text-decoration: underline;
+            font-size: 11pt;
         }
 
         .box-text {
             border: 1px solid #000;
-            padding: 10px;
+            padding: 8px;
             text-align: justify;
-            min-height: 80px;
+            min-height: 60px;
+            font-size: 10.5pt;
+            margin-bottom: 10px;
+        }
+
+        /* TANDA TANGAN (FIX PAGE BREAK) */
+        .ttd-wrapper {
+            width: 100%;
+            page-break-inside: avoid;
+            /* Mencegah ttd terpotong */
+            margin-top: 20px;
         }
 
         .ttd-container {
             float: right;
-            width: 300px;
+            width: 280px;
             text-align: center;
-            margin-top: 50px;
         }
 
         .nama-terang {
             font-weight: bold;
             text-decoration: underline;
-            margin-top: 70px;
+            margin-top: 60px;
         }
 
-        .clear {
+        .footer-rahasia {
+            text-align: right;
+            font-weight: bold;
+            text-decoration: underline;
+            font-size: 10pt;
+            margin-top: 10px;
             clear: both;
         }
     </style>
@@ -230,6 +249,7 @@
 
     <div class="rahasia-top">RAHASIA</div>
 
+    {{-- KOP SURAT --}}
     <table class="kop-table">
         <tr>
             <td class="logo-cell">
@@ -246,11 +266,14 @@
     </table>
     <div class="garis-kop-ganda"></div>
 
+    {{-- JUDUL --}}
     <div class="judul">DAFTAR PENCARIAN ORANG (DPO)</div>
     <div class="sub-judul">TINDAK PIDANA {{ strtoupper($data->status_hukum) }}</div>
 
+    {{-- KONTEN UTAMA --}}
     <table class="main-layout">
         <tr>
+            {{-- KOLOM KIRI: BIODATA --}}
             <td class="col-left">
                 <table class="table-data">
                     <tr>
@@ -266,14 +289,15 @@
                     <tr>
                         <td class="label">Tanggal Lahir</td>
                         <td class="sep">:</td>
-                        <td class="val">{{ $data->tanggal_lahir ? \Carbon\Carbon::parse($data->tanggal_lahir)->isoFormat('D MMMM Y') : '-' }}</td>
+                        <td class="val">
+                            {{ $data->tanggal_lahir ? \Carbon\Carbon::parse($data->tanggal_lahir)->isoFormat('D MMMM Y') : '-' }}
+                        </td>
                     </tr>
                     <tr>
                         <td class="label">Status Hukum</td>
                         <td class="sep">:</td>
                         <td class="val">{{ $data->status_hukum }}</td>
                     </tr>
-                    {{-- CIRI FISIK: Sekarang aman karena ada di kolom sendiri --}}
                     <tr>
                         <td class="label">Ciri-Ciri Fisik</td>
                         <td class="sep">:</td>
@@ -282,6 +306,7 @@
                 </table>
             </td>
 
+            {{-- KOLOM KANAN: FOTO & STATUS --}}
             <td class="col-right">
                 <div class="foto-box">
                     @if($data->foto)
@@ -291,7 +316,7 @@
                     @endif
                 </div>
 
-                @if($data->status_pencarian == 'buron')
+                @if(strtolower($data->status_pencarian ?? $data->status_dpo) == 'buron')
                 <div class="status-stamp status-buron">STATUS: BURON</div>
                 @else
                 <div class="status-stamp status-tertangkap">TERTANGKAP</div>
@@ -300,23 +325,26 @@
         </tr>
     </table>
 
+    {{-- KASUS POSISI --}}
     <div class="section-title">KASUS POSISI / URAIAN PERKARA</div>
     <div class="box-text">
-        {{ $data->kasus }}
+        {{-- Gunakan limit atau nl2br agar rapi --}}
+        {!! nl2br(e($data->kasus_posisi ?? $data->kasus ?? '-')) !!}
     </div>
 
-    <div class="ttd-container">
-        <p>Banjarmasin, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</p>
-        <p>Kepala Seksi Intelijen,</p>
+    {{-- TANDA TANGAN (WRAPPER AGAR TIDAK PECAH HALAMAN) --}}
+    <div class="ttd-wrapper">
+        <div class="ttd-container">
+            <p>Banjarmasin, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</p>
+            <p>Kepala Seksi Intelijen,</p>
 
-        <br><br><br>
-
-        <div class="nama-terang">Dimas Purnama Putra, S.H.,M.H</div>
-        <div>Jaksa Madya / NIP. 19850101 201001 1 001</div>
+            <div class="nama-terang">Dimas Purnama Putra, S.H.,M.H</div>
+            <div>Jaksa Madya / NIP. 19850101 201001 1 001</div>
+        </div>
+        <div style="clear: both;"></div>
     </div>
 
-    <div class="clear"></div>
-    <div class="rahasia-top" style="margin-top: 30px;">RAHASIA</div>
+    <div class="footer-rahasia">RAHASIA</div>
 
 </body>
 

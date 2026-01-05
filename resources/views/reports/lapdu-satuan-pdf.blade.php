@@ -4,20 +4,20 @@
 <head>
     <title>Disposisi Lapdu - {{ $data->nama_terlapor }}</title>
     <style>
-        /* Pengaturan Standar */
+        /* Pengaturan Standar (Margin diperkecil agar muat 1 halaman jika memungkinkan) */
         @page {
             size: A4 portrait;
-            margin: 2cm;
+            margin: 1.5cm 2cm;
         }
 
         body {
             font-family: 'Times New Roman', Times, serif;
             font-size: 11pt;
-            line-height: 1.4;
+            line-height: 1.3;
             color: #000;
         }
 
-        /* KOP SURAT */
+        /* --- KOP SURAT --- */
         .kop-table {
             width: 100%;
             border-collapse: collapse;
@@ -25,7 +25,7 @@
         }
 
         .logo-cell {
-            width: 100px;
+            width: 90px;
             vertical-align: middle;
             text-align: left;
         }
@@ -38,18 +38,18 @@
         .teks-cell {
             text-align: center;
             vertical-align: middle;
-            padding-right: 80px;
+            padding-right: 90px;
         }
 
         .teks-cell h1 {
-            font-size: 14pt;
+            font-size: 13pt;
             margin: 0;
             font-weight: bold;
             text-transform: uppercase;
         }
 
         .teks-cell h2 {
-            font-size: 16pt;
+            font-size: 15pt;
             margin: 0;
             font-weight: bold;
             text-transform: uppercase;
@@ -58,6 +58,7 @@
         .teks-cell p {
             font-size: 9pt;
             margin: 1px 0;
+            line-height: 1.1;
         }
 
         .garis-kop-ganda {
@@ -65,10 +66,10 @@
             border-bottom: 1px solid black;
             height: 2px;
             margin-top: 5px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
-        /* ISI */
+        /* --- ISI --- */
         .rahasia {
             text-align: right;
             font-weight: bold;
@@ -81,7 +82,7 @@
             text-align: center;
             font-weight: bold;
             text-decoration: underline;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             font-size: 13pt;
             text-transform: uppercase;
         }
@@ -94,13 +95,13 @@
         }
 
         .table-data td {
-            padding: 5px;
+            padding: 4px;
             vertical-align: top;
             border: 1px solid #000;
         }
 
         .label {
-            width: 180px;
+            width: 170px;
             font-weight: bold;
             background-color: #f2f2f2;
         }
@@ -112,43 +113,57 @@
             margin-bottom: 3px;
             font-size: 11pt;
             text-transform: uppercase;
+            text-decoration: underline;
         }
 
         .box-uraian {
             border: 1px solid #000;
-            padding: 10px;
-            min-height: 80px;
+            padding: 8px;
+            min-height: 60px;
             text-align: justify;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .box-disposisi {
             border: 2px solid #000;
-            padding: 15px;
-            min-height: 120px;
+            padding: 10px;
+            min-height: 100px;
+            margin-bottom: 10px;
         }
 
-        /* FOTO BUKTI (JIKA ADA) */
+        /* FOTO BUKTI (JIKA ADA) - DIBUAT FLEXIBEL */
         .evidence-container {
             margin-top: 10px;
             text-align: center;
             border: 1px dashed #999;
-            padding: 10px;
+            padding: 5px;
+            page-break-inside: avoid;
+            /* Foto jangan terpotong */
         }
 
         .evidence-img {
-            max-width: 90%;
-            max-height: 250px;
+            max-width: 95%;
+            max-height: 200px;
+            /* Batasi tinggi agar hemat ruang */
             border: 1px solid #000;
             margin-top: 5px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        /* TANDA TANGAN */
+        /* TANDA TANGAN (WRAPPER AGAR TIDAK PECAH) */
+        .ttd-wrapper {
+            width: 100%;
+            margin-top: 25px;
+            page-break-inside: avoid;
+            /* Mencegah ttd terpotong ke halaman baru sendirian */
+        }
+
         .ttd-container {
             float: right;
-            width: 45%;
+            width: 250px;
             text-align: center;
-            margin-top: 40px;
         }
 
         .clear {
@@ -161,10 +176,10 @@
 
     <div class="rahasia">RAHASIA</div>
 
+    {{-- KOP SURAT --}}
     <table class="kop-table">
         <tr>
             <td class="logo-cell">
-                {{-- GUNAKAN public_path AGAR BISA DIBACA PDF --}}
                 <img src="{{ public_path('img/logo-kejaksaan.png') }}" class="logo-img">
             </td>
             <td class="teks-cell">
@@ -211,7 +226,7 @@
                 'arsip' => 'DIARSIPKAN'
                 ];
                 @endphp
-                <strong>{{ $statusLabel[$data->status_laporan] ?? 'MENUNGGU DISPOSISI' }}</strong>
+                <strong style="text-transform: uppercase;">{{ $statusLabel[$data->status_laporan] ?? 'MENUNGGU DISPOSISI' }}</strong>
             </td>
         </tr>
     </table>
@@ -221,15 +236,10 @@
         {{ $data->uraian_pengaduan }}
 
         {{-- CEK APAKAH ADA BUKTI GAMBAR --}}
-        @if($data->bukti_foto)
+        @if($data->bukti_foto && file_exists(public_path('storage/' . $data->bukti_foto)))
         <div class="evidence-container">
-            <div style="font-size: 9pt; font-weight: bold; margin-bottom: 5px;">LAMPIRAN BUKTI:</div>
-            {{-- Pastikan path storage benar. public_path('storage/...') --}}
-            @if(file_exists(public_path('storage/' . $data->bukti_foto)))
+            <div style="font-size: 9pt; font-weight: bold; margin-bottom: 2px;">LAMPIRAN BUKTI:</div>
             <img src="{{ public_path('storage/' . $data->bukti_foto) }}" class="evidence-img">
-            @else
-            <div style="color: red; font-style: italic;">(File gambar tidak ditemukan di server)</div>
-            @endif
         </div>
         @endif
     </div>
@@ -238,20 +248,22 @@
     <div class="box-disposisi">
         <span style="text-decoration: underline; font-style: italic; font-weight: bold;">Catatan:</span>
         <br><br>
-        <p style="line-height: 1.6;">
+        <p style="line-height: 1.4; margin: 0;">
             {{ $data->keterangan_tindak_lanjut ?? 'Belum ada catatan tindak lanjut.' }}
         </p>
     </div>
 
-    <div class="ttd-container">
-        <p>Banjarmasin, {{ now()->translatedFormat('d F Y') }}</p>
-        <p>Petugas Penerima,</p>
-        <br><br><br>
-        <p style="text-decoration: underline; font-weight: bold;">{{ auth()->user()->name }}</p>
-        <p>NIP. {{ auth()->user()->nip ?? '-' }}</p>
+    {{-- TANDA TANGAN WRAPPER --}}
+    <div class="ttd-wrapper">
+        <div class="ttd-container">
+            <p>Banjarmasin, {{ now()->translatedFormat('d F Y') }}</p>
+            <p>Petugas Penerima,</p>
+            <br><br><br>
+            <p style="text-decoration: underline; font-weight: bold; margin-bottom: 0;">{{ auth()->user()->name }}</p>
+            <p style="margin-top: 2px;">NIP. {{ auth()->user()->nip ?? '-' }}</p>
+        </div>
+        <div class="clear"></div>
     </div>
-
-    <div class="clear"></div>
 
 </body>
 

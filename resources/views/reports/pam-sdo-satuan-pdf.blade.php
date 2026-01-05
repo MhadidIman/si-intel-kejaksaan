@@ -5,20 +5,21 @@
     <meta charset="UTF-8">
     <title>Laporan PAM SDO - {{ $item->nama_pegawai }}</title>
     <style>
-        /* Pengaturan Kertas */
+        /* PENGATURAN KERTAS (MARGIN DIKURANGI SEDIKIT AGAR MUAT) */
         @page {
             size: A4 portrait;
-            margin: 2cm;
+            margin: 1.5cm 2cm;
         }
 
         body {
             font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
-            line-height: 1.5;
+            font-size: 11pt;
+            /* Font sedikit diperkecil agar hemat ruang */
+            line-height: 1.3;
             color: #000;
         }
 
-        /* --- STYLING KOP SURAT --- */
+        /* --- KOP SURAT --- */
         .kop-table {
             width: 100%;
             border-collapse: collapse;
@@ -26,7 +27,7 @@
         }
 
         .logo-cell {
-            width: 100px;
+            width: 90px;
             vertical-align: middle;
             text-align: left;
         }
@@ -39,18 +40,18 @@
         .teks-cell {
             text-align: center;
             vertical-align: middle;
-            padding-right: 80px;
+            padding-right: 90px;
         }
 
         .teks-cell h1 {
-            font-size: 14pt;
+            font-size: 13pt;
             margin: 0;
             font-weight: bold;
             text-transform: uppercase;
         }
 
         .teks-cell h2 {
-            font-size: 16pt;
+            font-size: 15pt;
             margin: 0;
             font-weight: bold;
             text-transform: uppercase;
@@ -59,7 +60,7 @@
         .teks-cell p {
             font-size: 9pt;
             margin: 1px 0;
-            line-height: 1.2;
+            line-height: 1.1;
         }
 
         .garis-kop-ganda {
@@ -67,24 +68,24 @@
             border-bottom: 1px solid black;
             height: 2px;
             margin-top: 5px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
-        /* --- STYLING ISI DOKUMEN --- */
+        /* --- KONTEN --- */
         .rahasia-top {
             font-weight: bold;
             text-decoration: underline;
             text-align: right;
-            font-size: 11pt;
-            margin-bottom: 10px;
+            font-size: 10pt;
+            margin-bottom: 5px;
         }
 
         .judul {
             text-align: center;
-            font-size: 14pt;
+            font-size: 13pt;
             font-weight: bold;
             text-decoration: underline;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             text-transform: uppercase;
         }
 
@@ -97,12 +98,18 @@
             text-transform: uppercase;
             margin-bottom: 5px;
             text-decoration: underline;
+            font-size: 11pt;
         }
 
         .value-text {
             text-align: justify;
-            padding-left: 20px;
+            padding-left: 0;
+            /* Hemat ruang */
             margin-bottom: 10px;
+            border: 1px solid #000;
+            /* Tambah border agar rapi & jelas batasnya */
+            padding: 8px;
+            min-height: 50px;
         }
 
         .table-info {
@@ -113,11 +120,11 @@
 
         .table-info td {
             vertical-align: top;
-            padding: 4px 0;
+            padding: 3px 0;
         }
 
         .col-label {
-            width: 220px;
+            width: 180px;
             font-weight: bold;
         }
 
@@ -126,18 +133,20 @@
             text-align: center;
         }
 
-        /* FOTO DI BAWAH */
+        /* FOTO */
         .foto-wrapper {
-            margin-top: 20px;
+            margin-top: 15px;
             text-align: center;
             page-break-inside: avoid;
+            /* Jangan potong foto */
         }
 
         .foto-container {
-            width: 300px;
+            width: 250px;
+            /* Perkecil sedikit agar muat */
             height: auto;
             border: 1px solid #000;
-            padding: 5px;
+            padding: 4px;
             margin: 0 auto;
             background-color: #f9f9f9;
         }
@@ -149,43 +158,52 @@
         }
 
         .foto-label {
-            font-size: 10pt;
+            font-size: 9pt;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
             text-transform: uppercase;
         }
 
         /* STATUS BOX */
         .status-box {
             border: 2px solid black;
-            padding: 10px;
+            padding: 8px;
             text-align: center;
             font-weight: bold;
             text-transform: uppercase;
-            margin-top: 30px;
+            margin-top: 20px;
             background-color: #f0f0f0;
+            font-size: 11pt;
+            page-break-inside: avoid;
         }
 
-        /* TANDA TANGAN */
+        /* TANDA TANGAN (FIX PAGE BREAK) */
+        .ttd-wrapper {
+            width: 100%;
+            margin-top: 30px;
+            page-break-inside: avoid;
+            /* KUNCI UTAMA: Agar ttd tidak pindah halaman sendirian */
+        }
+
         .ttd-container {
             float: right;
-            width: 300px;
+            width: 280px;
             text-align: center;
-            margin-top: 50px;
         }
 
         .nama-terang {
             font-weight: bold;
             text-decoration: underline;
-            margin-top: 70px;
+            margin-top: 60px;
         }
 
         .rahasia-bottom {
             font-weight: bold;
             text-decoration: underline;
             text-align: right;
-            font-size: 11pt;
-            margin-top: 30px;
+            font-size: 10pt;
+            margin-top: 20px;
+            clear: both;
         }
 
         .clear {
@@ -198,6 +216,7 @@
 
     <div class="rahasia-top">RAHASIA</div>
 
+    {{-- KOP SURAT --}}
     <table class="kop-table">
         <tr>
             <td class="logo-cell">
@@ -216,15 +235,16 @@
 
     <div class="judul">LAPORAN PENGAMANAN SUMBER DAYA ORGANISASI (SDO)</div>
 
+    {{-- BIODATA --}}
     <div class="content-block">
         <table class="table-info">
             <tr>
-                <td class="col-label">Hari / Tanggal Laporan</td>
+                <td class="col-label">Hari / Tanggal</td>
                 <td class="col-sep">:</td>
                 <td>{{ \Carbon\Carbon::parse($item->created_at)->isoFormat('dddd, D MMMM Y') }}</td>
             </tr>
             <tr>
-                <td class="col-label">Nama Pegawai / Jaksa</td>
+                <td class="col-label">Nama Pegawai</td>
                 <td class="col-sep">:</td>
                 <td><strong>{{ strtoupper($item->nama_pegawai) }}</strong></td>
             </tr>
@@ -246,6 +266,7 @@
         </table>
     </div>
 
+    {{-- ISI LAPORAN (DIBERI BORDER AGAR RAPI) --}}
     <div class="content-block">
         <div class="label-heading">I. URAIAN PERMASALAHAN / INDIKASI</div>
         <div class="value-text">
@@ -260,17 +281,19 @@
         </div>
     </div>
 
+    {{-- STATUS BOX --}}
     <div class="status-box">
-        STATUS PENGAMANAN:
+        STATUS:
         @if($item->status_pam == 'clear')
-        <span style="color: green;">AMAN / CLEAR</span>
+        <span style="color: #15803d;">AMAN / CLEAR</span>
         @elseif($item->status_pam == 'ditindak')
-        <span style="color: orange;">DITINDAK LANJUTI</span>
+        <span style="color: #d97706;">DITINDAK LANJUTI</span>
         @else
-        <span style="color: red;">DALAM PENGAWASAN</span>
+        <span style="color: #b91c1c;">DALAM PENGAWASAN</span>
         @endif
     </div>
 
+    {{-- LAMPIRAN FOTO --}}
     @if($item->foto && file_exists(public_path('storage/' . $item->foto)))
     <div class="foto-wrapper">
         <div class="foto-label">Lampiran Dokumentasi</div>
@@ -279,17 +302,19 @@
         </div>
     </div>
     @endif
-    <div class="ttd-container">
-        <p>Banjarmasin, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</p>
-        <p>Kepala Seksi Intelijen,</p>
 
-        <br><br><br>
+    {{-- TANDA TANGAN (WRAPPER AGAR TIDAK PECAH) --}}
+    <div class="ttd-wrapper">
+        <div class="ttd-container">
+            <p>Banjarmasin, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</p>
+            <p>Kepala Seksi Intelijen,</p>
 
-        <div class="nama-terang">Dimas Purnama Putra, S.H.,M.H</div>
-        <div>Jaksa Madya / NIP. 19850101 201001 1 001</div>
+            <div class="nama-terang">Dimas Purnama Putra, S.H.,M.H</div>
+            <div>Jaksa Madya / NIP. 19850101 201001 1 001</div>
+        </div>
+        <div style="clear: both;"></div>
     </div>
 
-    <div class="clear"></div>
     <div class="rahasia-bottom">RAHASIA</div>
 
 </body>
