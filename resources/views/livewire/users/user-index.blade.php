@@ -211,65 +211,93 @@
             </div>
 
             <form wire:submit.prevent="{{ $isEditMode ? 'update' : 'store' }}" class="p-8 space-y-8">
+
+                {{-- BAGIAN 1: IDENTITAS --}}
                 <div class="space-y-4">
                     <h4 class="text-sm font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2">I. Identitas Pegawai</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase">Nama Lengkap</label>
+                            <label class="text-[11px] font-bold text-slate-500 uppercase">Nama Lengkap <span class="text-red-500">*</span></label>
                             <input wire:model="name" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white transition">
-                            @error('name') <span class="text-red-500 text-[10px] font-bold">{{ $message }}</span> @enderror
+                            @error('name') <span class="text-red-500 text-[10px] font-bold italic">{{ $message }}</span> @enderror
                         </div>
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-500 uppercase">NIP</label>
-                            <input wire:model="nip" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white transition">
+                            <input wire:model="nip" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white transition" placeholder="Hanya Angka">
+                            @error('nip') <span class="text-red-500 text-[10px] font-bold italic">{{ $message }}</span> @enderror
                         </div>
                     </div>
                 </div>
 
+                {{-- BAGIAN 2: JABATAN --}}
                 <div class="space-y-4">
                     <h4 class="text-sm font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2">II. Jabatan & Kontak</h4>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-500 uppercase">Jabatan</label>
                             <input wire:model="jabatan" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white">
+                            @error('jabatan') <span class="text-red-500 text-[10px] font-bold italic">{{ $message }}</span> @enderror
                         </div>
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-500 uppercase">Pangkat</label>
                             <input wire:model="pangkat" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white">
+                            @error('pangkat') <span class="text-red-500 text-[10px] font-bold italic">{{ $message }}</span> @enderror
                         </div>
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-500 uppercase">Kontak/WA</label>
                             <input wire:model="no_hp" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white">
+                            @error('no_hp') <span class="text-red-500 text-[10px] font-bold italic">{{ $message }}</span> @enderror
                         </div>
                     </div>
                 </div>
 
+                {{-- BAGIAN 3: AKUN --}}
                 <div class="space-y-4">
                     <h4 class="text-sm font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2">III. Akun Sistem</h4>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase">Email Login</label>
+                            <label class="text-[11px] font-bold text-slate-500 uppercase">Email Login <span class="text-red-500">*</span></label>
                             <input wire:model="email" type="email" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white">
-                            @error('email') <span class="text-red-500 text-[10px] font-bold">{{ $message }}</span> @enderror
+                            @error('email') <span class="text-red-500 text-[10px] font-bold italic">{{ $message }}</span> @enderror
                         </div>
                         <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase">Role</label>
+                            <label class="text-[11px] font-bold text-slate-500 uppercase">Role <span class="text-red-500">*</span></label>
                             <select wire:model="role" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white">
                                 <option value="staff">STAFF</option>
                                 <option value="admin">ADMIN</option>
                             </select>
+                            @error('role') <span class="text-red-500 text-[10px] font-bold italic">{{ $message }}</span> @enderror
                         </div>
                         <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase">Password</label>
+                            <label class="text-[11px] font-bold text-slate-500 uppercase">
+                                Password
+                                @if($isEditMode)
+                                <span class="text-slate-400 font-normal normal-case">(Opsional)</span>
+                                @else
+                                <span class="text-red-500">*</span>
+                                @endif
+                            </label>
                             <input wire:model="password" type="password" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white" placeholder="*******">
+                            <p class="text-[10px] text-slate-400">Minimal 6 karakter</p>
+                            @error('password') <span class="text-red-500 text-[10px] font-bold italic">{{ $message }}</span> @enderror
                         </div>
                     </div>
                 </div>
 
                 <div class="pt-6 flex justify-end gap-3 border-t border-slate-100">
                     <button type="button" wire:click="closeModal" class="px-6 py-3 rounded-xl border border-slate-200 text-slate-500 font-bold text-xs uppercase transition hover:bg-slate-50">Batal</button>
-                    <button type="submit" class="px-8 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold text-xs uppercase shadow-lg transition transform hover:-translate-y-1">
-                        {{ $isEditMode ? 'Simpan Perubahan' : 'Buat Personil Baru' }}
+
+                    <button type="submit"
+                        wire:loading.attr="disabled"
+                        class="px-8 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold text-xs uppercase shadow-lg transition transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+
+                        <span wire:loading wire:target="store, update">
+                            <i class="fas fa-spinner fa-spin"></i> Menyimpan...
+                        </span>
+
+                        <span wire:loading.remove wire:target="store, update">
+                            {{ $isEditMode ? 'Simpan Perubahan' : 'Buat Personil Baru' }}
+                        </span>
                     </button>
                 </div>
             </form>
