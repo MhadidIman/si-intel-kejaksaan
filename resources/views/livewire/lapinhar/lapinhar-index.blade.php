@@ -80,6 +80,7 @@
                     <tbody class="divide-y-2 divide-slate-50 text-slate-900">
                         @foreach($lapinhars as $item)
                         <tr class="hover:bg-emerald-50/30 transition duration-300">
+
                             <td class="px-6 py-6 whitespace-nowrap align-top">
                                 <div class="font-black text-slate-900 text-xs uppercase">{{ $item->tanggal_surat->format('d M Y') }}</div>
                                 <div class="text-[10px] text-emerald-600 font-mono font-bold mt-1 tracking-tighter">{{ $item->nomor_surat ?? 'UNREGISTERED' }}</div>
@@ -95,18 +96,36 @@
                                 <div class="font-black text-slate-800 text-xs uppercase tracking-tight leading-relaxed break-words whitespace-normal">
                                     {{ $item->peristiwa }}
                                 </div>
-                                <div class="mt-2 flex items-center gap-2">
-                                    <span class="text-[9px] font-bold text-white bg-slate-400 px-2 py-0.5 rounded uppercase">{{ $item->bidang }}</span>
-                                    @if($item->status == 'rahasia')
-                                    <span class="text-[9px] font-bold text-white bg-red-500 px-2 py-0.5 rounded uppercase flex items-center gap-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-2.5 h-2.5">
-                                            <path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clip-rule="evenodd" />
-                                        </svg>
-                                        Rahasia
-                                    </span>
-                                    @else
-                                    <span class="text-[9px] font-bold text-white bg-blue-400 px-2 py-0.5 rounded uppercase">Biasa</span>
-                                    @endif
+
+                                <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[9px] font-bold text-white bg-slate-400 px-2 py-0.5 rounded uppercase">{{ $item->bidang }}</span>
+                                        @if($item->status == 'rahasia')
+                                        <span class="text-[9px] font-bold text-white bg-red-500 px-2 py-0.5 rounded uppercase flex items-center gap-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-2.5 h-2.5">
+                                                <path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clip-rule="evenodd" />
+                                            </svg>
+                                            Rahasia
+                                        </span>
+                                        @else
+                                        <span class="text-[9px] font-bold text-white bg-blue-400 px-2 py-0.5 rounded uppercase">Biasa</span>
+                                        @endif
+                                    </div>
+
+                                    <div class="flex items-center gap-2 bg-slate-50 pl-2 pr-3 py-1.5 rounded-xl border border-slate-200 shadow-sm">
+                                        <div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-[11px] shadow-inner border border-emerald-200">
+                                            {{ substr($item->user->name ?? 'S', 0, 1) }}
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <span class="text-[9px] font-bold text-slate-700 max-w-[120px] truncate leading-tight">{{ $item->user->name ?? 'Sistem' }}</span>
+                                            <span class="text-[8px] font-black text-slate-400 flex items-center gap-1 tracking-widest mt-0.5">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-2.5 h-2.5">
+                                                    <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z" clip-rule="evenodd" />
+                                                </svg>
+                                                {{ $item->created_at->format('d/m/Y H:i') }}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </td>
 
@@ -154,6 +173,7 @@
                                         </svg>
                                     </button>
 
+                                    @if(auth()->user()->isAdmin())
                                     <button wire:confirm="Hapus data ini secara permanen?" wire:click="delete({{ $item->id }})"
                                         class="w-9 h-9 flex items-center justify-center rounded-lg border-2 border-red-200 bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm group"
                                         title="Hapus Data">
@@ -161,6 +181,7 @@
                                             <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z" clip-rule="evenodd" />
                                         </svg>
                                     </button>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

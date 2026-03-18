@@ -55,7 +55,6 @@ class DpoIndex extends Component
 
     public function updateStatus($newStatus)
     {
-        // Ganti isAdmin() dengan pengecekan manual role agar lebih aman
         if (Auth::user()->role === 'admin' && $this->targetId) {
             Dpo::where('id', $this->targetId)->update(['status_verifikasi' => $newStatus]);
             session()->flash('message', 'Status DPO berhasil diubah menjadi ' . strtoupper($newStatus));
@@ -67,11 +66,17 @@ class DpoIndex extends Component
     #[Layout('layouts.app')]
     public function render()
     {
+        // TAMBAHKAN ::with('user') UNTUK MEMANGGIL NAMA PENGINPUT
+        $dpos = Dpo::with('user')
+            ->where(function ($query) {
+                $query->where('nama_lengkap', 'like', '%' . $this->search . '%')
+                    ->orWhere('kasus', 'like', '%' . $this->search . '%');
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(8);
+
         return view('livewire.dpo.dpo-index', [
-            'dpos' => Dpo::where('nama_lengkap', 'like', '%' . $this->search . '%')
-                ->orWhere('kasus', 'like', '%' . $this->search . '%')
-                ->orderBy('created_at', 'desc')
-                ->paginate(8)
+            'dpos' => $dpos
         ]);
     }
 
@@ -92,7 +97,7 @@ class DpoIndex extends Component
         }
 
         Dpo::create([
-            'user_id' => Auth::id(), // <--- PENTING: ID Penginput
+            'user_id' => Auth::id(), // ID Penginput
             'nama_lengkap' => $this->nama_lengkap,
             'tempat_lahir' => $this->tempat_lahir,
             'tanggal_lahir' => $this->tanggal_lahir ?: null,
@@ -112,8 +117,6 @@ class DpoIndex extends Component
     {
         $dpo = Dpo::findOrFail($id);
 
-        // Proteksi: Staff tidak bisa edit jika sudah disetujui
-        // Gunakan role === 'admin'
         if ($dpo->status_verifikasi === 'disetujui' && Auth::user()->role !== 'admin') {
             session()->flash('message', 'Data DPO yang sudah divalidasi tidak dapat diubah.');
             return;
@@ -157,7 +160,6 @@ class DpoIndex extends Component
             'ciri_fisik' => $this->ciri_fisik,
             'status_pencarian' => $this->status_pencarian,
             'foto' => $path_foto,
-            // Reset ke pending jika diedit oleh staff (bukan admin)
             'status_verifikasi' => Auth::user()->role === 'admin' ? $dpo->status_verifikasi : 'pending',
         ]);
 
@@ -167,6 +169,12 @@ class DpoIndex extends Component
 
     public function delete($id)
     {
+        // KODE KEAMANAN: HANYA ADMIN YANG BISA MENGHAPUS
+        if (Auth::user()->role !== 'admin') {
+            session()->flash('message', 'Akses Ditolak! Hanya Admin yang berhak menghapus data.');
+            return;
+        }
+
         $dpo = Dpo::find($id);
         if ($dpo->foto && Storage::disk('public')->exists($dpo->foto)) {
             Storage::disk('public')->delete($dpo->foto);

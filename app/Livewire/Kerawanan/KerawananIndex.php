@@ -81,11 +81,17 @@ class KerawananIndex extends Component
     #[Layout('layouts.app')]
     public function render()
     {
+        // TAMBAHKAN ::with('user') UNTUK MEMANGGIL NAMA PENGINPUT
+        $peta = Kerawanan::with('user')
+            ->where(function ($query) {
+                $query->where('kecamatan', 'like', '%' . $this->search . '%')
+                    ->orWhere('potensi_ancaman', 'like', '%' . $this->search . '%');
+            })
+            ->orderByRaw("FIELD(tingkat_rawan, 'tinggi', 'sedang', 'rendah')")
+            ->paginate(10);
+
         return view('livewire.kerawanan.kerawanan-index', [
-            'peta' => Kerawanan::where('kecamatan', 'like', '%' . $this->search . '%')
-                ->orWhere('potensi_ancaman', 'like', '%' . $this->search . '%')
-                ->orderByRaw("FIELD(tingkat_rawan, 'tinggi', 'sedang', 'rendah')")
-                ->paginate(10)
+            'peta' => $peta
         ]);
     }
 
@@ -163,6 +169,12 @@ class KerawananIndex extends Component
 
     public function delete($id)
     {
+        // KODE KEAMANAN: HANYA ADMIN YANG BISA MENGHAPUS
+        if (Auth::user()->role !== 'admin') {
+            session()->flash('message', 'Akses Ditolak! Hanya Admin yang berhak menghapus data.');
+            return;
+        }
+
         Kerawanan::findOrFail($id)->delete();
         session()->flash('message', 'Data dihapus.');
     }

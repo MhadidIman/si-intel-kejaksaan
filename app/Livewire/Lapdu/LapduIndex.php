@@ -14,7 +14,7 @@ class LapduIndex extends Component
 {
     use WithPagination, WithFileUploads;
 
-    // Properti Data
+    // Properti Data (DISESUAIKAN DENGAN DATABASE ANDA)
     public $nomor_surat, $tanggal_terima, $nama_pelapor, $nik, $no_hp_pelapor, $nama_terlapor, $kategori_laporan, $uraian_pengaduan, $keterangan_tindak_lanjut;
 
     // Status
@@ -57,7 +57,6 @@ class LapduIndex extends Component
 
     public function updateStatus($newStatus)
     {
-        // Ganti isAdmin() dengan pengecekan manual
         if (Auth::user()->role === 'admin' && $this->targetId) {
             Lapdu::where('id', $this->targetId)->update(['status_verifikasi' => $newStatus]);
             session()->flash('message', 'Status Verifikasi berhasil diubah menjadi ' . strtoupper($newStatus));
@@ -68,11 +67,14 @@ class LapduIndex extends Component
     #[Layout('layouts.app')]
     public function render()
     {
-        $data = Lapdu::where(function ($query) {
-            $query->where('nama_pelapor', 'like', '%' . $this->search . '%')
-                ->orWhere('uraian_pengaduan', 'like', '%' . $this->search . '%')
-                ->orWhere('nama_terlapor', 'like', '%' . $this->search . '%');
-        })
+        // TAMBAHKAN ::with('user') UNTUK MEMANGGIL NAMA PENGINPUT
+        $data = Lapdu::with('user')
+            ->where(function ($query) {
+                // PENCARIAN MENGGUNAKAN KOLOM YANG BENAR
+                $query->where('nama_pelapor', 'like', '%' . $this->search . '%')
+                    ->orWhere('uraian_pengaduan', 'like', '%' . $this->search . '%')
+                    ->orWhere('nama_terlapor', 'like', '%' . $this->search . '%');
+            })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -98,8 +100,7 @@ class LapduIndex extends Component
         }
 
         Lapdu::create([
-            'user_id' => Auth::id(), // <--- WAJIB: ID Penginput
-            // Gunakan operator ?: null agar string kosong disimpan sebagai NULL
+            'user_id' => Auth::id(), // ID Penginput
             'nomor_surat' => $this->nomor_surat ?: null,
             'tanggal_terima' => $this->tanggal_terima ?: null,
             'nama_pelapor' => $this->nama_pelapor,
@@ -122,7 +123,6 @@ class LapduIndex extends Component
     {
         $data = Lapdu::findOrFail($id);
 
-        // Cek Role Admin Manual
         if ($data->status_verifikasi === 'disetujui' && Auth::user()->role !== 'admin') {
             session()->flash('message', 'Laporan yang sudah disetujui tidak dapat diubah.');
             return;
@@ -171,7 +171,6 @@ class LapduIndex extends Component
             'status_laporan' => $this->status_laporan,
             'keterangan_tindak_lanjut' => $this->keterangan_tindak_lanjut ?: null,
             'bukti_dukung' => $path,
-            // Reset ke pending jika diedit staff
             'status_verifikasi' => Auth::user()->role === 'admin' ? $data->status_verifikasi : 'pending',
         ]);
 
@@ -181,6 +180,12 @@ class LapduIndex extends Component
 
     public function delete($id)
     {
+        // KODE KEAMANAN: HANYA ADMIN YANG BISA MENGHAPUS
+        if (Auth::user()->role !== 'admin') {
+            session()->flash('message', 'Akses Ditolak! Hanya Admin yang berhak menghapus data.');
+            return;
+        }
+
         $data = Lapdu::findOrFail($id);
         if ($data->bukti_dukung && Storage::disk('public')->exists($data->bukti_dukung)) {
             Storage::disk('public')->delete($data->bukti_dukung);

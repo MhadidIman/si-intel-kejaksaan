@@ -24,9 +24,9 @@ class LapinharIndex extends Component
     public $showForm = false;
     public $search = '';
 
-    // --- PROPERTI BARU UNTUK MODAL STATUS ---
-    public $showStatusModal = false; // Mengontrol munculnya modal
-    public $targetId = null;         // Menyimpan ID laporan yang akan diverifikasi
+    // Mengontrol munculnya modal
+    public $showStatusModal = false;
+    public $targetId = null;
 
     protected $rules = [
         'nomor_surat' => 'required',
@@ -37,8 +37,6 @@ class LapinharIndex extends Component
         'pendapat' => 'required',
         'status' => 'required|in:rahasia,biasa',
     ];
-
-    // --- LOGIKA BARU: GANTI STATUS LEWAT MODAL ---
 
     public function openStatusModal($id)
     {
@@ -54,7 +52,6 @@ class LapinharIndex extends Component
 
     public function updateStatus($newStatus)
     {
-        // Pengecekan Manual Role Admin agar lebih aman
         if (Auth::user()->role === 'admin' && $this->targetId) {
             Lapinhar::where('id', $this->targetId)->update(['status_verifikasi' => $newStatus]);
             session()->flash('message', 'Status laporan berhasil diubah menjadi ' . strtoupper($newStatus));
@@ -62,12 +59,11 @@ class LapinharIndex extends Component
         }
     }
 
-    // --- CRUD ---
-
     #[Layout('layouts.app')]
     public function render()
     {
-        $lapinhars = Lapinhar::query()
+        // REVISI: Tambahkan with('user') agar nama penginput bisa ditarik
+        $lapinhars = Lapinhar::with('user')
             ->where(function ($query) {
                 $query->where('peristiwa', 'like', '%' . $this->search . '%')
                     ->orWhere('bidang', 'like', '%' . $this->search . '%')
@@ -93,7 +89,7 @@ class LapinharIndex extends Component
         $this->validate();
 
         Lapinhar::create([
-            'user_id' => Auth::id(), // <--- SUDAH BENAR (Pencatat ID Penginput)
+            'user_id' => Auth::id(),
             'nomor_surat' => $this->nomor_surat,
             'tanggal_surat' => $this->tanggal_surat,
             'sumber_informasi' => $this->sumber_informasi,
@@ -112,7 +108,6 @@ class LapinharIndex extends Component
     {
         $data = Lapinhar::findOrFail($id);
 
-        // Cek Role Admin Manual
         if ($data->status_verifikasi === 'disetujui' && Auth::user()->role !== 'admin') {
             session()->flash('message', 'Laporan yang sudah disetujui tidak dapat diedit.');
             return;
@@ -144,7 +139,6 @@ class LapinharIndex extends Component
             'peristiwa' => $this->peristiwa,
             'pendapat' => $this->pendapat,
             'status' => $this->status,
-            // Cek Role Admin Manual
             'status_verifikasi' => Auth::user()->role === 'admin' ? $data->status_verifikasi : 'pending',
         ]);
 
@@ -154,6 +148,12 @@ class LapinharIndex extends Component
 
     public function delete($id)
     {
+        // REVISI KEAMANAN: Pastikan hanya admin yang bisa hapus dari backend
+        if (Auth::user()->role !== 'admin') {
+            session()->flash('error', 'Akses Ditolak! Anda bukan admin.');
+            return;
+        }
+
         Lapinhar::findOrFail($id)->delete();
         session()->flash('message', 'Data dihapus.');
     }

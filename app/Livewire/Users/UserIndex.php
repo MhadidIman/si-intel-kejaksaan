@@ -4,18 +4,21 @@ namespace App\Livewire\Users;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads; // Tambahkan ini untuk upload foto
 use Livewire\Attributes\Layout;
 use App\Models\User;
 use App\Models\ActivityLog;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserIndex extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads;
 
     // --- PROPERTI FORM ---
     public $name, $email, $password, $nip, $role = 'staff';
-    public $jabatan, $no_hp, $pangkat;
+    public $jabatan, $no_hp, $pangkat, $satuan_kerja = 'Kejari Banjarmasin'; // Tambahan
+    public $foto_profile, $foto_lama; // Tambahan untuk upload
     public $user_id;
 
     // --- PROPERTI UI & MODAL ---
@@ -112,8 +115,14 @@ class UserIndex extends Component
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:6',
             'role'     => 'required',
-            'nip'      => 'nullable|numeric|unique:users,nip',
+            'nip'      => 'nullable|string|unique:users,nip', // Ubah jadi string agar aman jika ada karakter khusus
+            'foto_profile' => 'nullable|image|max:2048', // Maksimal 2MB
         ]);
+
+        $path = null;
+        if ($this->foto_profile) {
+            $path = $this->foto_profile->store('profile-photos', 'public');
+        }
 
         User::create([
             'name'     => $this->name,
@@ -124,6 +133,8 @@ class UserIndex extends Component
             'jabatan'  => $this->jabatan,
             'no_hp'    => $this->no_hp,
             'pangkat'  => $this->pangkat,
+            'satuan_kerja' => $this->satuan_kerja,
+            'foto_profile' => $path,
         ]);
 
         session()->flash('message', 'Personil berhasil didaftarkan ke sistem.');
@@ -142,6 +153,8 @@ class UserIndex extends Component
         $this->jabatan = $user->jabatan;
         $this->no_hp   = $user->no_hp;
         $this->pangkat = $user->pangkat;
+        $this->satuan_kerja = $user->satuan_kerja;
+        $this->foto_lama = $user->foto_profile;
 
         $this->showForm   = true;
         $this->isEditMode = true;
@@ -153,10 +166,19 @@ class UserIndex extends Component
             'name'  => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $this->user_id,
             'role'  => 'required',
-            'nip'   => 'nullable|numeric|unique:users,nip,' . $this->user_id,
+            'nip'   => 'nullable|string|unique:users,nip,' . $this->user_id,
+            'foto_profile' => 'nullable|image|max:2048',
         ]);
 
-        $user = User::find($this->user_id);
+        $user = User::findOrFail($this->user_id);
+
+        $path = $user->foto_profile;
+        if ($this->foto_profile) {
+            if ($user->foto_profile && Storage::disk('public')->exists($user->foto_profile)) {
+                Storage::disk('public')->delete($user->foto_profile);
+            }
+            $path = $this->foto_profile->store('profile-photos', 'public');
+        }
 
         $data = [
             'name'    => $this->name,
@@ -166,6 +188,8 @@ class UserIndex extends Component
             'jabatan' => $this->jabatan,
             'no_hp'   => $this->no_hp,
             'pangkat' => $this->pangkat,
+            'satuan_kerja' => $this->satuan_kerja,
+            'foto_profile' => $path,
         ];
 
         if (!empty($this->password)) {
@@ -185,7 +209,14 @@ class UserIndex extends Component
             return;
         }
 
-        User::find($id)->delete();
+        $user = User::findOrFail($id);
+
+        // Hapus foto profile jika ada
+        if ($user->foto_profile && Storage::disk('public')->exists($user->foto_profile)) {
+            Storage::disk('public')->delete($user->foto_profile);
+        }
+
+        $user->delete();
         session()->flash('message', 'Akun personil telah dihapus dari sistem.');
     }
 
@@ -197,7 +228,8 @@ class UserIndex extends Component
 
     private function resetInputFields()
     {
-        $this->reset(['name', 'email', 'password', 'nip', 'role', 'jabatan', 'no_hp', 'pangkat', 'user_id']);
+        $this->reset(['name', 'email', 'password', 'nip', 'role', 'jabatan', 'no_hp', 'pangkat', 'satuan_kerja', 'foto_profile', 'foto_lama', 'user_id']);
         $this->role = 'staff';
+        $this->satuan_kerja = 'Kejari Banjarmasin';
     }
 }

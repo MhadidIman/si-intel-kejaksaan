@@ -64,9 +64,13 @@ class PamSdoIndex extends Component
     #[Layout('layouts.app')]
     public function render()
     {
+        // TAMBAHKAN ::with('user') UNTUK MENGAMBIL NAMA PENGINPUT
         return view('livewire.pam-sdo.pam-sdo-index', [
-            'pamsdos' => PamSdo::where('nama_pegawai', 'like', '%' . $this->search . '%')
-                ->orWhere('nip_nrp', 'like', '%' . $this->search . '%')
+            'pamsdos' => PamSdo::with('user')
+                ->where(function ($query) {
+                    $query->where('nama_pegawai', 'like', '%' . $this->search . '%')
+                        ->orWhere('nip_nrp', 'like', '%' . $this->search . '%');
+                })
                 ->orderBy('created_at', 'desc')
                 ->paginate(10)
         ]);
@@ -162,6 +166,12 @@ class PamSdoIndex extends Component
 
     public function delete($id)
     {
+        // KODE KEAMANAN: HANYA ADMIN YANG BISA MENGHAPUS
+        if (Auth::user()->role !== 'admin') {
+            session()->flash('message', 'Akses Ditolak! Hanya Admin yang berhak menghapus data.');
+            return;
+        }
+
         $data = PamSdo::findOrFail($id);
         if ($data->foto && Storage::disk('public')->exists($data->foto)) {
             Storage::disk('public')->delete($data->foto);

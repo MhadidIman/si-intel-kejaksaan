@@ -61,9 +61,13 @@ class OrmasIndex extends Component
     #[Layout('layouts.app')]
     public function render()
     {
+        // TAMBAHKAN ::with('user') UNTUK MEMANGGIL NAMA PENGINPUT
         return view('livewire.ormas.ormas-index', [
-            'ormas' => Ormas::where('nama_organisasi', 'like', '%' . $this->search . '%')
-                ->orWhere('ketua', 'like', '%' . $this->search . '%')
+            'ormas' => Ormas::with('user')
+                ->where(function ($query) {
+                    $query->where('nama_organisasi', 'like', '%' . $this->search . '%')
+                        ->orWhere('ketua', 'like', '%' . $this->search . '%');
+                })
                 ->orderBy('created_at', 'desc')
                 ->paginate(10)
         ]);
@@ -81,7 +85,7 @@ class OrmasIndex extends Component
         $this->validate();
 
         Ormas::create([
-            'user_id' => Auth::id(), // <--- SUDAH DIPERBAIKI (PENTING)
+            'user_id' => Auth::id(), // ID Penginput
             'nama_organisasi' => $this->nama_organisasi,
             'ketua' => $this->ketua,
             'alamat_sekretariat' => $this->alamat_sekretariat,
@@ -147,6 +151,12 @@ class OrmasIndex extends Component
 
     public function delete($id)
     {
+        // KODE KEAMANAN: HANYA ADMIN YANG BISA MENGHAPUS
+        if (Auth::user()->role !== 'admin') {
+            session()->flash('message', 'Akses Ditolak! Hanya Admin yang berhak menghapus data.');
+            return;
+        }
+
         Ormas::find($id)->delete();
         session()->flash('message', 'Data dihapus.');
     }

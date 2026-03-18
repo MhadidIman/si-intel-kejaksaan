@@ -23,6 +23,7 @@ class User extends Authenticatable
         'pangkat',       // Jaksa Pratama, dll
         'jabatan',       // Kasubsi, Staff, dll
         'no_hp',         // Nomor WhatsApp
+        'foto_profile',  // <--- TAMBAHKAN INI AGAR FOTO BISA DISIMPAN
     ];
 
     /**

@@ -53,7 +53,6 @@ class JmsIndex extends Component
 
     public function updateStatus($newStatus)
     {
-        // Ganti isAdmin() dengan pengecekan manual role === 'admin'
         if (Auth::user()->role === 'admin' && $this->targetId) {
             JmsActivity::where('id', $this->targetId)->update(['status_verifikasi' => $newStatus]);
             session()->flash('message', 'Status kegiatan berhasil diubah menjadi ' . strtoupper($newStatus));
@@ -65,11 +64,17 @@ class JmsIndex extends Component
     #[Layout('layouts.app')]
     public function render()
     {
+        // TAMBAHKAN ::with('user') UNTUK MEMANGGIL NAMA PENGINPUT
+        $activities = JmsActivity::with('user')
+            ->where(function ($query) {
+                $query->where('nama_sekolah', 'like', '%' . $this->search . '%')
+                    ->orWhere('materi', 'like', '%' . $this->search . '%');
+            })
+            ->orderBy('tanggal_kegiatan', 'desc')
+            ->paginate(10);
+
         return view('livewire.jms.jms-index', [
-            'activities' => JmsActivity::where('nama_sekolah', 'like', '%' . $this->search . '%')
-                ->orWhere('materi', 'like', '%' . $this->search . '%')
-                ->orderBy('tanggal_kegiatan', 'desc')
-                ->paginate(10)
+            'activities' => $activities
         ]);
     }
 
@@ -109,7 +114,6 @@ class JmsIndex extends Component
     {
         $data = JmsActivity::findOrFail($id);
 
-        // Cek Role Admin Manual
         if ($data->status_verifikasi === 'disetujui' && Auth::user()->role !== 'admin') {
             session()->flash('message', 'Data yang sudah divalidasi tidak dapat diubah.');
             return;
@@ -117,7 +121,7 @@ class JmsIndex extends Component
 
         $this->jms_id = $id;
         $this->nama_sekolah = $data->nama_sekolah;
-        $this->tanggal_kegiatan = $data->tanggal_kegiatan ? $data->tanggal_kegiatan->format('Y-m-d') : null;
+        $this->tanggal_kegiatan = $data->tanggal_kegiatan ? Carbon::parse($data->tanggal_kegiatan)->format('Y-m-d') : null;
         $this->materi = $data->materi;
         $this->jumlah_siswa = $data->jumlah_siswa;
         $this->nama_jaksa = $data->nama_jaksa;
@@ -150,7 +154,6 @@ class JmsIndex extends Component
             'nama_jaksa' => $this->nama_jaksa,
             'keterangan' => $this->keterangan,
             'foto_kegiatan' => $path,
-            // Reset ke pending jika diedit staff
             'status_verifikasi' => Auth::user()->role === 'admin' ? $data->status_verifikasi : 'pending',
         ]);
 
@@ -160,6 +163,12 @@ class JmsIndex extends Component
 
     public function delete($id)
     {
+        // KODE KEAMANAN: HANYA ADMIN YANG BISA MENGHAPUS
+        if (Auth::user()->role !== 'admin') {
+            session()->flash('message', 'Akses Ditolak! Hanya Admin yang berhak menghapus data.');
+            return;
+        }
+
         $data = JmsActivity::findOrFail($id);
         if ($data->foto_kegiatan && Storage::disk('public')->exists($data->foto_kegiatan)) {
             Storage::disk('public')->delete($data->foto_kegiatan);

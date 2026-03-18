@@ -72,8 +72,8 @@
                     <thead>
                         <tr class="bg-slate-50/80 text-slate-500 text-[10px] uppercase font-black border-b-2 border-slate-100 italic tracking-widest whitespace-nowrap">
                             <th class="px-6 py-6 w-20 text-center">Bukti</th>
-                            <th class="px-6 py-6">Identitas Pelapor</th>
-                            <th class="px-6 py-6 w-1/3">Uraian Pengaduan</th>
+                            <th class="px-6 py-6 w-1/4">Pelapor & Waktu</th>
+                            <th class="px-6 py-6 w-1/3">Substansi & Terlapor</th>
                             <th class="px-6 py-6 text-center">Status Laporan</th>
                             <th class="px-6 py-6 text-center">Verifikasi</th>
                             <th class="px-6 py-6 text-center">Aksi</th>
@@ -104,24 +104,48 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3 text-cyan-400">
                                         <path fill-rule="evenodd" d="M1.5 4.5a3 3 0 013-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 01-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 006.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 011.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 01-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 5.25V4.5z" clip-rule="evenodd" />
                                     </svg>
-                                    {{ $item->no_hp ?? '-' }}
+                                    {{ $item->no_hp_pelapor ?? '-' }}
                                 </div>
                                 @if($item->nik)
                                 <div class="mt-2 text-[9px] text-slate-400 font-mono tracking-wider bg-slate-50 px-2 py-1 rounded inline-block border border-slate-100">
                                     NIK: {{ $item->nik }}
                                 </div>
                                 @endif
+                                <span class="mt-2 block w-fit inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-[9px] font-bold text-blue-700 rounded border border-blue-200 uppercase">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3 text-blue-500">
+                                        <path fill-rule="evenodd" d="M6.75 2.25A.75.75 0 017.5 3v1.5h9V3A.75.75 0 0118 3v1.5h.75a3 3 0 013 3v11.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V7.5a3 3 0 013-3H6V3a.75.75 0 01.75-.75zm13.5 9a1.5 1.5 0 00-1.5-1.5H5.25a1.5 1.5 0 00-1.5 1.5v7.5a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5v-7.5z" clip-rule="evenodd" />
+                                    </svg>
+                                    {{ $item->tanggal_terima ? $item->tanggal_terima->format('d M Y') : '-' }}
+                                </span>
                             </td>
 
-                            <td class="px-6 py-6 align-top min-w-[200px]">
+                            <td class="px-6 py-6 align-top min-w-[250px]">
                                 <div class="mb-2">
                                     <span class="text-[9px] font-bold text-white bg-cyan-500 px-2 py-0.5 rounded uppercase">{{ $item->kategori_laporan }}</span>
                                 </div>
-                                <div class="text-xs text-slate-700 font-bold leading-relaxed line-clamp-2">
+                                <div class="text-xs text-slate-700 font-bold leading-relaxed line-clamp-2" title="{{ $item->uraian_pengaduan }}">
                                     "{{ $item->uraian_pengaduan }}"
                                 </div>
                                 <div class="mt-2 text-[10px] text-slate-500 italic">
-                                    <span class="font-bold not-italic text-slate-600">Terlapor:</span> {{ $item->nama_terlapor ?? 'Tidak Diketahui' }}
+                                    <span class="font-black text-slate-400 uppercase tracking-widest not-italic">Terlapor:</span>
+                                    <span class="text-red-600 font-bold uppercase not-italic">{{ $item->nama_terlapor ?? 'Tidak Diketahui' }}</span>
+                                </div>
+
+                                <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-start">
+                                    <div class="flex items-center gap-2 bg-slate-50 pl-2 pr-3 py-1.5 rounded-xl border border-slate-200 shadow-sm" title="Diinput pada: {{ $item->created_at->format('d M Y, H:i') }}">
+                                        <div class="w-7 h-7 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-black text-[11px] shadow-inner border border-blue-200">
+                                            {{ substr($item->user->name ?? 'S', 0, 1) }}
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <span class="text-[9px] font-bold text-slate-700 max-w-[120px] truncate leading-tight">{{ $item->user->name ?? 'Sistem' }}</span>
+                                            <span class="text-[8px] font-black text-slate-400 flex items-center gap-1 tracking-widest mt-0.5">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-2.5 h-2.5">
+                                                    <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z" clip-rule="evenodd" />
+                                                </svg>
+                                                {{ $item->created_at->format('d/m/Y H:i') }}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </td>
 
@@ -131,7 +155,7 @@
                                     MENUNGGU
                                 </div>
                                 @elseif($item->status_laporan == 'proses')
-                                <div class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-orange-50 border border-orange-200 text-orange-600 text-[9px] font-black uppercase tracking-wider">
+                                <div class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-50 border border-blue-200 text-blue-600 text-[9px] font-black uppercase tracking-wider">
                                     DIPROSES
                                 </div>
                                 @else
@@ -179,11 +203,14 @@
                                             <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32L19.513 8.2z" />
                                         </svg>
                                     </button>
+
+                                    @if(auth()->user()->isAdmin())
                                     <button wire:confirm="Hapus laporan ini?" wire:click="delete({{ $item->id }})" class="w-9 h-9 flex items-center justify-center rounded-lg border-2 border-red-200 bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm group">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 group-hover:scale-110 transition-transform">
                                             <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z" clip-rule="evenodd" />
                                         </svg>
                                     </button>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
@@ -205,18 +232,18 @@
             <form wire:submit.prevent="{{ $isEditMode ? 'update' : 'store' }}" class="p-8 md:p-10 space-y-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Nama Pelapor</label>
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Nama Pelapor / Instansi</label>
                         <input wire:model="nama_pelapor" type="text" class="block w-full rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-900 font-bold focus:border-cyan-500 focus:bg-white transition-all py-3 px-4 shadow-sm placeholder-slate-400 text-sm">
                         @error('nama_pelapor') <span class="text-red-500 text-[10px] font-bold uppercase">{{ $message }}</span> @enderror
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div class="space-y-2">
-                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">NIK (Opsional)</label>
-                            <input wire:model="nik" type="text" class="block w-full rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-900 font-bold focus:border-cyan-500 focus:bg-white transition-all py-3 px-4 shadow-sm text-sm">
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">NIK (KTP)</label>
+                            <input wire:model="nik" type="text" class="block w-full rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-900 font-bold focus:border-cyan-500 focus:bg-white transition-all py-3 px-4 shadow-sm placeholder-slate-400 text-sm">
                         </div>
                         <div class="space-y-2">
                             <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">No. HP / WA</label>
-                            <input wire:model="no_hp" type="text" class="block w-full rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-900 font-bold focus:border-cyan-500 focus:bg-white transition-all py-3 px-4 shadow-sm text-sm">
+                            <input wire:model="no_hp_pelapor" type="text" class="block w-full rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-900 font-bold focus:border-cyan-500 focus:bg-white transition-all py-3 px-4 shadow-sm placeholder-slate-400 text-sm">
                         </div>
                     </div>
                 </div>
@@ -225,23 +252,29 @@
                     <div class="space-y-4">
                         <div class="space-y-2">
                             <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Terlapor</label>
-                            <input wire:model="nama_terlapor" type="text" class="block w-full rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-900 font-bold focus:border-cyan-500 focus:bg-white transition-all py-3 px-4 shadow-sm placeholder-slate-400 text-sm" placeholder="Nama Instansi / Orang">
+                            <input wire:model="nama_terlapor" type="text" class="block w-full rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-900 font-bold focus:border-cyan-500 focus:bg-white transition-all py-3 px-4 shadow-sm placeholder-slate-400 text-sm" placeholder="Instansi / Pejabat yang dilaporkan">
                         </div>
-                        <div class="space-y-2">
-                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Kategori</label>
-                            <select wire:model="kategori_laporan" class="block w-full rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-900 font-bold focus:border-cyan-500 focus:bg-white transition-all py-3 px-4 shadow-sm text-sm cursor-pointer">
-                                <option value="">-- Pilih --</option>
-                                <option value="Korupsi">Tindak Pidana Korupsi</option>
-                                <option value="Pegawai">Penyalahgunaan Wewenang</option>
-                                <option value="Umum">Tindak Pidana Umum</option>
-                                <option value="Lainnya">Lainnya</option>
-                            </select>
-                            @error('kategori_laporan') <span class="text-red-500 text-[10px] font-bold uppercase">{{ $message }}</span> @enderror
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Kategori</label>
+                                <select wire:model="kategori_laporan" class="block w-full rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-900 font-bold focus:border-cyan-500 focus:bg-white transition-all py-3 px-4 shadow-sm text-sm cursor-pointer">
+                                    <option value="">-- Pilih --</option>
+                                    <option value="Korupsi">Tindak Pidana Korupsi</option>
+                                    <option value="Pegawai">Penyalahgunaan Wewenang</option>
+                                    <option value="Umum">Tindak Pidana Umum</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                                @error('kategori_laporan') <span class="text-red-500 text-[10px] font-bold uppercase">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Tgl Laporan / Terima</label>
+                                <input wire:model="tanggal_terima" type="date" class="block w-full rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-900 font-bold focus:border-cyan-500 focus:bg-white transition-all py-3 px-4 shadow-sm text-sm">
+                            </div>
                         </div>
                     </div>
                     <div class="space-y-2">
                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Uraian Pengaduan</label>
-                        <textarea wire:model="uraian_pengaduan" rows="4" class="block w-full rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-900 font-medium focus:border-cyan-500 focus:bg-white transition-all py-3 px-4 shadow-sm placeholder-slate-400 text-sm" placeholder="Jelaskan kronologi kejadian..."></textarea>
+                        <textarea wire:model="uraian_pengaduan" rows="5" class="block w-full rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-900 font-medium focus:border-cyan-500 focus:bg-white transition-all py-3 px-4 shadow-sm placeholder-slate-400 text-sm" placeholder="Jelaskan kronologi kejadian secara detail..."></textarea>
                         @error('uraian_pengaduan') <span class="text-red-500 text-[10px] font-bold uppercase">{{ $message }}</span> @enderror
                     </div>
                 </div>
@@ -251,7 +284,7 @@
                         <div class="space-y-2">
                             <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Status Laporan</label>
                             <select wire:model="status_laporan" class="block w-full rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-900 font-bold focus:border-cyan-500 focus:bg-white transition-all py-3 px-4 shadow-sm text-sm">
-                                <option value="menunggu">Menunggu Disposisi</option>
+                                <option value="menunggu">Menunggu / Baru</option>
                                 <option value="proses">Sedang Diproses</option>
                                 <option value="selesai">Selesai</option>
                             </select>
@@ -271,7 +304,7 @@
                             </div>
                             <div class="flex-1">
                                 <input wire:model="bukti_dukung" type="file" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-6 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-widest file:bg-cyan-600 file:text-white hover:file:bg-cyan-700 transition cursor-pointer">
-                                <p class="text-[9px] text-slate-400 mt-2 font-bold">Max 5MB.</p>
+                                <p class="text-[9px] text-slate-400 mt-2 font-bold">Max 10MB.</p>
                             </div>
                         </div>
                     </div>
@@ -283,7 +316,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
                             <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
                         </svg>
-                        <span>{{ $isEditMode ? 'Simpan' : 'Kirim Laporan' }}</span>
+                        <span>{{ $isEditMode ? 'Simpan Perubahan' : 'Kirim Laporan' }}</span>
                     </button>
                 </div>
             </form>
@@ -312,7 +345,7 @@
                     </button>
                     <button wire:click="updateStatus('ditolak')" class="w-full py-4 rounded-xl bg-red-500 hover:bg-red-600 text-white font-black uppercase text-xs tracking-widest shadow-lg transition transform hover:-translate-y-1 flex items-center justify-center gap-3">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
-                            <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z" clip-rule="evenodd" />
                         </svg>
                         Tolak Laporan
                     </button>
@@ -326,7 +359,7 @@
 
                 <button wire:click="closeStatusModal" class="absolute top-4 right-4 text-slate-400 hover:text-red-500 transition">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                        <path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clip-rule="evenodd" />
+                        <path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clip-rule="evenodd" />
                     </svg>
                 </button>
             </div>

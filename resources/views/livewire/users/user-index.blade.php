@@ -40,6 +40,12 @@
             <span class="font-bold text-emerald-800 text-sm">{{ session('message') }}</span>
         </div>
         @endif
+        @if (session()->has('error'))
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-xl shadow-sm flex items-center gap-3 animate-fade-in-down mb-4">
+            <div class="p-2 bg-red-100 rounded-full text-red-600"><i class="fas fa-exclamation-triangle"></i></div>
+            <span class="font-bold text-red-800 text-sm">{{ session('error') }}</span>
+        </div>
+        @endif
 
         {{-- MAIN CONTENT --}}
         @if(!$showForm)
@@ -49,7 +55,7 @@
             <div class="p-6 border-b border-slate-50 bg-slate-50/50 flex flex-col md:flex-row gap-4 justify-between items-center">
                 <div class="relative w-full md:max-w-md">
                     <i class="fas fa-search absolute left-4 top-3.5 text-slate-400"></i>
-                    <input wire:model.live="search" type="text" class="pl-10 w-full rounded-xl border-slate-200 bg-white text-sm font-bold text-slate-700 focus:border-emerald-500 focus:ring-emerald-500/20 placeholder-slate-400 transition shadow-sm" placeholder="Cari data...">
+                    <input wire:model.live="search" type="text" class="pl-10 w-full rounded-xl border-slate-200 bg-white text-sm font-bold text-slate-700 focus:border-emerald-500 focus:ring-emerald-500/20 placeholder-slate-400 transition shadow-sm" placeholder="Cari personil...">
                 </div>
                 <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-white px-4 py-2 rounded-lg border border-slate-100 shadow-sm flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -74,8 +80,12 @@
                         <tr class="hover:bg-slate-50/80 transition group">
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-4">
-                                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-black border border-emerald-100 group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-sm">
+                                    <div class="w-10 h-10 rounded-xl overflow-hidden bg-emerald-50 text-emerald-600 flex items-center justify-center font-black border border-emerald-100 group-hover:border-emerald-300 transition-all shadow-sm">
+                                        @if($user->foto_profile)
+                                        <img src="{{ asset('storage/' . $user->foto_profile) }}" class="w-full h-full object-cover">
+                                        @else
                                         {{ substr($user->name, 0, 1) }}
+                                        @endif
                                     </div>
                                     <div>
                                         <p class="font-bold text-slate-800 text-sm group-hover:text-emerald-700 transition">{{ $user->name }}</p>
@@ -87,12 +97,14 @@
                                 <div class="flex flex-col">
                                     <span class="font-bold text-slate-700 text-xs">{{ $user->jabatan ?? '-' }}</span>
                                     <span class="text-slate-400 text-[10px]">{{ $user->pangkat ?? '-' }}</span>
+                                    <span class="text-slate-400 text-[9px] mt-0.5">{{ $user->satuan_kerja }}</span>
                                 </div>
                             </td>
                             <td class="px-6 py-4">
                                 <span class="px-2 py-0.5 rounded text-[9px] font-black uppercase {{ $user->role === 'admin' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-500 border border-slate-200' }}">
                                     {{ $user->role }}
                                 </span>
+                                <div class="text-[10px] text-slate-500 mt-1">{{ $user->no_hp ?? '-' }}</div>
                             </td>
                             <td class="px-6 py-4 text-center">
                                 <div class="flex justify-center gap-2">
@@ -199,7 +211,7 @@
         </div>
         @endif
 
-        {{-- FORM MODAL --}}
+        {{-- FORM MODAL (DIREVISI SESUAI DATABASE) --}}
         @if($showForm)
         <div class="bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden max-w-4xl mx-auto animate-fade-in-up">
             <div class="bg-gradient-to-r from-emerald-600 to-teal-500 px-8 py-6 flex justify-between items-center text-white">
@@ -211,65 +223,114 @@
             </div>
 
             <form wire:submit.prevent="{{ $isEditMode ? 'update' : 'store' }}" class="p-8 space-y-8">
+
+                {{-- BAGIAN 1: IDENTITAS --}}
                 <div class="space-y-4">
                     <h4 class="text-sm font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2">I. Identitas Pegawai</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase">Nama Lengkap</label>
+                            <label class="text-[11px] font-bold text-slate-500 uppercase">Nama Lengkap <span class="text-red-500">*</span></label>
                             <input wire:model="name" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white transition">
-                            @error('name') <span class="text-red-500 text-[10px] font-bold">{{ $message }}</span> @enderror
+                            @error('name') <span class="text-red-500 text-[10px] font-bold italic">{{ $message }}</span> @enderror
                         </div>
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-500 uppercase">NIP</label>
-                            <input wire:model="nip" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white transition">
+                            <input wire:model="nip" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white transition" placeholder="NIP Pegawai">
+                            @error('nip') <span class="text-red-500 text-[10px] font-bold italic">{{ $message }}</span> @enderror
                         </div>
                     </div>
                 </div>
 
+                {{-- BAGIAN 2: JABATAN & INSTANSI --}}
                 <div class="space-y-4">
-                    <h4 class="text-sm font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2">II. Jabatan & Kontak</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <h4 class="text-sm font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2">II. Jabatan & Instansi</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase">Jabatan</label>
-                            <input wire:model="jabatan" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase">Pangkat</label>
-                            <input wire:model="pangkat" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white">
+                            <label class="text-[11px] font-bold text-slate-500 uppercase">Satuan Kerja</label>
+                            <input wire:model="satuan_kerja" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white" placeholder="Contoh: Kejari Banjarmasin">
                         </div>
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-500 uppercase">Kontak/WA</label>
                             <input wire:model="no_hp" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white">
                         </div>
                     </div>
-                </div>
-
-                <div class="space-y-4">
-                    <h4 class="text-sm font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2">III. Akun Sistem</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase">Email Login</label>
-                            <input wire:model="email" type="email" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white">
-                            @error('email') <span class="text-red-500 text-[10px] font-bold">{{ $message }}</span> @enderror
+                            <label class="text-[11px] font-bold text-slate-500 uppercase">Jabatan</label>
+                            <input wire:model="jabatan" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white">
                         </div>
                         <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase">Role</label>
-                            <select wire:model="role" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white">
-                                <option value="staff">STAFF</option>
-                                <option value="admin">ADMIN</option>
-                            </select>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase">Password</label>
-                            <input wire:model="password" type="password" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white" placeholder="*******">
+                            <label class="text-[11px] font-bold text-slate-500 uppercase">Pangkat / Golongan</label>
+                            <input wire:model="pangkat" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white">
                         </div>
                     </div>
                 </div>
 
+                {{-- BAGIAN 3: AKUN & FOTO --}}
+                <div class="space-y-4">
+                    <h4 class="text-sm font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2">III. Akun & Profil</h4>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-bold text-slate-500 uppercase">Email Login <span class="text-red-500">*</span></label>
+                            <input wire:model="email" type="email" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white">
+                            @error('email') <span class="text-red-500 text-[10px] font-bold italic">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-bold text-slate-500 uppercase">Role <span class="text-red-500">*</span></label>
+                            <select wire:model="role" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white">
+                                <option value="staff">STAFF</option>
+                                <option value="admin">ADMIN</option>
+                            </select>
+                            @error('role') <span class="text-red-500 text-[10px] font-bold italic">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-bold text-slate-500 uppercase">
+                                Password
+                                @if($isEditMode)
+                                <span class="text-slate-400 font-normal normal-case">(Opsional)</span>
+                                @else
+                                <span class="text-red-500">*</span>
+                                @endif
+                            </label>
+                            <input wire:model="password" type="password" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white" placeholder="*******">
+                            <p class="text-[10px] text-slate-400">Minimal 6 karakter</p>
+                            @error('password') <span class="text-red-500 text-[10px] font-bold italic">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+
+                    {{-- Upload Foto --}}
+                    <div class="space-y-2 mt-4">
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest">Foto Profile (Opsional)</label>
+                        <div class="flex items-center gap-6 p-4 border-2 border-dashed border-slate-300 rounded-xl bg-slate-50">
+                            @if ($foto_profile)
+                            <img src="{{ $foto_profile->temporaryUrl() }}" class="w-16 h-16 object-cover rounded-full border-2 border-emerald-500 shadow-sm">
+                            @elseif ($foto_lama)
+                            <img src="{{ asset('storage/' . $foto_lama) }}" class="w-16 h-16 object-cover rounded-full border-2 border-slate-200 shadow-sm">
+                            @else
+                            <div class="w-16 h-16 bg-slate-200 rounded-full border-2 border-slate-300 flex items-center justify-center text-slate-400"><i class="fas fa-user"></i></div>
+                            @endif
+                            <input wire:model="foto_profile" type="file" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-6 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-widest file:bg-emerald-600 file:text-white hover:file:bg-emerald-700 transition cursor-pointer">
+                        </div>
+                        @error('foto_profile') <span class="text-red-500 text-[10px] font-bold uppercase">{{ $message }}</span> @enderror
+                    </div>
+
+                </div>
+
                 <div class="pt-6 flex justify-end gap-3 border-t border-slate-100">
                     <button type="button" wire:click="closeModal" class="px-6 py-3 rounded-xl border border-slate-200 text-slate-500 font-bold text-xs uppercase transition hover:bg-slate-50">Batal</button>
-                    <button type="submit" class="px-8 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold text-xs uppercase shadow-lg transition transform hover:-translate-y-1">
-                        {{ $isEditMode ? 'Simpan Perubahan' : 'Buat Personil Baru' }}
+
+                    <button type="submit"
+                        wire:loading.attr="disabled"
+                        class="px-8 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold text-xs uppercase shadow-lg transition transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+
+                        <span wire:loading wire:target="store, update">
+                            <i class="fas fa-spinner fa-spin"></i> Menyimpan...
+                        </span>
+
+                        <span wire:loading.remove wire:target="store, update">
+                            {{ $isEditMode ? 'Simpan Perubahan' : 'Buat Personil Baru' }}
+                        </span>
                     </button>
                 </div>
             </form>
