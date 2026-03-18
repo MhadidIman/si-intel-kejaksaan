@@ -226,7 +226,7 @@
 
                 {{-- BAGIAN 1: IDENTITAS --}}
                 <div class="space-y-4">
-                    <h4 class="text-sm font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2">I. Identitas Pegawai</h4>
+                    <h4 class="text-sm font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2">Identitas Pegawai</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-500 uppercase">Nama Lengkap <span class="text-red-500">*</span></label>
@@ -243,7 +243,7 @@
 
                 {{-- BAGIAN 2: JABATAN & INSTANSI --}}
                 <div class="space-y-4">
-                    <h4 class="text-sm font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2">II. Jabatan & Instansi</h4>
+                    <h4 class="text-sm font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2">Jabatan & Instansi</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-500 uppercase">Satuan Kerja</label>
@@ -268,7 +268,7 @@
 
                 {{-- BAGIAN 3: AKUN & FOTO --}}
                 <div class="space-y-4">
-                    <h4 class="text-sm font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2">III. Akun & Profil</h4>
+                    <h4 class="text-sm font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2">Akun & Profil</h4>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="space-y-2">
