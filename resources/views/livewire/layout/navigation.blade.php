@@ -2,59 +2,9 @@
 
 use App\Livewire\Actions\Logout;
 use Livewire\Volt\Component;
-use Illuminate\Support\Facades\Auth;
-// Import Semua Model
-use App\Models\Lapinhar;
-use App\Models\Dpo;
-use App\Models\Wna;
-use App\Models\Ormas;
-use App\Models\PamSdo;
-use App\Models\JmsActivity;
-use App\Models\Kerawanan;
-use App\Models\Lapdu;
 
 new class extends Component
 {
-    // Properti Hitungan Operasional
-    public $cLapinhar = 0;
-    public $cDpo = 0;
-    public $cWna = 0;
-    public $cOrmas = 0;
-    public $totalOperasional = 0;
-
-    // Properti Hitungan Pelayanan
-    public $cPamSdo = 0;
-    public $cLapdu = 0;
-    public $cJms = 0;
-    public $cKerawanan = 0;
-    public $totalPelayanan = 0;
-
-    public function mount()
-    {
-        // Hitung notifikasi hanya jika user adalah Admin
-        if (Auth::check() && Auth::user()->isAdmin()) {
-
-            // 1. HITUNG DATA OPERASIONAL (Pending)
-            $this->cLapinhar = Lapinhar::where('status_verifikasi', 'pending')->count();
-            $this->cDpo      = Dpo::where('status_verifikasi', 'pending')->count();
-            $this->cWna      = Wna::where('status_verifikasi', 'pending')->count();
-            $this->cOrmas    = Ormas::where('status_verifikasi', 'pending')->count();
-
-            $this->totalOperasional = $this->cLapinhar + $this->cDpo + $this->cWna + $this->cOrmas;
-
-            // 2. HITUNG DATA PELAYANAN (Pending)
-            $this->cPamSdo    = PamSdo::where('status_verifikasi', 'pending')->count();
-            $this->cLapdu     = Lapdu::where('status_verifikasi', 'pending')->count();
-            $this->cJms       = JmsActivity::where('status_verifikasi', 'pending')->count();
-            $this->cKerawanan = Kerawanan::where('status_verifikasi', 'pending')->count();
-
-            $this->totalPelayanan = $this->cPamSdo + $this->cLapdu + $this->cJms + $this->cKerawanan;
-        }
-    }
-
-    /**
-     * Log the current user out of the application.
-     */
     public function logout(Logout $logout): void
     {
         $logout();
@@ -62,232 +12,141 @@ new class extends Component
     }
 }; ?>
 
-<nav x-data="{ 
-        open: false,
-        currentRoute: '{{ Route::currentRouteName() }}' 
-    }"
-    x-on:livewire:navigated.window="currentRoute = '{{ Route::currentRouteName() }}'"
-    class="bg-emerald-950/60 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 shadow-2xl">
-
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<nav x-data="{ open: false }" class="bg-slate-900 border-b border-emerald-900/50 sticky top-0 z-50 shadow-2xl">
+    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-20">
-            <div class="flex">
-                {{-- LOGO SECTION --}}
+            <div class="flex items-center gap-6">
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-3 group transition-all duration-300">
-                        <div class="bg-emerald-500 p-2 rounded-xl group-hover:rotate-12 transition-transform shadow-lg shadow-emerald-500/20">
-                            <img src="{{ asset('img/logo-kejaksaan.png') }}" class="h-8 w-8 object-contain">
+                    <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-3 group">
+                        <div class="p-1.5 bg-slate-800 rounded-xl border border-slate-700 group-hover:scale-105 transition duration-300 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+                            <img src="{{ asset('img/logo-kejaksaan.png') }}" class="block h-10 w-10 object-contain" alt="Logo" />
                         </div>
-                        <div class="flex flex-col">
-                            <span class="font-black text-xl tracking-tighter text-white leading-none group-hover:text-emerald-400 transition-colors">SI-INTEL</span>
-                            <span class="text-[9px] font-bold text-emerald-300/60 uppercase tracking-[0.2em] leading-none mt-1">Kejaksaan RI</span>
+                        <div class="flex flex-col hidden sm:block">
+                            <span class="text-white font-black text-xl tracking-wider leading-none">SI-INTEL</span>
+                            <span class="text-[9px] text-amber-400 font-black tracking-[0.2em] uppercase">Kejaksaan RI</span>
                         </div>
                     </a>
                 </div>
 
-                <div class="hidden space-x-2 sm:-my-px sm:ms-12 sm:flex sm:items-center">
-
-                    {{-- DASHBOARD --}}
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate
-                        class="px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 border-none hover:bg-white/5 {{ request()->routeIs('dashboard') ? 'bg-emerald-500/20 !text-emerald-400 shadow-inner' : 'text-gray-400 hover:text-white' }}">
-                        <i class="fas fa-home-alt mr-2 opacity-50"></i>{{ __('Dashboard') }}
+                <div class="hidden lg:flex lg:items-center lg:space-x-1 ml-6">
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="text-slate-300 hover:text-emerald-400 focus:text-emerald-400 hover:bg-slate-800/80 px-4 py-2.5 rounded-xl transition-all font-bold tracking-wide">
+                        <i class="fas fa-chart-pie mr-2"></i> Dashboard
                     </x-nav-link>
 
-                    {{-- DROPDOWN PERSONIL (KHUSUS ADMIN) --}}
-                    @if(auth()->user()->isAdmin())
-                    <div class="ms-2 relative">
-                        <x-dropdown align="right" width="64">
+                    <div class="relative z-[100] flex items-center">
+                        <x-dropdown align="left" width="56">
                             <x-slot name="trigger">
-                                <button class="relative inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 backdrop-blur-sm group
-                                    {{ request()->routeIs('users.*') ? 'bg-emerald-500/20 text-emerald-400' : 'text-gray-400 hover:text-white hover:bg-white/5' }}">
-                                    <i class="fas fa-users mr-2 opacity-50 group-hover:rotate-12 transition-transform"></i>
-                                    <div>Personil</div>
-                                    <div class="ms-2 opacity-50 group-hover:translate-y-0.5 transition-transform">
-                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
+                                <button class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-bold rounded-xl text-slate-300 bg-transparent hover:text-emerald-400 hover:bg-slate-800/80 focus:outline-none transition ease-in-out duration-150 gap-2 tracking-wide {{ request()->routeIs('lapinhar.*', 'dpo.*', 'wna.*', 'ormas.*', 'pam-sdo.*', 'jms.*', 'kerawanan.*') ? 'text-emerald-400 bg-slate-800/80' : '' }}">
+                                    <i class="fas fa-layer-group"></i> Modul Intelijen
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
                                 </button>
                             </x-slot>
+
                             <x-slot name="content">
-                                <div class="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-emerald-500/50 border-b border-white/5">Manajemen Pegawai</div>
+                                <div class="bg-white rounded-xl shadow-2xl ring-1 ring-slate-100 overflow-hidden py-2 font-bold relative z-[100]">
+                                    <x-dropdown-link :href="route('lapinhar.index')" wire:navigate class="hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-3 text-slate-600 py-2.5">
+                                        <i class="fas fa-bolt w-4 text-emerald-600 text-center"></i> Lapinhar
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="route('dpo.index')" wire:navigate class="hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-3 text-slate-600 py-2.5 border-t border-slate-50">
+                                        <i class="fas fa-user-secret w-4 text-emerald-600 text-center"></i> Buronan (DPO)
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="route('wna.index')" wire:navigate class="hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-3 text-slate-600 py-2.5 border-t border-slate-50">
+                                        <i class="fas fa-passport w-4 text-emerald-600 text-center"></i> Pengawasan WNA
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="route('ormas.index')" wire:navigate class="hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-3 text-slate-600 py-2.5 border-t border-slate-50">
+                                        <i class="fas fa-users w-4 text-emerald-600 text-center"></i> Ormas & Pakem
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="route('pam-sdo.index')" wire:navigate class="hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-3 text-slate-600 py-2.5 border-t border-slate-50">
+                                        <i class="fas fa-shield-alt w-4 text-emerald-600 text-center"></i> PAM SDO
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="route('jms.index')" wire:navigate class="hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-3 text-slate-600 py-2.5 border-t border-slate-50">
+                                        <i class="fas fa-school w-4 text-emerald-600 text-center"></i> Jaksa Masuk Sekolah
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="route('kerawanan.index')" wire:navigate class="hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-3 text-slate-600 py-2.5 border-t border-slate-50">
+                                        <i class="fas fa-map-marked-alt w-4 text-emerald-600 text-center"></i> Peta Kerawanan
+                                    </x-dropdown-link>
+                                </div>
+                            </x-slot>
+                        </x-dropdown>
+                    </div>
 
-                                <x-dropdown-link :href="route('users.index', ['viewMode' => 'list'])" wire:navigate class="hover:bg-emerald-500/10 flex items-center group">
-                                    <i class="fas fa-user-cog w-5 opacity-50 text-xs"></i> Kelola Akun Staff
-                                </x-dropdown-link>
+                    <x-nav-link :href="route('lapdu.index')" :active="request()->routeIs('lapdu.*')" class="text-slate-300 hover:text-emerald-400 focus:text-emerald-400 hover:bg-slate-800/80 px-4 py-2.5 rounded-xl transition-all font-bold tracking-wide">
+                        <i class="fas fa-bullhorn mr-2"></i> Lapdu
+                    </x-nav-link>
 
-                                <x-dropdown-link :href="route('users.index', ['viewMode' => 'stats'])" wire:navigate class="hover:bg-emerald-500/10 flex items-center group">
-                                    <i class="fas fa-analytics w-5 opacity-50 text-xs"></i> Statistik Kinerja (Bank Data)
-                                </x-dropdown-link>
+                    @if(auth()->user()->isAdmin())
+                    <div class="relative z-[100] flex items-center">
+                        <x-dropdown align="left" width="56">
+                            <x-slot name="trigger">
+                                <button class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-bold rounded-xl text-slate-300 bg-transparent hover:text-emerald-400 hover:bg-slate-800/80 focus:outline-none transition ease-in-out duration-150 gap-2 tracking-wide {{ request()->routeIs('users.*') ? 'text-emerald-400 bg-slate-800/80' : '' }}">
+                                    <i class="fas fa-users-cog"></i> Personil
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </x-slot>
 
-                                <x-dropdown-link :href="route('users.index', ['viewMode' => 'logs'])" wire:navigate class="hover:bg-emerald-500/10 flex items-center group border-t border-white/5">
-                                    <i class="fas fa-user-shield w-5 opacity-50 text-xs text-blue-400"></i> Log Aktifitas Keamanan
-                                </x-dropdown-link>
+                            <x-slot name="content">
+                                <div class="bg-white rounded-xl shadow-2xl ring-1 ring-slate-100 overflow-hidden py-2 font-bold relative z-[100]">
+                                    <x-dropdown-link :href="route('users.index', ['viewMode' => 'list'])" wire:navigate class="hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-3 text-slate-600 py-2.5">
+                                        <i class="fas fa-user-edit w-4 text-emerald-600 text-center"></i> Kelola Akun
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="route('users.index', ['viewMode' => 'stats'])" wire:navigate class="hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-3 text-slate-600 py-2.5 border-t border-slate-50">
+                                        <i class="fas fa-chart-line w-4 text-emerald-600 text-center"></i> Kinerja Staff
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="route('users.index', ['viewMode' => 'logs'])" wire:navigate class="hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-3 text-slate-600 py-2.5 border-t border-slate-50">
+                                        <i class="fas fa-shield-alt w-4 text-emerald-600 text-center"></i> Log Keamanan
+                                    </x-dropdown-link>
+                                </div>
                             </x-slot>
                         </x-dropdown>
                     </div>
                     @endif
-
-                    {{-- DROPDOWN OPERASIONAL --}}
-                    <div class="ms-2 relative">
-                        @php
-                        $operasionalRoutes = ['lapinhar.*', 'dpo.*', 'wna.*', 'ormas.*'];
-                        $isOperasionalActive = request()->routeIs($operasionalRoutes);
-                        @endphp
-                        <x-dropdown align="right" width="64">
-                            <x-slot name="trigger">
-                                <button class="relative inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 backdrop-blur-sm group
-                                    {{ $isOperasionalActive ? 'bg-emerald-500/20 text-emerald-400' : 'text-gray-400 hover:text-white hover:bg-white/5' }}">
-                                    <i class="fas fa-briefcase mr-2 opacity-50 group-hover:rotate-12 transition-transform"></i>
-                                    <div>Operasional</div>
-
-                                    <div class="ms-2 opacity-50 group-hover:translate-y-0.5 transition-transform">
-                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-
-                                    @if(auth()->user()->isAdmin() && $totalOperasional > 0)
-                                    <span class="absolute top-1.5 right-1.5 flex h-2.5 w-2.5">
-                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500 border border-emerald-900"></span>
-                                    </span>
-                                    @endif
-                                </button>
-                            </x-slot>
-                            <x-slot name="content">
-                                <div class="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-emerald-500/50">Menu Operasional</div>
-
-                                <x-dropdown-link :href="route('lapinhar.index')" wire:navigate class="hover:bg-emerald-500/10 flex items-center justify-between group">
-                                    <div class="flex items-center"><i class="fas fa-file-alt w-5 opacity-50 text-xs"></i> Lapinhar</div>
-                                    @if(auth()->user()->isAdmin() && $cLapinhar > 0)
-                                    <span class="bg-red-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm animate-pulse">{{ $cLapinhar }}</span>
-                                    @endif
-                                </x-dropdown-link>
-
-                                <x-dropdown-link :href="route('dpo.index')" wire:navigate class="hover:bg-emerald-500/10 flex items-center justify-between group">
-                                    <div class="flex items-center"><i class="fas fa-user-shield w-5 opacity-50 text-xs"></i> DPO / Tabur</div>
-                                    @if(auth()->user()->isAdmin() && $cDpo > 0)
-                                    <span class="bg-red-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm animate-pulse">{{ $cDpo }}</span>
-                                    @endif
-                                </x-dropdown-link>
-
-                                <x-dropdown-link :href="route('wna.index')" wire:navigate class="hover:bg-emerald-500/10 flex items-center justify-between group">
-                                    <div class="flex items-center"><i class="fas fa-globe-asia w-5 opacity-50 text-xs"></i> Pengawasan WNA</div>
-                                    @if(auth()->user()->isAdmin() && $cWna > 0)
-                                    <span class="bg-red-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm animate-pulse">{{ $cWna }}</span>
-                                    @endif
-                                </x-dropdown-link>
-
-                                <x-dropdown-link :href="route('ormas.index')" wire:navigate class="hover:bg-emerald-500/10 flex items-center justify-between group">
-                                    <div class="flex items-center"><i class="fas fa-users-class w-5 opacity-50 text-xs"></i> Pengawasan Ormas</div>
-                                    @if(auth()->user()->isAdmin() && $cOrmas > 0)
-                                    <span class="bg-red-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm animate-pulse">{{ $cOrmas }}</span>
-                                    @endif
-                                </x-dropdown-link>
-                            </x-slot>
-                        </x-dropdown>
-                    </div>
-
-                    {{-- DROPDOWN GIAT & PELAYANAN --}}
-                    <div class="ms-2 relative">
-                        @php
-                        $pelayananRoutes = ['pam-sdo.*', 'jms.*', 'kerawanan.*', 'lapdu.*'];
-                        $isPelayananActive = request()->routeIs($pelayananRoutes);
-                        @endphp
-                        <x-dropdown align="right" width="64">
-                            <x-slot name="trigger">
-                                <button class="relative inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 backdrop-blur-sm group
-                                    {{ $isPelayananActive ? 'bg-emerald-500/20 text-emerald-400' : 'text-gray-400 hover:text-white hover:bg-white/5' }}">
-
-                                    <i class="fas fa-hand-holding-heart mr-2 opacity-50 group-hover:rotate-12 transition-transform"></i>
-                                    <div>Giat & Pelayanan</div>
-
-                                    <div class="ms-2 opacity-50 group-hover:translate-y-0.5 transition-transform">
-                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-
-                                    @if(auth()->user()->isAdmin() && $totalPelayanan > 0)
-                                    <span class="absolute top-1.5 right-1.5 flex h-2.5 w-2.5">
-                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500 border border-emerald-900"></span>
-                                    </span>
-                                    @endif
-                                </button>
-                            </x-slot>
-                            <x-slot name="content">
-                                <div class="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-emerald-500/50">Menu Pelayanan</div>
-
-                                <x-dropdown-link :href="route('pam-sdo.index')" wire:navigate class="hover:bg-emerald-500/10 flex items-center justify-between group">
-                                    <div class="flex items-center"><i class="fas fa-shield-check w-5 opacity-50 text-xs"></i> PAM SDO</div>
-                                    @if(auth()->user()->isAdmin() && $cPamSdo > 0)
-                                    <span class="bg-red-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm animate-pulse">{{ $cPamSdo }}</span>
-                                    @endif
-                                </x-dropdown-link>
-
-                                <x-dropdown-link :href="route('lapdu.index')" wire:navigate class="hover:bg-emerald-500/10 flex items-center justify-between group">
-                                    <div class="flex items-center"><i class="fas fa-envelope-open-text w-5 opacity-50 text-xs"></i> Pelayanan Lapdu</div>
-                                    @if(auth()->user()->isAdmin() && $cLapdu > 0)
-                                    <span class="bg-red-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm animate-pulse">{{ $cLapdu }}</span>
-                                    @endif
-                                </x-dropdown-link>
-
-                                <x-dropdown-link :href="route('jms.index')" wire:navigate class="hover:bg-emerald-500/10 flex items-center justify-between group">
-                                    <div class="flex items-center"><i class="fas fa-graduation-cap w-5 opacity-50 text-xs"></i> Jaksa Masuk Sekolah</div>
-                                    @if(auth()->user()->isAdmin() && $cJms > 0)
-                                    <span class="bg-red-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm animate-pulse">{{ $cJms }}</span>
-                                    @endif
-                                </x-dropdown-link>
-
-                                <x-dropdown-link :href="route('kerawanan.index')" wire:navigate class="hover:bg-emerald-500/10 flex items-center justify-between border-t border-white/5 group">
-                                    <div class="flex items-center"><i class="fas fa-map-marked-alt w-5 opacity-50 text-xs"></i> Peta Kerawanan</div>
-                                    @if(auth()->user()->isAdmin() && $cKerawanan > 0)
-                                    <span class="bg-red-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm animate-pulse">{{ $cKerawanan }}</span>
-                                    @endif
-                                </x-dropdown-link>
-                            </x-slot>
-                        </x-dropdown>
-                    </div>
                 </div>
             </div>
 
-            {{-- USER PROFILE DROPDOWN --}}
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <div class="hidden lg:flex sm:items-center relative z-[100]">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="flex items-center gap-3 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all group">
-                            <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center font-black text-emerald-950 text-xs shadow-lg shadow-emerald-500/20 group-hover:scale-110 transition-transform">
+                        <button class="inline-flex items-center gap-3 px-3 py-2 border border-slate-700 hover:border-emerald-500 text-sm font-black rounded-full text-white bg-slate-800 hover:text-emerald-400 focus:outline-none transition ease-in-out duration-150 shadow-sm">
+                            <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-emerald-500 overflow-hidden shadow-inner">
+                                @if(auth()->user()->foto_profile)
+                                <img src="{{ asset('storage/' . auth()->user()->foto_profile) }}" class="w-full h-full object-cover">
+                                @else
                                 {{ substr(auth()->user()->name, 0, 1) }}
+                                @endif
                             </div>
-                            <div class="text-start hidden lg:block">
-                                <p class="text-[10px] font-black text-emerald-400 uppercase tracking-tighter leading-none">{{ auth()->user()->role }}</p>
-                                <div x-data="{{ json_encode(['name' => Auth::user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name" class="text-sm font-bold text-white leading-none mt-1"></div>
+                            <div class="flex flex-col text-left hidden sm:block max-w-[100px]">
+                                <span class="truncate block text-xs">{{ auth()->user()->name }}</span>
+                                <span class="text-[9px] text-amber-400 uppercase tracking-widest">{{ auth()->user()->role }}</span>
                             </div>
-                            <svg class="fill-current h-4 w-4 text-gray-500 group-hover:text-white transition-colors" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <svg class="fill-current h-4 w-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                             </svg>
                         </button>
                     </x-slot>
 
                     <x-slot name="content">
-                        <div class="px-4 py-2 border-b border-white/5 bg-white/5">
-                            <p class="text-xs text-gray-400">Signed in as</p>
-                            <p class="text-sm font-bold text-white truncate">{{ auth()->user()->nip ?? auth()->user()->email }}</p>
-                        </div>
-                        <x-dropdown-link :href="route('profile')" wire:navigate class="hover:bg-emerald-500/10">
-                            <i class="fas fa-user-cog mr-2 opacity-50"></i> Pengaturan Profil
-                        </x-dropdown-link>
-                        <div class="border-t border-white/10"></div>
-                        <button wire:click="logout" class="w-full text-start">
-                            <x-dropdown-link class="!text-red-400 font-bold hover:bg-red-500/10">
-                                <i class="fas fa-sign-out-alt mr-2 opacity-50"></i> Keluar Sistem
+                        <div class="bg-white rounded-xl shadow-2xl py-2 ring-1 ring-slate-100 relative z-[100]">
+                            <div class="px-4 py-3 border-b border-slate-100">
+                                <p class="text-sm font-bold text-slate-800">{{ auth()->user()->name }}</p>
+                                <p class="text-[10px] text-slate-500 truncate mt-1 bg-slate-50 px-2 py-1 rounded inline-block">{{ auth()->user()->email }}</p>
+                            </div>
+                            <x-dropdown-link :href="route('profile')" wire:navigate class="text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 font-bold text-sm flex items-center gap-3 mt-1 py-2.5">
+                                <i class="fas fa-cog w-4 text-center"></i> Pengaturan Akun
                             </x-dropdown-link>
-                        </button>
+                            <button wire:click="logout" class="w-full text-start">
+                                <x-dropdown-link class="text-red-600 hover:text-red-700 hover:bg-red-50 font-bold text-sm flex items-center gap-3 py-2.5">
+                                    <i class="fas fa-power-off w-4 text-center"></i> Keluar Sistem
+                                </x-dropdown-link>
+                            </button>
+                        </div>
                     </x-slot>
                 </x-dropdown>
             </div>
+
         </div>
     </div>
 </nav>

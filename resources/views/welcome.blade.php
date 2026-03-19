@@ -4,54 +4,44 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SI-INTEL Kejaksaan</title>
+    <title>SI-INTEL | Kejaksaan RI</title>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800,900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800,900&display=swap" rel="stylesheet" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
-        /* Animasi Kustom */
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* Animasi Khusus Welcome Page */
         @keyframes float {
-            0% {
+
+            0%,
+            100% {
                 transform: translateY(0px);
             }
 
             50% {
-                transform: translateY(-10px);
-            }
-
-            100% {
-                transform: translateY(0px);
+                transform: translateY(-15px);
             }
         }
 
-        @keyframes breathe {
+        @keyframes glow {
 
             0%,
             100% {
-                filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.2));
+                opacity: 0.3;
                 transform: scale(1);
             }
 
             50% {
-                filter: drop-shadow(0 0 25px rgba(16, 185, 129, 0.5));
-                transform: scale(1.02);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
+                opacity: 0.6;
+                transform: scale(1.1);
             }
         }
 
@@ -59,67 +49,49 @@
             animation: float 6s ease-in-out infinite;
         }
 
-        .animate-breathe {
-            animation: breathe 4s ease-in-out infinite;
+        .bg-glow {
+            animation: glow 8s ease-in-out infinite;
         }
 
-        .animate-fade-in-up {
-            animation: fadeInUp 0.8s ease-out forwards;
-        }
-
-        .delay-100 {
-            animation-delay: 0.1s;
-        }
-
-        .delay-200 {
-            animation-delay: 0.2s;
-        }
-
-        .delay-300 {
-            animation-delay: 0.3s;
-        }
-
-        /* Grid Pattern Background */
-        .bg-grid-slate-900 {
-            background-size: 40px 40px;
-            background-image: linear-gradient(to right, rgba(148, 163, 184, 0.1) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(148, 163, 184, 0.1) 1px, transparent 1px);
+        /* Grid Background Pattern */
+        .bg-grid-premium {
+            background-size: 50px 50px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
         }
     </style>
 </head>
 
-<body class="antialiased bg-slate-50 font-sans selection:bg-emerald-500 selection:text-white overflow-x-hidden relative">
+<body class="antialiased bg-slate-950 selection:bg-emerald-500 selection:text-white overflow-x-hidden">
 
     <div class="fixed inset-0 z-0 pointer-events-none">
-        <div class="absolute inset-0 bg-grid-slate-900 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]"></div>
-
-        <div class="absolute top-0 -left-4 w-96 h-96 bg-emerald-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-        <div class="absolute top-0 -right-4 w-96 h-96 bg-amber-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-        <div class="absolute -bottom-32 left-20 w-96 h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
+        <div class="absolute inset-0 bg-grid-premium"></div>
+        <div class="absolute top-0 -left-20 w-[500px] h-[500px] bg-emerald-600/20 rounded-full filter blur-[120px] bg-glow"></div>
+        <div class="absolute bottom-0 -right-20 w-[500px] h-[500px] bg-blue-600/10 rounded-full filter blur-[120px] bg-glow" style="animation-delay: -4s"></div>
     </div>
 
-    <nav class="fixed top-0 w-full z-50 px-6 py-4 transition-all duration-300 backdrop-blur-md border-b border-white/50 bg-white/30">
+    <nav class="fixed top-0 w-full z-50 px-6 py-5 border-b border-white/10 bg-slate-950/40 backdrop-blur-xl">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="bg-white/80 p-1.5 rounded-lg shadow-sm backdrop-blur-sm border border-emerald-100">
-                    <img src="{{ asset('img/logo-kejaksaan.png') }}" class="h-8 w-auto">
+            <div class="flex items-center gap-4">
+                <div class="bg-white/10 p-2 rounded-xl border border-white/20 shadow-xl">
+                    <img src="{{ asset('img/logo-kejaksaan.png') }}" class="h-10 w-auto object-contain">
                 </div>
                 <div class="flex flex-col leading-none">
-                    <span class="font-black text-slate-800 tracking-widest text-lg">SI-INTEL</span>
-                    <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-[0.2em]">Kejaksaan Negeri</span>
+                    <span class="font-black text-white tracking-widest text-xl">SI-INTEL</span>
+                    <span class="text-[9px] font-black text-emerald-400 uppercase tracking-[0.3em] mt-1">KEJAKSAAN REPUBLIK INDONESIA</span>
                 </div>
             </div>
 
             <div class="flex items-center gap-4">
                 @if (Route::has('login'))
                 @auth
-                <a href="{{ url('/dashboard') }}" class="group inline-flex items-center gap-2 px-5 py-2 rounded-full bg-emerald-600 text-white font-bold text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-200 hover:shadow-emerald-300 transform hover:-translate-y-0.5">
+                <a href="{{ url('/dashboard') }}" class="group inline-flex items-center gap-3 px-6 py-2.5 rounded-xl bg-emerald-600 text-white font-black text-xs uppercase tracking-widest hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-900/50 transform hover:-translate-y-0.5">
+                    <i class="fas fa-chart-pie"></i>
                     Dashboard
-                    <i class="fas fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
                 </a>
                 @else
-                <a href="{{ route('login') }}" class="group inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white text-slate-700 font-bold text-xs uppercase tracking-widest border border-slate-200 hover:border-emerald-500 hover:text-emerald-600 transition-all shadow-sm hover:shadow-md">
-                    <i class="fas fa-lock text-emerald-500 opacity-60 group-hover:opacity-100"></i>
+                <a href="{{ route('login') }}" class="group inline-flex items-center gap-3 px-6 py-2.5 rounded-xl bg-white/5 text-white font-black text-xs uppercase tracking-widest border border-white/20 hover:bg-white hover:text-slate-900 transition-all duration-300">
+                    <i class="fas fa-lock-open text-emerald-400"></i>
                     Login Petugas
                 </a>
                 @endauth
@@ -128,99 +100,111 @@
         </div>
     </nav>
 
-    <div class="relative min-h-screen flex items-center justify-center pt-20 pb-10">
-        <div class="relative z-10 max-w-7xl mx-auto px-6 w-full">
+    <div class="relative min-h-screen flex items-center justify-center pt-24 pb-12">
+        <div class="relative z-10 max-w-7xl mx-auto px-6 w-full text-center">
 
-            <div class="flex flex-col items-center text-center">
+            <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-slate-300 text-[10px] font-black uppercase tracking-[0.2em] mb-10 backdrop-blur-sm">
+                <span class="flex h-2 w-2 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                Secure Intel Intelligence System v2.0
+            </div>
 
-                <div class="mb-6 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-widest shadow-sm animate-fade-in-up">
-                    <span class="relative flex h-2 w-2">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                    </span>
-                    Sistem Monitoring & Pelaporan Terintegrasi
+            <div class="mb-10 relative">
+                <div class="absolute inset-0 bg-emerald-500/20 blur-[100px] rounded-full scale-150"></div>
+                <img src="{{ asset('img/logo-kejaksaan.png') }}" class="relative h-56 w-auto mx-auto object-contain drop-shadow-[0_0_50px_rgba(16,185,129,0.4)] animate-float">
+            </div>
+
+            <h1 class="text-5xl md:text-8xl font-black text-white tracking-tighter mb-8 leading-[0.9]">
+                SISTEM INFORMASI <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-500 italic">INTELIJEN TERPADU</span>
+            </h1>
+
+            <p class="text-lg md:text-xl text-slate-400 font-medium max-w-3xl mx-auto mb-12 leading-relaxed">
+                Platform digitalisasi eksklusif untuk manajemen data intelijen strategis guna mendukung penegakan hukum yang
+                <span class="text-emerald-400 font-bold border-b border-emerald-400/30">Cepat</span>,
+                <span class="text-emerald-400 font-bold border-b border-emerald-400/30">Tepat</span>, dan
+                <span class="text-emerald-400 font-bold border-b border-emerald-400/30">Akurat</span>.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-5 justify-center items-center">
+                @if (Route::has('login'))
+                @auth
+                <a href="{{ url('/dashboard') }}" class="w-full sm:w-auto px-10 py-5 bg-emerald-600 rounded-2xl text-white font-black text-sm uppercase tracking-[0.2em] shadow-2xl shadow-emerald-900/50 hover:bg-emerald-500 hover:-translate-y-1 transition-all duration-300">
+                    Masuk Ke Dashboard <i class="fas fa-arrow-right ml-3"></i>
+                </a>
+                @else
+                <a href="{{ route('login') }}" class="w-full sm:w-auto px-10 py-5 bg-emerald-600 rounded-2xl text-white font-black text-sm uppercase tracking-[0.2em] shadow-2xl shadow-emerald-900/50 hover:bg-emerald-500 hover:-translate-y-1 transition-all duration-300">
+                    Mulai Akses Sistem <i class="fas fa-shield-halved ml-3"></i>
+                </a>
+                @endauth
+                @endif
+
+                <div class="text-slate-500 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                    <i class="fas fa-lock text-emerald-500"></i> Encrypted Connection
+                </div>
+            </div>
+
+            <div class="mt-32 grid grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+                <div class="p-8 bg-white/5 rounded-3xl border border-white/10 backdrop-blur-md group hover:bg-white/10 transition-all duration-500">
+                    <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center text-xl mb-6 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h4 class="text-white font-black text-lg mb-2">Centralized</h4>
+                    <p class="text-slate-400 text-xs leading-relaxed">Penyimpanan bank data intelijen terpusat dan terstruktur.</p>
                 </div>
 
-                <div class="mb-8 relative animate-fade-in-up delay-100">
-                    <div class="absolute inset-0 bg-gradient-to-tr from-emerald-400 to-amber-300 rounded-full blur-2xl opacity-20 animate-pulse"></div>
-                    <img src="{{ asset('img/logo-kejaksaan.png') }}" class="relative h-48 w-auto object-contain drop-shadow-2xl animate-breathe">
+                <div class="p-8 bg-white/5 rounded-3xl border border-white/10 backdrop-blur-md group hover:bg-white/10 transition-all duration-500">
+                    <div class="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-2xl flex items-center justify-center text-xl mb-6 group-hover:bg-blue-500 group-hover:text-white transition-all duration-500">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h4 class="text-white font-black text-lg mb-2">Real-Time</h4>
+                    <p class="text-slate-400 text-xs leading-relaxed">Monitoring pergerakan informasi hukum secara aktual.</p>
                 </div>
 
-                <h1 class="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter mb-6 leading-tight animate-fade-in-up delay-200">
-                    SISTEM INFORMASI <br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-700 drop-shadow-sm">INTELIJEN KEJAKSAAN</span>
-                </h1>
-
-                <p class="text-lg text-slate-500 font-medium max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up delay-300">
-                    Platform digitalisasi manajemen data intelijen untuk mendukung penegakan hukum yang <span class="text-emerald-600 font-bold">Modern</span>, <span class="text-emerald-600 font-bold">Cepat</span>, dan <span class="text-emerald-600 font-bold">Akurat</span>.
-                </p>
-
-                <div class="flex flex-col sm:flex-row gap-4 w-full justify-center animate-fade-in-up delay-300">
-                    @if (Route::has('login'))
-                    @auth
-                    <a href="{{ url('/dashboard') }}" class="group relative px-8 py-4 bg-slate-900 rounded-2xl text-white font-black text-sm uppercase tracking-widest shadow-2xl shadow-slate-400/50 hover:bg-emerald-600 hover:shadow-emerald-500/40 hover:-translate-y-1 transition-all duration-300">
-                        <span class="flex items-center justify-center gap-3">
-                            <i class="fas fa-tachometer-alt"></i> Masuk Dashboard
-                        </span>
-                    </a>
-                    @else
-                    <a href="{{ route('login') }}" class="group relative px-8 py-4 bg-emerald-600 rounded-2xl text-white font-black text-sm uppercase tracking-widest shadow-2xl shadow-emerald-400/40 hover:bg-emerald-700 hover:shadow-emerald-500/50 hover:-translate-y-1 transition-all duration-300">
-                        <span class="flex items-center justify-center gap-3">
-                            Akses Sistem <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-                        </span>
-                    </a>
-                    @endauth
-                    @endif
+                <div class="p-8 bg-white/5 rounded-3xl border border-white/10 backdrop-blur-md group hover:bg-white/10 transition-all duration-500">
+                    <div class="w-12 h-12 bg-amber-500/20 text-amber-400 rounded-2xl flex items-center justify-center text-xl mb-6 group-hover:bg-amber-500 group-hover:text-white transition-all duration-500">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <h4 class="text-white font-black text-lg mb-2">Classified</h4>
+                    <p class="text-slate-400 text-xs leading-relaxed">Keamanan data berlapis untuk menjaga kerahasiaan informasi.</p>
                 </div>
 
-                <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 w-full animate-fade-in-up delay-300">
-                    <div class="p-6 bg-white/60 backdrop-blur-sm rounded-3xl border border-white/50 shadow-lg hover:shadow-xl hover:bg-white hover:-translate-y-1 transition-all duration-300 group">
-                        <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                            <i class="fas fa-database"></i>
-                        </div>
-                        <h4 class="font-black text-slate-800 text-lg mb-1">Terpusat</h4>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Bank Data Digital</p>
+                <div class="p-8 bg-white/5 rounded-3xl border border-white/10 backdrop-blur-md group hover:bg-white/10 transition-all duration-500">
+                    <div class="w-12 h-12 bg-purple-500/20 text-purple-400 rounded-2xl flex items-center justify-center text-xl mb-6 group-hover:bg-purple-500 group-hover:text-white transition-all duration-500">
+                        <i class="fas fa-file-invoice"></i>
                     </div>
-
-                    <div class="p-6 bg-white/60 backdrop-blur-sm rounded-3xl border border-white/50 shadow-lg hover:shadow-xl hover:bg-white hover:-translate-y-1 transition-all duration-300 group">
-                        <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <h4 class="font-black text-slate-800 text-lg mb-1">Realtime</h4>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Monitoring 24/7</p>
-                    </div>
-
-                    <div class="p-6 bg-white/60 backdrop-blur-sm rounded-3xl border border-white/50 shadow-lg hover:shadow-xl hover:bg-white hover:-translate-y-1 transition-all duration-300 group">
-                        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl mb-4 group-hover:bg-amber-500 group-hover:text-white transition-colors">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <h4 class="font-black text-slate-800 text-lg mb-1">Aman</h4>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Enkripsi Data</p>
-                    </div>
-
-                    <div class="p-6 bg-white/60 backdrop-blur-sm rounded-3xl border border-white/50 shadow-lg hover:shadow-xl hover:bg-white hover:-translate-y-1 transition-all duration-300 group">
-                        <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl mb-4 group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <h4 class="font-black text-slate-800 text-lg mb-1">Valid</h4>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Akurasi Tinggi</p>
-                    </div>
+                    <h4 class="text-white font-black text-lg mb-2">Reporting</h4>
+                    <p class="text-slate-400 text-xs leading-relaxed">Sistem pelaporan otomatis yang siap dipublikasikan.</p>
                 </div>
-
             </div>
         </div>
     </div>
 
-    <footer class="relative z-10 bg-white/50 backdrop-blur-md border-t border-slate-200 py-8">
-        <div class="max-w-7xl mx-auto px-6 text-center">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">
-                    &copy; {{ date('Y') }} Kejaksaan Negeri. All Rights Reserved.
-                </p>
-                <div class="flex gap-6 text-slate-400">
-                    <span class="text-[10px] font-black uppercase tracking-widest hover:text-emerald-600 cursor-pointer transition">Satya</span>
-                    <span class="text-[10px] font-black uppercase tracking-widest hover:text-emerald-600 cursor-pointer transition">Adhi</span>
-                    <span class="text-[10px] font-black uppercase tracking-widest hover:text-emerald-600 cursor-pointer transition">Wicaksana</span>
+    <footer class="relative z-10 border-t border-white/10 py-12 bg-slate-950">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+                <div class="text-center md:text-left">
+                    <p class="text-xs text-slate-500 font-bold uppercase tracking-widest mb-2">
+                        &copy; {{ date('Y') }} Kejaksaan Negeri. Dikembangkan untuk Keperluan Penegakan Hukum.
+                    </p>
+                    <p class="text-[10px] text-slate-600 font-medium">Sistem Informasi Intelijen Terpadu (SI-INTEL) | Internal Use Only</p>
+                </div>
+
+                <div class="flex gap-8">
+                    <div class="text-center group">
+                        <p class="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] group-hover:text-emerald-500 transition-colors">SATYA</p>
+                        <div class="w-full h-0.5 bg-emerald-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                    </div>
+                    <div class="text-center group">
+                        <p class="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] group-hover:text-emerald-500 transition-colors">ADHI</p>
+                        <div class="w-full h-0.5 bg-emerald-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                    </div>
+                    <div class="text-center group">
+                        <p class="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] group-hover:text-emerald-500 transition-colors">WICAKSANA</p>
+                        <div class="w-full h-0.5 bg-emerald-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                    </div>
                 </div>
             </div>
         </div>
