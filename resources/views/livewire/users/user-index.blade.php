@@ -97,14 +97,14 @@
                                 <div class="flex flex-col">
                                     <span class="font-bold text-slate-700 text-xs">{{ $user->jabatan ?? '-' }}</span>
                                     <span class="text-slate-400 text-[10px]">{{ $user->pangkat ?? '-' }}</span>
-                                    <span class="text-slate-400 text-[9px] mt-0.5">{{ $user->satuan_kerja }}</span>
+                                    <span class="text-emerald-600 font-black text-[9px] mt-0.5 uppercase tracking-widest">{{ $user->satuan_kerja }}</span>
                                 </div>
                             </td>
                             <td class="px-6 py-4">
-                                <span class="px-2 py-0.5 rounded text-[9px] font-black uppercase {{ $user->role === 'admin' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-500 border border-slate-200' }}">
+                                <span class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider shadow-sm {{ $user->role === 'admin' ? 'bg-slate-900 text-white' : 'bg-emerald-50 text-emerald-600 border border-emerald-200' }}">
                                     {{ $user->role }}
                                 </span>
-                                <div class="text-[10px] text-slate-500 mt-1">{{ $user->no_hp ?? '-' }}</div>
+                                <div class="text-[10px] text-slate-500 mt-1 font-bold">{{ $user->no_hp ?? '-' }}</div>
                             </td>
                             <td class="px-6 py-4 text-center">
                                 <div class="flex justify-center gap-2">
@@ -211,13 +211,13 @@
         </div>
         @endif
 
-        {{-- FORM MODAL (DIREVISI SESUAI DATABASE) --}}
+        {{-- FORM MODAL (DIREVISI: DROPDOWN PANGKAT & JABATAN INTEL) --}}
         @if($showForm)
         <div class="bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden max-w-4xl mx-auto animate-fade-in-up">
             <div class="bg-gradient-to-r from-emerald-600 to-teal-500 px-8 py-6 flex justify-between items-center text-white">
                 <div>
                     <h3 class="font-black text-xl uppercase tracking-widest italic">{{ $isEditMode ? 'Edit Personil' : 'Registrasi Personil' }}</h3>
-                    <p class="text-emerald-100 text-xs font-medium opacity-80">Pastikan data yang diinput benar dan sesuai NIP.</p>
+                    <p class="text-emerald-100 text-xs font-medium opacity-80">Data Jabatan dan Pangkat telah disesuaikan dengan hierarki struktural Intelijen.</p>
                 </div>
                 <button wire:click="closeModal" class="w-10 h-10 flex items-center justify-center bg-white/20 rounded-full hover:bg-white/40 transition"><i class="fas fa-times"></i></button>
             </div>
@@ -226,7 +226,7 @@
 
                 {{-- BAGIAN 1: IDENTITAS --}}
                 <div class="space-y-4">
-                    <h4 class="text-sm font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2">Identitas Pegawai</h4>
+                    <h4 class="text-sm font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2">I. Identitas Pegawai</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-500 uppercase">Nama Lengkap <span class="text-red-500">*</span></label>
@@ -241,9 +241,9 @@
                     </div>
                 </div>
 
-                {{-- BAGIAN 2: JABATAN & INSTANSI --}}
+                {{-- BAGIAN 2: JABATAN & INSTANSI (DIREVISI) --}}
                 <div class="space-y-4">
-                    <h4 class="text-sm font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2">Jabatan & Instansi</h4>
+                    <h4 class="text-sm font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2">II. Jabatan & Instansi</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-500 uppercase">Satuan Kerja</label>
@@ -254,21 +254,66 @@
                             <input wire:model="no_hp" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white">
                         </div>
                     </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {{-- DROPDOWN JABATAN INTELIJEN --}}
                         <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase">Jabatan</label>
-                            <input wire:model="jabatan" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white">
+                            <label class="text-[11px] font-bold text-slate-500 uppercase">Jabatan (Divisi Intelijen)</label>
+                            <div class="relative">
+                                <select wire:model="jabatan" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white appearance-none transition cursor-pointer text-sm">
+                                    <option value="">-- Pilih Jabatan --</option>
+                                    <optgroup label="Struktural Kejaksaan Negeri">
+                                        <option value="Kepala Kejaksaan Negeri">Kepala Kejaksaan Negeri</option>
+                                        <option value="Kepala Seksi Intelijen">Kepala Seksi Intelijen (Kasi Intel)</option>
+                                        <option value="Kasubsi Ideologi, Politik, dsb (A)">Kasubsi A (Ipoleksosbudhankam)</option>
+                                        <option value="Kasubsi Ekonomi & PPS (B)">Kasubsi B (Ekonomi & PPS)</option>
+                                    </optgroup>
+                                    <optgroup label="Fungsional & Staf">
+                                        <option value="Jaksa Fungsional Intelijen">Jaksa Fungsional Intelijen</option>
+                                        <option value="Analis Intelijen">Analis Intelijen</option>
+                                        <option value="Staf Intelijen">Staf Intelijen (Tata Usaha)</option>
+                                        <option value="Pengawal Tahanan (Waltah)">Pengawal Tahanan (Waltah)</option>
+                                        <option value="PPNPN / Pramubakti">PPNPN / Pramubakti</option>
+                                        <option value="Petugas Keamanan Dalam (Kamdal)">Petugas Keamanan Dalam (Kamdal)</option>
+                                    </optgroup>
+                                </select>
+                                <i class="fas fa-chevron-down absolute right-4 top-3.5 text-slate-400 text-xs pointer-events-none"></i>
+                            </div>
                         </div>
+
+                        {{-- DROPDOWN PANGKAT JAKSA --}}
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-500 uppercase">Pangkat / Golongan</label>
-                            <input wire:model="pangkat" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white">
+                            <div class="relative">
+                                <select wire:model="pangkat" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white appearance-none transition cursor-pointer text-sm">
+                                    <option value="">-- Pilih Pangkat / Golongan --</option>
+                                    <optgroup label="Kepangkatan Jaksa">
+                                        <option value="Jaksa Utama (IV/e)">Jaksa Utama (IV/e)</option>
+                                        <option value="Jaksa Utama Madya (IV/d)">Jaksa Utama Madya (IV/d)</option>
+                                        <option value="Jaksa Utama Muda (IV/c)">Jaksa Utama Muda (IV/c)</option>
+                                        <option value="Jaksa Utama Pratama (IV/b)">Jaksa Utama Pratama (IV/b)</option>
+                                        <option value="Jaksa Madya (IV/a)">Jaksa Madya (IV/a)</option>
+                                        <option value="Jaksa Muda (III/d)">Jaksa Muda (III/d)</option>
+                                        <option value="Jaksa Pratama (III/c)">Jaksa Pratama (III/c)</option>
+                                        <option value="Ajun Jaksa (III/b)">Ajun Jaksa (III/b)</option>
+                                        <option value="Ajun Jaksa Madya (III/a)">Ajun Jaksa Madya (III/a)</option>
+                                    </optgroup>
+                                    <optgroup label="Tata Usaha / Non-Jaksa">
+                                        <option value="Penata (Gol. III)">Staf / Penata (Gol. III)</option>
+                                        <option value="Pengatur (Gol. II)">Staf / Pengatur (Gol. II)</option>
+                                        <option value="Juru (Gol. I)">Staf / Juru (Gol. I)</option>
+                                        <option value="PPNPN / Honorer">PPNPN / Tenaga Honorer</option>
+                                    </optgroup>
+                                </select>
+                                <i class="fas fa-chevron-down absolute right-4 top-3.5 text-slate-400 text-xs pointer-events-none"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {{-- BAGIAN 3: AKUN & FOTO --}}
                 <div class="space-y-4">
-                    <h4 class="text-sm font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2">Akun & Profil</h4>
+                    <h4 class="text-sm font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2">III. Akun & Profil</h4>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="space-y-2">
@@ -277,16 +322,19 @@
                             @error('email') <span class="text-red-500 text-[10px] font-bold italic">{{ $message }}</span> @enderror
                         </div>
                         <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase">Role <span class="text-red-500">*</span></label>
-                            <select wire:model="role" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white">
-                                <option value="staff">STAFF</option>
-                                <option value="admin">ADMIN</option>
-                            </select>
+                            <label class="text-[11px] font-bold text-slate-500 uppercase">Role / Otoritas <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <select wire:model="role" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white appearance-none cursor-pointer">
+                                    <option value="staff">STAFF INTELIJEN</option>
+                                    <option value="admin">ADMINISTRATOR</option>
+                                </select>
+                                <i class="fas fa-chevron-down absolute right-4 top-3.5 text-slate-400 text-xs pointer-events-none"></i>
+                            </div>
                             @error('role') <span class="text-red-500 text-[10px] font-bold italic">{{ $message }}</span> @enderror
                         </div>
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-500 uppercase">
-                                Password
+                                Password Login
                                 @if($isEditMode)
                                 <span class="text-slate-400 font-normal normal-case">(Opsional)</span>
                                 @else
@@ -302,15 +350,15 @@
                     {{-- Upload Foto --}}
                     <div class="space-y-2 mt-4">
                         <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest">Foto Profile (Opsional)</label>
-                        <div class="flex items-center gap-6 p-4 border-2 border-dashed border-slate-300 rounded-xl bg-slate-50">
+                        <div class="flex items-center gap-6 p-4 border-2 border-dashed border-slate-300 rounded-xl bg-slate-50 hover:border-emerald-300 transition-colors">
                             @if ($foto_profile)
                             <img src="{{ $foto_profile->temporaryUrl() }}" class="w-16 h-16 object-cover rounded-full border-2 border-emerald-500 shadow-sm">
                             @elseif ($foto_lama)
                             <img src="{{ asset('storage/' . $foto_lama) }}" class="w-16 h-16 object-cover rounded-full border-2 border-slate-200 shadow-sm">
                             @else
-                            <div class="w-16 h-16 bg-slate-200 rounded-full border-2 border-slate-300 flex items-center justify-center text-slate-400"><i class="fas fa-user"></i></div>
+                            <div class="w-16 h-16 bg-slate-200 rounded-full border-2 border-slate-300 flex items-center justify-center text-slate-400"><i class="fas fa-user text-xl"></i></div>
                             @endif
-                            <input wire:model="foto_profile" type="file" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-6 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-widest file:bg-emerald-600 file:text-white hover:file:bg-emerald-700 transition cursor-pointer">
+                            <input wire:model="foto_profile" type="file" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-6 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-widest file:bg-emerald-600 file:text-white hover:file:bg-emerald-700 transition cursor-pointer shadow-sm">
                         </div>
                         @error('foto_profile') <span class="text-red-500 text-[10px] font-bold uppercase">{{ $message }}</span> @enderror
                     </div>
@@ -329,7 +377,7 @@
                         </span>
 
                         <span wire:loading.remove wire:target="store, update">
-                            {{ $isEditMode ? 'Simpan Perubahan' : 'Buat Personil Baru' }}
+                            <i class="fas fa-save"></i> {{ $isEditMode ? 'Simpan Perubahan' : 'Buat Personil Baru' }}
                         </span>
                     </button>
                 </div>
