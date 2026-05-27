@@ -10,19 +10,30 @@ class Kerawanan extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',            // <--- WAJIB ADA (Agar terhitung di dashboard)
+        'user_id',
         'kecamatan',
         'bidang',
         'potensi_ancaman',
         'sumber_informasi',
-        'tingkat_rawan',      // Tinggi / Sedang / Rendah
+
+        // --- TAMBAHAN GIS & SPK ---
+        'latitude',
+        'longitude',
+        'kriteria_dampak',
+        'kriteria_probabilitas',
+        'kriteria_eskalasi',
+        'skor_spk',
+        // --------------------------
+
+        'tingkat_rawan',
         'upaya_pencegahan',
-        'status_verifikasi',  // pending / disetujui / ditolak
+        'status_verifikasi',
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'skor_spk' => 'decimal:2',
     ];
 
     /**

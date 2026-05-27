@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('kerawanans', function (Blueprint $table) {
             $table->id();
 
-            // TAMBAHAN: Kolom User ID
+            // Kolom User ID
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
 
             $table->enum('status_verifikasi', ['pending', 'disetujui', 'ditolak'])->default('pending');
@@ -20,6 +20,16 @@ return new class extends Migration
             $table->string('bidang');
             $table->text('potensi_ancaman');
             $table->string('sumber_informasi')->nullable();
+
+            // --- TAMBAHAN UNTUK GIS & SPK SAW ---
+            $table->string('latitude')->nullable();
+            $table->string('longitude')->nullable();
+            $table->integer('kriteria_dampak')->nullable();       // C1
+            $table->integer('kriteria_probabilitas')->nullable(); // C2
+            $table->integer('kriteria_eskalasi')->nullable();     // C3
+            $table->decimal('skor_spk', 8, 2)->nullable();
+            // ------------------------------------
+
             $table->enum('tingkat_rawan', ['tinggi', 'sedang', 'rendah'])->default('rendah');
             $table->text('upaya_pencegahan')->nullable();
 
