@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-// Import Component Livewire
+// Import Component Livewire Internal (Dashboard & Modul)
 use App\Livewire\Dashboard\DashboardIndex;
 use App\Livewire\Users\UserIndex;
 use App\Livewire\Lapinhar\LapinharIndex;
@@ -15,23 +15,34 @@ use App\Livewire\Kerawanan\KerawananIndex;
 use App\Livewire\Lapdu\LapduIndex;
 use App\Http\Controllers\ReportController;
 
+// Import Component Livewire Publik (Portal Pengaduan Masyarakat)
+use App\Livewire\Public\LapduForm;
+use App\Livewire\Public\LapduTrack;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
 */
 
-// 1. HALAMAN DEPAN (WELCOME)
+// 1. HALAMAN DEPAN (WELCOME / LANDING PAGE UTAMA)
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
+
+// ========================================================================
+// RUTE PORTAL PUBLIK (TANPA LOGIN - BISA DIAKSES MASYARAKAT UMUM)
+// ========================================================================
+Route::get('/lapor', LapduForm::class)->name('publik.lapor');
+Route::get('/lacak-laporan', LapduTrack::class)->name('publik.lacak');
+
 
 // 2. ROUTE PROFILE (JANGAN DIHAPUS)
 Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-// 3. GROUP ROUTE YANG BUTUH LOGIN
+// 3. GROUP ROUTE YANG BUTUH LOGIN (KHUSUS PETUGAS / ADMIN)
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // Dashboard Utama

@@ -65,7 +65,6 @@
             'info' => 'bg-blue-50 border-blue-500 text-blue-800 icon-bg-blue-100 icon-text-blue-600',
             ][$alert['type']];
 
-            // Ekstrak class warna dari theme
             $classes = explode(' ', $theme);
             @endphp
 
@@ -151,44 +150,25 @@
             </div>
         </div>
 
-        {{-- BAGIAN BAWAH --}}
+        {{-- BAGIAN BAWAH (SHORTCUT DIHILANGKAN, GRAFIK SEJAJAR) --}}
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
-            <div class="xl:col-span-2 space-y-8">
-                {{-- SHORTCUT ACTIONS --}}
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <a href="{{ route('lapinhar.index') }}" wire:navigate class="group bg-white p-5 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-emerald-500/10 hover:border-emerald-200 transition-all duration-300 flex flex-col items-center justify-center gap-3 h-36">
-                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition duration-300 border border-emerald-100"><i class="fas fa-file-signature text-xl"></i></div>
-                        <span class="text-[10px] font-black text-slate-700 uppercase tracking-widest group-hover:text-emerald-700">Buat Lapinhar</span>
-                    </a>
-                    <a href="{{ route('dpo.index') }}" wire:navigate class="group bg-white p-5 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-red-500/10 hover:border-red-200 transition-all duration-300 flex flex-col items-center justify-center gap-3 h-36">
-                        <div class="w-12 h-12 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition duration-300 border border-red-100"><i class="fas fa-user-plus text-xl"></i></div>
-                        <span class="text-[10px] font-black text-slate-700 uppercase tracking-widest group-hover:text-red-700">Input DPO</span>
-                    </a>
-                    <a href="{{ route('kerawanan.index') }}" wire:navigate class="group bg-white p-5 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-orange-500/10 hover:border-orange-200 transition-all duration-300 flex flex-col items-center justify-center gap-3 h-36">
-                        <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition duration-300 border border-orange-100"><i class="fas fa-map-marked-alt text-xl"></i></div>
-                        <span class="text-[10px] font-black text-slate-700 uppercase tracking-widest group-hover:text-orange-700">Peta Rawan</span>
-                    </a>
-                    <a href="{{ route('pam-sdo.index') }}" wire:navigate class="group bg-white p-5 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center gap-3 h-36">
-                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition duration-300 border border-blue-100"><i class="fas fa-shield-alt text-xl"></i></div>
-                        <span class="text-[10px] font-black text-slate-700 uppercase tracking-widest group-hover:text-blue-700">PAM SDO</span>
-                    </a>
-                </div>
 
-                {{-- GRAFIK STATISTIK --}}
-                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-                    <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+            {{-- KIRI: GRAFIK STATISTIK TREN --}}
+            <div class="xl:col-span-2 space-y-8">
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-[600px]">
+                    <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 shrink-0">
                         <h3 class="font-black text-slate-800 text-sm uppercase tracking-widest flex items-center gap-3">
-                            <i class="fas fa-chart-line text-blue-500"></i> Tren Pengaduan & Laporan
+                            <i class="fas fa-chart-line text-blue-500"></i> Statistik Tren Tindak Pidana & Laporan
                         </h3>
                     </div>
-                    <div class="p-6 relative h-[300px]">
+                    <div class="p-6 relative flex-1">
                         <canvas id="reportsChart"></canvas>
                     </div>
                 </div>
             </div>
 
+            {{-- KANAN: SIGNAL LAPDU --}}
             <div class="space-y-8">
-                {{-- SIGNAL LAPDU --}}
                 <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-[600px]">
                     <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between shrink-0">
                         <h3 class="font-black text-slate-800 text-sm uppercase tracking-widest flex items-center gap-2">
@@ -218,9 +198,7 @@
             </div>
         </div>
 
-        {{-- Script & Style sekarang ADA DI DALAM DIV ROOT UTAMA INI --}}
-
-        {{-- STYLE SCROLLBAR --}}
+        {{-- SCROLLBAR STYLE --}}
         <style>
             .custom-scrollbar::-webkit-scrollbar {
                 width: 4px;
@@ -232,7 +210,7 @@
             }
         </style>
 
-        {{-- LEAFLET & CHART JS --}}
+        {{-- LEAFLET & CHART JS SCRIPTS --}}
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
@@ -240,7 +218,7 @@
 
         <script>
             document.addEventListener('livewire:navigated', function() {
-                // INIT CHART TREN PENGADUAN
+                // INIT CHART TREN PENGADUAN & DPO
                 const ctx = document.getElementById('reportsChart');
                 if (ctx) {
                     new Chart(ctx, {
@@ -260,6 +238,14 @@
                                     data: @json($chartLapdu),
                                     borderColor: '#3b82f6',
                                     borderDash: [5, 5],
+                                    tension: 0.4
+                                },
+                                {
+                                    label: 'DPO / Tindak Pidana',
+                                    data: @json($chartDpo),
+                                    borderColor: '#ef4444',
+                                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                                    fill: true,
                                     tension: 0.4
                                 }
                             ]
@@ -334,5 +320,5 @@
                 }
             });
         </script>
-    </div> {{-- CONTAINER MAX-WIDTH --}}
-</div> {{-- PENUTUP ROOT UTAMA (Wajib Paling Bawah) --}}
+    </div> {{-- / CONTAINER MAX-WIDTH --}}
+</div> {{-- / ROOT DIV (HANYA ADA 1 TAG INI SEBAGAI PARENT) --}}

@@ -11,18 +11,19 @@ class Lapdu extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',                  // Relasi ke User (Petugas Input)
+        'user_id',                 // Relasi ke User (Petugas Input - bisa null untuk publik)
         'nomor_surat',
         'tanggal_terima',
-        'status_verifikasi',        // pending / disetujui / ditolak
-        'nama_pelapor',
+        'status_verifikasi',       // pending / disetujui / ditolak
+        'nama_pelapor',            // Cukup tulis satu kali
         'nik',
-        'no_hp_pelapor',            // Sesuai migration
-        'nama_terlapor',            // Sesuai migration
-        'kategori_laporan',         // Korupsi / Umum / Pegawai
+        'no_hp_pelapor',           
+        'nama_terlapor',           
+        'kategori_laporan',        // Korupsi / Umum / Pegawai
         'uraian_pengaduan',
-        'bukti_dukung',             // File Upload
-        'status_laporan',           // menunggu / proses / selesai
+        'bukti_dukung',  
+        'nomor_tiket',             // Fitur pelacakan publik
+        'status_laporan',          // menunggu / proses / selesai
         'keterangan_tindak_lanjut',
     ];
 
@@ -34,8 +35,8 @@ class Lapdu extends Model
 
     /**
      * Relasi ke tabel User.
-     * Menggunakan nama 'user' agar konsisten dengan model lain (DPO, WNA, dll)
-     * sehingga mudah dipanggil di Dashboard ($lapdu->user->name).
+     * Tips: Gunakan 'optional' saat memanggil di Blade, 
+     * contoh: {{ $lapdu->user->name ?? 'Masyarakat' }}
      */
     public function user(): BelongsTo
     {
