@@ -26,9 +26,17 @@ use App\Livewire\Public\LapduTrack;
 */
 
 // 1. HALAMAN DEPAN (WELCOME / LANDING PAGE UTAMA)
-Route::get('/', function () {
+
+// Rute untuk Masyarakat (Publik)
+Route::get('/publik', function () {
     return view('welcome');
 })->name('welcome');
+
+// Rute khusus untuk Petugas / Admin (Internal)
+Route::get('/petugas', function () {
+    return view('welcome-internal');
+})->name('welcome.internal');
+
 
 // ========================================================================
 // RUTE PORTAL PUBLIK (TANPA LOGIN - BISA DIAKSES MASYARAKAT UMUM)

@@ -6,9 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'SI-INTEL') }}</title>
+    <title>SI-INTEL | Kejaksaan RI</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="icon" type="image/png" href="{{ asset('img/logo-kejaksaan.png') }}">
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -35,7 +37,7 @@
         </div>
 
         <div class="w-full sm:max-w-4xl mt-2 px-8 py-10 bg-transparent sm:bg-white sm:shadow-[0_20px_50px_rgba(0,0,0,0.05)] sm:border-2 border-slate-50 overflow-hidden sm:rounded-[2.5rem] relative">
-            
+
             <div class="hidden sm:block absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600"></div>
 
             {{ $slot }}
@@ -51,10 +53,21 @@
 
     <style>
         @keyframes blob {
-            0% { transform: translate(0px, 0px) scale(1); }
-            33% { transform: translate(30px, -50px) scale(1.1); }
-            66% { transform: translate(-20px, 20px) scale(0.9); }
-            100% { transform: translate(0px, 0px) scale(1); }
+            0% {
+                transform: translate(0px, 0px) scale(1);
+            }
+
+            33% {
+                transform: translate(30px, -50px) scale(1.1);
+            }
+
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
+
+            100% {
+                transform: translate(0px, 0px) scale(1);
+            }
         }
 
         .animate-blob {
