@@ -7,16 +7,28 @@ use Livewire\WithFileUploads; // Penting untuk upload file
 use Livewire\Attributes\Layout;
 use App\Models\Lapdu;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth; // Tambahkan untuk mengambil data user login
 
 class LapduForm extends Component
 {
     use WithFileUploads;
 
-    public $nama_pelapor, $nik, $no_hp_pelapor, $nama_terlapor, $kategori_laporan, $uraian_pengaduan, $bukti_dukung;
+    // Hapus $nama_pelapor dari properti publik karena kita akan ambil otomatis dari Auth
+    public $nik, $no_hp_pelapor, $nama_terlapor, $kategori_laporan, $uraian_pengaduan, $bukti_dukung;
     public $nomorTiket = null;
 
+    // =========================================================================
+    // FUNGSI MOUNT SEBAGAI "SATPAM" (GUARD)
+    // =========================================================================
+    public function mount()
+    {
+        // Jika yang akses adalah Petugas/Admin, lempar paksa ke dashboard internal
+        if (Auth::check() && Auth::user()->role !== 'masyarakat') {
+            return redirect()->route('dashboard');
+        }
+    }
+
     protected $rules = [
-        'nama_pelapor' => 'nullable|string|max:255',
         'nik' => 'required|numeric|digits:16',
         'no_hp_pelapor' => 'required|string|max:20',
         'nama_terlapor' => 'required|string|max:255',
@@ -37,7 +49,8 @@ class LapduForm extends Component
 
         Lapdu::create([
             'nomor_tiket' => $tiketBaru,
-            'nama_pelapor' => $this->nama_pelapor ?? 'Anonim',
+            // Nama pelapor otomatis ditarik dari akun yang sedang login
+            'nama_pelapor' => Auth::user()->name,
             'nik' => $this->nik,
             'no_hp_pelapor' => $this->no_hp_pelapor,
             'nama_terlapor' => $this->nama_terlapor,
@@ -45,12 +58,17 @@ class LapduForm extends Component
             'uraian_pengaduan' => $this->uraian_pengaduan,
             'bukti_dukung' => $path, // Simpan path file
             'status_laporan' => 'menunggu',
+
+            // Opsional: Jika tabel lapdus Anda punya kolom user_id, 
+            // sangat disarankan untuk menyimpannya juga seperti ini:
+            // 'user_id' => Auth::id(),
         ]);
 
         $this->nomorTiket = $tiketBaru;
     }
 
-    #[Layout('layouts.guest')]
+    // UBAH LAYOUT MENJADI layouts.app AGAR NAVBAR GLOBAL MUNCUL
+    #[Layout('layouts.app')]
     public function render()
     {
         return view('livewire.public.lapdu-form');

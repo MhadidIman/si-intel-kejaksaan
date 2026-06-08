@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Livewire\Volt\Volt;
 
 // Import Component Livewire Internal (Dashboard & Modul)
 use App\Livewire\Dashboard\DashboardIndex;
@@ -17,7 +18,6 @@ use App\Http\Controllers\ReportController;
 
 // Import Component Livewire Publik (Portal Pengaduan Masyarakat)
 use App\Livewire\Public\LapduForm;
-use App\Livewire\Public\LapduTrack;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,39 +25,51 @@ use App\Livewire\Public\LapduTrack;
 |--------------------------------------------------------------------------
 */
 
-// 1. HALAMAN DEPAN (WELCOME / LANDING PAGE UTAMA)
-
-// Rute untuk Masyarakat (Publik)
-Route::get('/publik', function () {
+// ========================================================================
+// 1. HALAMAN DEPAN (WELCOME & LOGIN MASYARAKAT)
+// ========================================================================
+Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
-
-// Rute khusus untuk Petugas / Admin (Internal)
+Route::get('/publik', function () {
+    return view('welcome');
+});
 Route::get('/petugas', function () {
     return view('welcome-internal');
 })->name('welcome.internal');
 
+// Rute Login Khusus Masyarakat
+Volt::route('/masyarakat/login', 'public.login')->middleware('guest')->name('publik.login');
+
 
 // ========================================================================
-// RUTE PORTAL PUBLIK (TANPA LOGIN - BISA DIAKSES MASYARAKAT UMUM)
+// 2. GROUP ROUTE YANG BUTUH LOGIN (MASYARAKAT & PETUGAS)
 // ========================================================================
-Route::get('/lapor', LapduForm::class)->name('publik.lapor');
-Route::get('/lacak-laporan', LapduTrack::class)->name('publik.lacak');
-
-
-// 2. ROUTE PROFILE (JANGAN DIHAPUS)
-Route::view('profile', 'profile')
-    ->middleware(['auth'])
-    ->name('profile');
-
-// 3. GROUP ROUTE YANG BUTUH LOGIN (KHUSUS PETUGAS / ADMIN)
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    // Dashboard Utama
+    // --- RUTE KHUSUS MASYARAKAT (Dashboard, Lapor, Riwayat) ---
+    // --- RUTE KHUSUS MASYARAKAT (Dashboard, Lapor, Riwayat) ---
+    Route::prefix('masyarakat')->group(function () {
+
+        // Gunakan Volt::route agar logika PHP-nya dieksekusi
+        Volt::route('/dashboard', 'public.dashboard')->name('publik.dashboard');
+
+        // Form Pengaduan
+        Route::get('/lapor', LapduForm::class)->name('publik.lapor');
+
+        // Riwayat & Proses Pengaduan
+        Volt::route('/riwayat', 'public.riwayat')->name('publik.riwayat');
+    });
+
+    // --- RUTE UMUM (PROFILE) ---
+    Route::view('profile', 'profile')->name('profile');
+
+
+    // --- RUTE KHUSUS PETUGAS / ADMIN INTELIJEN ---
+    // Dashboard Utama Internal
     Route::get('/dashboard', DashboardIndex::class)->name('dashboard');
 
     // --- MODUL MANAJEMEN PERSONIL ---
-    // Route ini menangani dua tampilan: 'list' (Kelola) dan 'stats' (Statistik Kinerja)
     Route::get('/users', UserIndex::class)->name('users.index');
 
     // --- MODUL OPERASIONAL ---
@@ -74,40 +86,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // --- MODUL CETAK LAPORAN (PDF) ---
     Route::controller(ReportController::class)->group(function () {
-        // DPO
         Route::get('/cetak-dpo', 'cetakDpo')->name('cetak.dpo');
         Route::get('/cetak-dpo/{id}', 'cetakDpoSatuan')->name('cetak.dpo.satuan');
-
-        // LAPINHAR
         Route::get('/cetak-lapinhar', 'cetakLapinhar')->name('cetak.lapinhar');
         Route::get('/cetak-lapinhar/{id}', 'cetakLapinharSatuan')->name('cetak.lapinhar.satuan');
-
-        // WNA
         Route::get('/cetak-wna', 'cetakWna')->name('cetak.wna');
         Route::get('/cetak-wna/{id}', 'cetakWnaSatuan')->name('cetak.wna.satuan');
-
-        // ORMAS
         Route::get('/cetak-ormas', 'cetakOrmas')->name('cetak.ormas');
         Route::get('/cetak-ormas/{id}', 'cetakOrmasSatuan')->name('cetak.ormas.satuan');
-
-        // PAM SDO
         Route::get('/cetak-pam-sdo', 'cetakPamSdo')->name('cetak.pam-sdo');
         Route::get('/cetak-pam-sdo/{id}', 'cetakPamSdoSatuan')->name('cetak.pam-sdo.satuan');
-
-        // JMS
         Route::get('/cetak-jms', 'cetakJms')->name('cetak.jms');
         Route::get('/cetak-jms/{id}', 'cetakJmsSatuan')->name('cetak.jms.satuan');
-
-        // KERAWANAN
         Route::get('/cetak-kerawanan', 'cetakKerawanan')->name('cetak.kerawanan');
         Route::get('/cetak-kerawanan/{id}', 'cetakKerawananSatuan')->name('cetak.kerawanan.satuan');
-
-        // LAPDU
         Route::get('/cetak-lapdu', 'cetakLapdu')->name('cetak.lapdu');
         Route::get('/cetak-lapdu/{id}', 'cetakLapduSatuan')->name('cetak.lapdu.satuan');
-
-        // STATISTIK REKAP KINERJA SATFF
-        Route::get('/cetak-statistik-staff', [ReportController::class, 'cetakUserStats'])->name('cetak.user-stats');
+        Route::get('/cetak-statistik-staff', 'cetakUserStats')->name('cetak.user-stats');
     });
 });
 

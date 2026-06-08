@@ -83,10 +83,30 @@
                 </div>
             </div>
 
-            <div class="flex items-center gap-6">
-                <a href="{{ route('publik.lacak') }}" class="hidden md:inline-flex items-center text-xs font-black text-slate-500 hover:text-emerald-600 uppercase tracking-widest transition-colors gap-2 bg-slate-100 hover:bg-emerald-50 px-5 py-2.5 rounded-full">
+            <div class="flex items-center gap-2 sm:gap-6">
+                {{-- Hanya tampilkan Lacak Status di Navbar jika yang login bukan petugas (atau belum login) --}}
+                @if(!auth()->check() || auth()->user()->role === 'masyarakat')
+                <a href="{{ route('publik.riwayat') }}" class="hidden md:inline-flex items-center text-xs font-black text-slate-500 hover:text-emerald-600 uppercase tracking-widest transition-colors gap-2 bg-slate-100 hover:bg-emerald-50 px-5 py-2.5 rounded-full">
                     <i class="fas fa-magnifying-glass"></i> Lacak Laporan
                 </a>
+                @endif
+
+                {{-- CEK STATUS LOGIN & ROLE DI NAVBAR --}}
+                @auth
+                @if(auth()->user()->role === 'masyarakat')
+                <a href="{{ route('publik.dashboard') }}" class="inline-flex items-center text-xs font-black text-emerald-600 bg-emerald-100 hover:bg-emerald-200 uppercase tracking-widest transition-colors gap-2 px-5 py-2.5 rounded-full">
+                    <i class="fas fa-user-circle"></i> Portal Saya
+                </a>
+                @else
+                <a href="{{ route('dashboard') }}" class="inline-flex items-center text-xs font-black text-slate-800 bg-amber-400 hover:bg-amber-500 uppercase tracking-widest transition-colors gap-2 px-5 py-2.5 rounded-full shadow-sm">
+                    <i class="fas fa-shield-halved"></i> Portal Internal
+                </a>
+                @endif
+                @else
+                <a href="{{ route('publik.login') }}" class="inline-flex items-center text-xs font-black text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:text-emerald-600 uppercase tracking-widest transition-colors gap-2 px-5 py-2.5 rounded-full shadow-sm">
+                    <i class="fas fa-sign-in-alt"></i> Masuk
+                </a>
+                @endauth
             </div>
         </div>
     </nav>
@@ -115,15 +135,34 @@
                     Kawal penegakan hukum bersama kami. Laporkan indikasi pelanggaran hukum, tindak pidana korupsi, atau aliran menyimpang secara <span class="font-bold text-emerald-600">Aman</span>, <span class="font-bold text-emerald-600">Mudah</span>, dan <span class="font-bold text-emerald-600">Rahasia</span>.
                 </p>
 
-                {{-- TOMBOL CALL TO ACTION --}}
+                {{-- TOMBOL CALL TO ACTION BERDASARKAN STATUS LOGIN & ROLE --}}
                 <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center">
+
+                    @auth
+                    @if(auth()->user()->role === 'masyarakat')
+                    {{-- Jika Masyarakat, arahkan ke form lapor --}}
                     <a href="{{ route('publik.lapor') }}" class="w-full sm:w-auto px-8 py-4 bg-emerald-600 rounded-2xl text-white font-black text-sm uppercase tracking-[0.1em] shadow-xl shadow-emerald-600/30 hover:bg-emerald-700 hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 flex items-center justify-center gap-3">
                         <i class="fas fa-bullhorn text-lg"></i> Buat Pengaduan
                     </a>
-
-                    <a href="{{ route('publik.lacak') }}" class="w-full sm:w-auto px-8 py-4 bg-white border-2 border-slate-200 rounded-2xl text-slate-700 font-black text-sm uppercase tracking-[0.1em] hover:border-emerald-500 hover:text-emerald-600 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-3">
-                        <i class="fas fa-magnifying-glass text-lg"></i> Lacak Status
+                    @else
+                    {{-- Jika Petugas, ubah tombol menjadi akses Dashboard Internal --}}
+                    <a href="{{ route('dashboard') }}" class="w-full sm:w-auto px-8 py-4 bg-slate-800 rounded-2xl text-amber-400 font-black text-sm uppercase tracking-[0.1em] shadow-xl shadow-slate-800/30 hover:bg-slate-900 hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 flex items-center justify-center gap-3">
+                        <i class="fas fa-chart-pie text-lg"></i> Akses Dashboard Intel
                     </a>
+                    @endif
+                    @else
+                    {{-- Jika Belum Login, arahkan ke halaman Login Masyarakat --}}
+                    <a href="{{ route('publik.login') }}" class="w-full sm:w-auto px-8 py-4 bg-emerald-600 rounded-2xl text-white font-black text-sm uppercase tracking-[0.1em] shadow-xl shadow-emerald-600/30 hover:bg-emerald-700 hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 flex items-center justify-center gap-3">
+                        <i class="fas fa-bullhorn text-lg"></i> Buat Pengaduan
+                    </a>
+                    @endauth
+
+                    {{-- Hanya tampilkan tombol Riwayat jika yang login bukan petugas (atau belum login) --}}
+                    @if(!auth()->check() || auth()->user()->role === 'masyarakat')
+                    <a href="{{ route('publik.riwayat') }}" class="w-full sm:w-auto px-8 py-4 bg-white border-2 border-slate-200 rounded-2xl text-slate-700 font-black text-sm uppercase tracking-[0.1em] hover:border-emerald-500 hover:text-emerald-600 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-3">
+                        <i class="fas fa-history text-lg"></i> Riwayat Status
+                    </a>
+                    @endif
                 </div>
 
                 <div class="mt-10 flex items-center justify-center lg:justify-start gap-6 text-xs font-bold text-slate-500">

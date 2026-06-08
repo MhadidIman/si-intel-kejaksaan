@@ -18,8 +18,11 @@
 </head>
 
 <body class="font-sans antialiased text-slate-900 bg-[#f8fafc] flex flex-col min-h-screen overflow-x-hidden">
-
+    @if(auth()->check() && auth()->user()->role === 'masyarakat')
+    <livewire:layout.navigation-publik />
+    @else
     <livewire:layout.navigation />
+    @endif
 
     <main class="flex-1 w-full relative pt-6 pb-12">
         <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
