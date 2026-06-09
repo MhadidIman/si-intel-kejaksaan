@@ -41,6 +41,8 @@ class UserIndex extends Component
 
         // 1. Logika untuk Tampilan Kelola Personil & Statistik Kinerja
         if ($this->viewMode === 'list' || $this->viewMode === 'stats') {
+
+            // MENGHAPUS 'lapdus' DARI withCount AGAR TIDAK ERROR (Lapdu milik masyarakat)
             $query = User::withCount([
                 'lapinhars',
                 'dpos',
@@ -48,9 +50,11 @@ class UserIndex extends Component
                 'ormas',
                 'pamSdos',
                 'jmsActivities',
-                'kerawanans',
-                'lapdus'
+                'kerawanans'
             ]);
+
+            // FILTER UTAMA: JANGAN TAMPILKAN AKUN MASYARAKAT DI HALAMAN MANAJEMEN PERSONIL
+            $query->where('role', '!=', 'masyarakat');
 
             // Filter Pencarian (Nama atau NIP)
             if ($this->search) {

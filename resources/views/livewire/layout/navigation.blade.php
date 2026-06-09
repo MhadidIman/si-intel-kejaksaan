@@ -23,7 +23,7 @@ new class extends Component
                 'PAM SDO' => PamSdo::where('status_verifikasi', 'pending')->count(),
                 'JMS' => JmsActivity::where('status_verifikasi', 'pending')->count(),
                 'Peta Kerawanan' => Kerawanan::where('status_verifikasi', 'pending')->count(),
-                'Pengaduan (Lapdu)' => Lapdu::where('status_verifikasi', 'pending')->count(),
+                'Pengaduan (Lapdu)' => Lapdu::where('status_laporan', 'menunggu')->count(),
             ];
             $totalPending = array_sum($pendingCounts);
         } else {
@@ -296,11 +296,18 @@ new class extends Component
 
             @if(auth()->user()->isAdmin())
             <div class="px-4 py-2 text-[10px] font-black text-slate-500 uppercase tracking-widest mt-4 mb-1">Pengaturan (Admin)</div>
+
             <x-responsive-nav-link :href="route('users.index', ['viewMode' => 'list'])" wire:navigate class="text-slate-300 hover:text-emerald-400 hover:bg-slate-800 rounded-xl font-bold">
                 <i class="fas fa-user-edit mr-2 w-5 text-center"></i> Kelola Akun
             </x-responsive-nav-link>
+
             <x-responsive-nav-link :href="route('users.index', ['viewMode' => 'stats'])" wire:navigate class="text-slate-300 hover:text-emerald-400 hover:bg-slate-800 rounded-xl font-bold">
                 <i class="fas fa-chart-line mr-2 w-5 text-center"></i> Kinerja Staff
+            </x-responsive-nav-link>
+
+            {{-- Menu Aktivitas Login dengan styling yang disesuaikan --}}
+            <x-responsive-nav-link :href="route('users.index', ['viewMode' => 'logs'])" wire:navigate class="text-slate-300 hover:text-emerald-400 hover:bg-slate-800 rounded-xl font-bold">
+                <i class="fas fa-history mr-2 w-5 text-center"></i> Aktivitas Login
             </x-responsive-nav-link>
             @endif
         </div>

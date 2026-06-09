@@ -11,20 +11,27 @@ class Lapdu extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',                 // Relasi ke User (Petugas Input - bisa null untuk publik)
-        'nomor_surat',
-        'tanggal_terima',
-        'status_verifikasi',       // pending / disetujui / ditolak
-        'nama_pelapor',            // Cukup tulis satu kali
+        'nomor_tiket',
+        'nama_pelapor',
+        'is_anonim',
         'nik',
-        'no_hp_pelapor',           
-        'nama_terlapor',           
-        'kategori_laporan',        // Korupsi / Umum / Pegawai
+        'tempat_lahir',
+        'tanggal_lahir',
+        'jenis_kelamin',
+        'pekerjaan',
+        'alamat_pelapor',
+        'no_hp_pelapor',
+        'nama_terlapor',
+        'jabatan_terlapor',
+        'alamat_terlapor',
+        'kontak_terlapor',
+        'kategori_laporan',
+        'judul_laporan',
+        'waktu_kejadian',
+        'tempat_kejadian',
         'uraian_pengaduan',
-        'bukti_dukung',  
-        'nomor_tiket',             // Fitur pelacakan publik
-        'status_laporan',          // menunggu / proses / selesai
-        'keterangan_tindak_lanjut',
+        'bukti_dukung',
+        'status_laporan',
     ];
 
     protected $casts = [

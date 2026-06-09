@@ -52,7 +52,10 @@ class User extends Authenticatable
     {
         return $this->role === 'admin';
     }
-
+    public function isMasyarakat()
+    {
+        return $this->role === 'masyarakat';
+    }
     /*
     |--------------------------------------------------------------------------
     | LANGKAH NOMOR 2: RELASI LOG AKTIVITAS

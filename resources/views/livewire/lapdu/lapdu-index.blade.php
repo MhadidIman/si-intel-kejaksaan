@@ -2,22 +2,24 @@
     <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 space-y-10">
 
         {{-- ============================================================== --}}
-        {{-- HEADER: TEMA EXECUTIVE SLATE-CYAN                              --}}
+        {{-- HEADER EXECUTIVE: TEMA SLATE-CYAN (SERASI DENGAN DPO)          --}}
         {{-- ============================================================== --}}
         <div class="relative overflow-hidden bg-slate-900 rounded-[2.5rem] p-8 md:p-10 shadow-2xl border-b-4 border-cyan-500 group">
 
+            {{-- Elemen Dekoratif Latar Belakang --}}
             <div class="absolute -top-24 -right-24 w-96 h-96 bg-cyan-500/20 blur-[100px] rounded-full pointer-events-none transition-transform duration-1000 group-hover:scale-110"></div>
             <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-900/40 blur-[100px] rounded-full pointer-events-none"></div>
 
             <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
 
+                {{-- Bagian Kiri: Logo & Judul --}}
                 <div class="flex items-center gap-6">
                     <div class="w-20 h-20 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-3 shadow-[0_0_30px_rgba(6,182,212,0.3)] shrink-0">
                         <img src="{{ asset('img/logo-kejaksaan.png') }}" class="w-full h-full object-contain" alt="Logo Kejaksaan">
                     </div>
                     <div>
                         <h2 class="text-3xl md:text-4xl font-black text-white tracking-tight drop-shadow-md">
-                            Layanan <span class="text-cyan-400">PENGADUAN</span>
+                            Layanan <span class="text-cyan-400">PENGADUAN</span> Masuk
                         </h2>
                         <p class="text-xs text-slate-300 font-medium mt-2 uppercase tracking-widest flex items-center gap-2">
                             <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]"></span>
@@ -26,345 +28,314 @@
                     </div>
                 </div>
 
+                {{-- Bagian Kanan: Tombol Aksi --}}
                 <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                     <a href="{{ route('cetak.lapdu') }}" target="_blank" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-slate-800/50 hover:bg-slate-700/50 border border-slate-600 text-slate-300 hover:text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 text-xs uppercase tracking-widest backdrop-blur-sm">
                         <i class="fas fa-print text-sm"></i>
                         <span>Cetak Rekap</span>
                     </a>
-
-                    @if(!$showForm)
-                    <button wire:click="create" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white font-black py-3 px-8 rounded-xl shadow-lg shadow-cyan-600/30 transition-all duration-300 text-xs uppercase tracking-widest transform hover:-translate-y-1 border border-cyan-500">
-                        <i class="fas fa-bullhorn text-sm"></i>
-                        <span>Buat Pengaduan</span>
-                    </button>
-                    @endif
                 </div>
             </div>
         </div>
 
         {{-- ALERT MESSAGES --}}
         @if (session()->has('message'))
-        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)"
-            class="bg-cyan-50 border-l-4 border-cyan-500 p-4 rounded-r-xl shadow-sm flex items-center justify-between gap-3 animate-fade-in-down">
-            <div class="flex items-center gap-3">
-                <div class="p-2 bg-cyan-100 rounded-full text-cyan-600"><i class="fas fa-check"></i></div>
-                <span class="font-bold text-cyan-800 text-sm tracking-wide">{{ session('message') }}</span>
+        <div class="mb-4 bg-emerald-100 border border-emerald-400 text-emerald-700 px-4 py-3 rounded-xl shadow-sm flex items-center justify-between text-sm">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-check-circle"></i>
+                <span>{{ session('message') }}</span>
             </div>
-            <button @click="show = false" class="text-cyan-500 hover:text-cyan-700 transition"><i class="fas fa-times"></i></button>
+        </div>
+        @endif
+
+        @if (session()->has('error'))
+        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl shadow-sm flex items-center justify-between text-sm">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>{{ session('error') }}</span>
+            </div>
         </div>
         @endif
 
         {{-- ============================================================== --}}
-        {{-- TABEL DATA                                                     --}}
+        {{-- BAGIAN FILTER & TABEL (STANDARD INTERNAL)                      --}}
         {{-- ============================================================== --}}
-        @if(!$showForm)
-        <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden w-full">
 
-            {{-- Toolbar --}}
-            <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="relative w-full md:max-w-md group">
+        {{-- 1. Toolbar & Filter --}}
+        <div class="bg-white p-6 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100">
+            <div class="flex flex-col sm:flex-row w-full justify-between items-center gap-4">
+                {{-- Input Pencarian --}}
+                <div class="relative flex-1 w-full sm:max-w-md group">
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-cyan-500 transition-colors">
-                        <i class="fas fa-search"></i>
+                        <i class="fas fa-search text-sm"></i>
                     </div>
-                    <input wire:model.live="search" type="text" class="pl-11 block w-full rounded-xl border-slate-200 bg-white text-slate-800 font-medium focus:border-cyan-500 focus:ring-cyan-500/20 py-3 shadow-sm text-sm transition-all" placeholder="Cari Nama Pelapor atau Terlapor...">
+                    <input wire:model.live="search" type="text" placeholder="Cari nomor tiket, nama terlapor, atau pokok kasus..." class="block w-full rounded-xl border-slate-200 bg-white text-slate-800 font-medium focus:border-cyan-500 focus:ring-cyan-500/20 py-3 shadow-sm text-sm transition-all pl-11">
                 </div>
-                <div class="px-5 py-2.5 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                    <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">
-                        Total Laporan: <span class="text-cyan-600 text-base ml-1">{{ $lapdus->total() }}</span>
-                    </span>
+
+                {{-- Filter Status --}}
+                <div class="px-5 py-2.5 bg-slate-50 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+                    <span class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Filter:</span>
+                    <select wire:model.live="filterStatus" class="text-sm font-bold bg-transparent border-none focus:ring-0 p-0 text-slate-700 cursor-pointer">
+                        <option value="">Semua Status</option>
+                        <option value="menunggu">Menunggu Verifikasi</option>
+                        <option value="diproses">Sedang Diproses</option>
+                        <option value="tindak_lanjut">Tindak Lanjut Intelijen</option>
+                        <option value="selesai">Selesai Ditinjau</option>
+                        <option value="ditolak">Ditolak</option>
+                    </select>
                 </div>
             </div>
+        </div>
 
+        {{-- 2. Tabel Data Standard --}}
+        <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden w-full">
             <div class="overflow-x-auto w-full">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-white text-slate-400 text-[10px] uppercase font-black tracking-widest border-b-2 border-slate-100">
-                            <th class="px-6 py-5 text-center w-20">Bukti</th>
-                            <th class="px-6 py-5 w-1/4">Pelapor & Waktu</th>
-                            <th class="px-6 py-5 w-1/3">Substansi & Terlapor</th>
-                            <th class="px-6 py-5 text-center">Status</th>
-                            <th class="px-6 py-5 text-center">Verifikasi</th>
-                            <th class="px-6 py-5 text-center">Aksi</th>
+                        <tr class="bg-slate-50 text-slate-400 text-[10px] uppercase font-black tracking-widest border-b border-slate-100">
+                            <th class="px-6 py-5">Nomor Tiket</th>
+                            <th class="px-6 py-5">Identitas Pelapor</th>
+                            <th class="px-6 py-5">Substansi & Judul Laporan</th>
+                            <th class="px-6 py-5">Pihak Terlapor</th>
+                            <th class="px-6 py-5 text-center">Status Laporan</th>
+                            <th class="px-6 py-5 text-center">Aksi Dokumen</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100 text-slate-800">
+                    <tbody class="divide-y divide-slate-100 text-slate-600 text-sm font-medium">
                         @forelse($lapdus as $item)
-                        <tr class="hover:bg-slate-50/80 transition duration-200 group">
-
-                            <td class="px-6 py-6 text-center align-top">
-                                @if($item->bukti_dukung)
-                                <a href="{{ asset('storage/' . $item->bukti_dukung) }}" target="_blank" class="inline-flex items-center justify-center w-12 h-12 bg-cyan-50 text-cyan-600 rounded-xl border border-cyan-100 hover:bg-cyan-600 hover:text-white transition-all shadow-sm" title="Lihat Bukti">
-                                    <i class="fas fa-file-alt text-lg"></i>
-                                </a>
+                        <tr class="hover:bg-slate-50/70 transition duration-200">
+                            <td class="px-6 py-5 font-mono font-bold text-slate-900 text-xs">
+                                {{ $item->nomor_tiket }}
+                            </td>
+                            <td class="px-6 py-5">
+                                @if($item->is_anonim)
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-purple-50 text-purple-700 border border-purple-200">
+                                    <i class="fas fa-user-secret"></i> Anonim
+                                </span>
                                 @else
-                                <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-slate-300">
-                                    <i class="fas fa-file-excel text-lg"></i>
-                                </div>
+                                <div class="font-black text-slate-800 text-sm">{{ $item->nama_pelapor }}</div>
+                                <div class="text-[10px] text-slate-400 font-mono mt-0.5">NIK: {{ substr($item->nik, 0, 6) }}**********</div>
                                 @endif
                             </td>
-
-                            <td class="px-6 py-6 align-top whitespace-nowrap">
-                                <div class="font-black text-slate-900 text-sm uppercase tracking-tight">{{ $item->nama_pelapor }}</div>
-                                <div class="text-[10px] text-slate-500 font-bold mt-1 flex items-center gap-1.5">
-                                    <i class="fas fa-phone-alt text-cyan-400 text-[9px]"></i> {{ $item->no_hp_pelapor ?? '-' }}
-                                </div>
-                                @if($item->nik)
-                                <div class="mt-2 text-[9px] text-slate-400 font-mono tracking-tighter">NIK: {{ $item->nik }}</div>
-                                @endif
-                                <div class="mt-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 text-[9px] font-black text-blue-700 border border-blue-100 uppercase tracking-widest">
-                                    <i class="far fa-calendar-alt opacity-50"></i>
-                                    {{ $item->tanggal_terima ? $item->tanggal_terima->format('d M Y') : '-' }}
-                                </div>
+                            <td class="px-6 py-5 max-w-xs">
+                                <div class="font-bold text-slate-800 truncate">{{ $item->judul_laporan }}</div>
+                                <div class="text-[10px] text-emerald-600 font-bold uppercase tracking-wider mt-1">{{ str_replace('_', ' ', $item->kategori_laporan) }}</div>
                             </td>
-
-                            <td class="px-6 py-6 align-top min-w-[300px]">
-                                <div class="mb-2">
-                                    <span class="text-[9px] font-black text-cyan-700 bg-cyan-50 border border-cyan-200 px-2 py-0.5 rounded uppercase tracking-wider">{{ $item->kategori_laporan }}</span>
-                                </div>
-                                <div class="font-bold text-slate-700 text-xs leading-relaxed line-clamp-2 italic">
-                                    "{{ $item->uraian_pengaduan }}"
-                                </div>
-                                <div class="mt-2 text-[10px]">
-                                    <span class="text-slate-400 font-black uppercase text-[8px] tracking-widest mr-1">Terlapor:</span>
-                                    <span class="text-red-600 font-bold uppercase">{{ $item->nama_terlapor ?? 'Tidak Diketahui' }}</span>
-                                </div>
-
-                                <div class="mt-4 pt-3 border-t border-slate-100/80 flex items-center justify-start gap-3">
-                                    <div class="flex items-center gap-2 bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200 shadow-sm">
-                                        <div class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-black text-[9px] shadow-inner border border-blue-200">
-                                            {{ substr($item->user->name ?? 'S', 0, 1) }}
-                                        </div>
-                                        <div class="flex flex-col">
-                                            <span class="text-[9px] font-bold text-slate-700 max-w-[100px] truncate leading-none">{{ $item->user->name ?? 'Sistem' }}</span>
-                                            <span class="text-[8px] font-black text-slate-400 tracking-widest mt-0.5">{{ $item->created_at->format('d/m/Y') }}</span>
-                                        </div>
-                                    </div>
-                                </div>
+                            <td class="px-6 py-5 whitespace-nowrap">
+                                <div class="font-bold text-slate-800 text-sm">{{ $item->nama_terlapor }}</div>
+                                <div class="text-[10px] text-slate-400 font-medium mt-0.5">{{ $item->jabatan_terlapor }}</div>
                             </td>
-
-                            <td class="px-6 py-6 text-center align-top whitespace-nowrap">
-                                @if($item->status_laporan == 'menunggu')
-                                <div class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-100 text-slate-500 text-[9px] font-black uppercase tracking-widest border border-slate-200 animate-pulse">
-                                    MENUNGGU
-                                </div>
-                                @elseif($item->status_laporan == 'proses')
-                                <div class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-blue-50 text-blue-600 text-[9px] font-black uppercase tracking-widest border border-blue-100">
-                                    DIPROSES
-                                </div>
+                            <td class="px-6 py-5 text-center whitespace-nowrap">
+                                @if($item->status_laporan === 'menunggu')
+                                <span class="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest bg-slate-100 text-slate-600 border border-slate-200">Menunggu</span>
+                                @elseif($item->status_laporan === 'diproses')
+                                <span class="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest bg-blue-100 text-blue-700 border border-blue-200">Diproses</span>
+                                @elseif($item->status_laporan === 'tindak_lanjut')
+                                <span class="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest bg-amber-100 text-amber-700 border border-amber-200">Tindak Lanjut</span>
+                                @elseif($item->status_laporan === 'selesai')
+                                <span class="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest bg-emerald-100 text-emerald-700 border border-emerald-200">Selesai</span>
                                 @else
-                                <div class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-600 text-[9px] font-black uppercase tracking-widest border border-emerald-100">
-                                    SELESAI
-                                </div>
+                                <span class="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest bg-red-100 text-red-700 border border-red-200">Ditolak</span>
                                 @endif
                             </td>
-
-                            <td class="px-6 py-6 text-center align-top whitespace-nowrap">
-                                @php
-                                $statusColor = [
-                                'pending' => 'bg-amber-50 text-amber-600 border-amber-200',
-                                'disetujui' => 'bg-emerald-50 text-emerald-600 border-emerald-200',
-                                'ditolak' => 'bg-red-50 text-red-600 border-red-200'
-                                ];
-                                $currentStatus = strtolower($item->status_verifikasi ?? 'pending');
-                                $theme = $statusColor[$currentStatus] ?? 'bg-slate-50 text-slate-600 border-slate-200';
-                                @endphp
-
-                                @if(auth()->user()->isAdmin())
-                                <button wire:click="openStatusModal({{ $item->id }})"
-                                    class="inline-flex items-center justify-between gap-2 w-32 py-2 px-3 rounded-xl text-[9px] font-black uppercase tracking-widest border shadow-sm {{ $theme }} hover:shadow-md transition-all cursor-pointer">
-                                    <span class="truncate">{{ $item->status_verifikasi ?? 'PENDING' }}</span>
-                                    <i class="fas fa-caret-down opacity-50"></i>
+                            <td class="px-6 py-5 text-center whitespace-nowrap">
+                                <button wire:click="bukaDetail({{ $item->id }})" class="px-4 py-2 bg-slate-800 hover:bg-cyan-600 text-white rounded-xl font-bold text-[11px] transition inline-flex items-center gap-2 shadow-sm uppercase tracking-wider">
+                                    <i class="fas fa-eye text-[10px]"></i> Periksa Rincian
                                 </button>
-                                @else
-                                <div class="inline-flex items-center justify-center gap-2 w-32 py-2 px-3 rounded-xl text-[9px] font-black uppercase tracking-widest border {{ $theme }}">
-                                    <span>{{ $item->status_verifikasi ?? 'PENDING' }}</span>
-                                </div>
-                                @endif
-                            </td>
-
-                            <td class="px-6 py-6 text-center align-top whitespace-nowrap">
-                                <div class="flex justify-center items-center gap-2">
-                                    <a href="{{ route('cetak.lapdu.satuan', $item->id) }}" target="_blank"
-                                        class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-800 hover:border-slate-800 hover:text-white transition-all shadow-sm">
-                                        <i class="fas fa-print text-xs"></i>
-                                    </a>
-                                    <button wire:click="edit({{ $item->id }})"
-                                        class="w-8 h-8 flex items-center justify-center rounded-lg border border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all shadow-sm">
-                                        <i class="fas fa-edit text-xs"></i>
-                                    </button>
-                                    @if(auth()->user()->isAdmin())
-                                    <button wire:confirm="Hapus pengaduan ini?" wire:click="delete({{ $item->id }})"
-                                        class="w-8 h-8 flex items-center justify-center rounded-lg border border-red-200 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-all shadow-sm">
-                                        <i class="fas fa-trash-alt text-xs"></i>
-                                    </button>
-                                    @endif
-                                </div>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-12 text-center text-slate-400 font-medium italic">
-                                <div class="flex flex-col items-center gap-2">
-                                    <i class="fas fa-inbox text-3xl opacity-20"></i>
-                                    <span>Belum ada data pengaduan masuk.</span>
-                                </div>
+                            <td colspan="6" class="px-6 py-16 text-center text-slate-400 font-medium italic">
+                                <i class="fas fa-inbox text-3xl mb-3 opacity-30"></i>
+                                <p>Tidak ada data laporan pengaduan masuk.</p>
                             </td>
                         </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-            <div class="p-6 border-t border-slate-100 bg-slate-50/30">
+            @if($lapdus->hasPages())
+            <div class="p-6 border-t border-slate-100 bg-slate-50/50links">
                 {{ $lapdus->links() }}
             </div>
+            @endif
         </div>
-        @endif
+    </div>
 
-        {{-- ============================================================== --}}
-        {{-- FORM MODAL INPUT / EDIT                                        --}}
-        {{-- ============================================================== --}}
-        @if($showForm)
-        <div x-transition class="bg-white rounded-[2.5rem] shadow-2xl shadow-cyan-600/10 border border-slate-100 overflow-hidden mb-12 relative animate-fade-in-up">
+    {{-- ============================================================== --}}
+    {{-- MODAL DETAIL KASUS: TEMA SLATE-CYAN (SERASI INPUT JWS)         --}}
+    {{-- ============================================================== --}}
+    @if($showDetailModal && $selectedLapdu)
+    <div class="fixed inset-0 z-[150] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            {{-- Background overlay --}}
+            <div class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity" wire:click="tutupDetail"></div>
 
-            <div class="bg-slate-900 px-8 py-5 border-b-4 border-cyan-500 flex justify-between items-center">
-                <div class="flex items-center gap-3 text-white">
-                    <i class="fas {{ $isEditMode ? 'fa-edit' : 'fa-plus-circle' }} text-cyan-400"></i>
-                    <h3 class="font-black text-sm uppercase tracking-widest">{{ $isEditMode ? 'Edit Pengaduan' : 'Input Pengaduan Baru' }}</h3>
-                </div>
-                <button wire:click="closeModal" class="w-8 h-8 flex items-center justify-center bg-slate-800 text-slate-400 hover:bg-red-500 hover:text-white rounded-full transition"><i class="fas fa-times"></i></button>
-            </div>
+            {{-- Trick to center modal --}}
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-            <form wire:submit.prevent="{{ $isEditMode ? 'update' : 'store' }}" class="p-8 md:p-10 space-y-8 bg-slate-50/30">
+            {{-- Modal Panel --}}
+            <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full border border-slate-200">
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Nama Pelapor / Instansi</label>
-                        <input wire:model="nama_pelapor" type="text" class="block w-full rounded-xl bg-white border border-slate-200 text-slate-900 font-bold focus:border-cyan-500 focus:ring-cyan-500/20 transition-all py-3 px-4 shadow-sm placeholder-slate-300 text-sm">
-                        @error('nama_pelapor') <span class="text-red-500 text-[10px] font-bold uppercase ml-1">{{ $message }}</span> @enderror
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-2">
-                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">NIK (KTP)</label>
-                            <input wire:model="nik" type="text" class="block w-full rounded-xl bg-white border border-slate-200 text-slate-900 font-bold focus:border-cyan-500 focus:ring-cyan-500/20 transition-all py-3 px-4 shadow-sm text-sm">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">No. HP / WA</label>
-                            <input wire:model="no_hp_pelapor" type="text" class="block w-full rounded-xl bg-white border border-slate-200 text-slate-900 font-bold focus:border-cyan-500 focus:ring-cyan-500/20 transition-all py-3 px-4 shadow-sm text-sm">
+                {{-- Header Modal: Executive Slate-Cyan (Serasi dengan Header Utama) --}}
+                <div class="px-8 py-5 bg-slate-900 text-white flex justify-between items-center border-b-4 border-cyan-500">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-shield-halved text-cyan-400 text-lg"></i>
+                        <div>
+                            <h3 class="font-black text-sm tracking-tight" id="modal-title">Telaah Berkas Pengaduan: {{ $selectedLapdu->nomor_tiket }}</h3>
+                            <p class="text-[10px] text-slate-400 mt-0.5 uppercase tracking-widest font-bold">Klasifikasi: Classified Intelijen Kejaksaan</p>
                         </div>
                     </div>
+                    <button wire:click="tutupDetail" class="w-8 h-8 flex items-center justify-center bg-slate-800 text-slate-400 hover:bg-red-500 hover:text-white rounded-full transition">
+                        <i class="fas fa-times text-base"></i>
+                    </button>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-5">
-                        <div class="space-y-2">
-                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Nama Terlapor</label>
-                            <input wire:model="nama_terlapor" type="text" class="block w-full rounded-xl bg-white border border-slate-200 text-slate-900 font-bold focus:border-cyan-500 focus:ring-cyan-500/20 transition-all py-3 px-4 shadow-sm placeholder-slate-300 text-sm">
+                {{-- Isi Dokumen/Konten Kasus --}}
+                <div class="p-8 space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar bg-slate-50/50">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                        {{-- BLOK 1: IDENTITAS PELAPOR --}}
+                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                            <h4 class="text-[11px] font-black uppercase tracking-wider text-slate-400 border-b pb-3 flex items-center gap-2">
+                                <i class="fas fa-user-shield text-slate-500"></i> Bagian I: Identitas Pelapor
+                            </h4>
+                            @if($selectedLapdu->is_anonim)
+                            <div class="p-3.5 bg-purple-50 border border-purple-200 rounded-xl text-purple-800 text-xs font-bold mb-2">
+                                <i class="fas fa-user-secret mr-1.5"></i> Pelapor Memilih Anonim. Jaga kerahasiaan identitas sesuai ketentuan operasional.
+                            </div>
+                            @endif
+                            <div class="grid grid-cols-3 gap-y-3 text-xs">
+                                <div class="text-slate-400 font-bold">Nama Pelapor</div>
+                                <div class="col-span-2 text-slate-800 font-black">: {{ $selectedLapdu->nama_pelapor }}</div>
+
+                                <div class="text-slate-400 font-bold">NIK</div>
+                                <div class="col-span-2 text-slate-800 font-mono font-bold">: {{ $selectedLapdu->nik }}</div>
+
+                                <div class="text-slate-400 font-bold">TTL</div>
+                                <div class="col-span-2 text-slate-800 font-bold">: {{ $selectedLapdu->tempat_lahir ?? '-' }}, {{ $selectedLapdu->tanggal_lahir ? date('d-m-Y', strtotime($selectedLapdu->tanggal_lahir)) : '-' }}</div>
+
+                                <div class="text-slate-400 font-bold">Gender</div>
+                                <div class="col-span-2 text-slate-800 font-bold">: {{ $selectedLapdu->jenis_kelamin === 'L' ? 'Laki-laki' : ($selectedLapdu->jenis_kelamin === 'P' ? 'Perempuan' : '-') }}</div>
+
+                                <div class="text-slate-400 font-bold">Pekerjaan</div>
+                                <div class="col-span-2 text-slate-800 font-bold">: {{ $selectedLapdu->pekerjaan ?? '-' }}</div>
+
+                                <div class="text-slate-400 font-bold">No. Kontak</div>
+                                <div class="col-span-2 text-slate-800 font-bold">: {{ $selectedLapdu->no_hp_pelapor }}</div>
+
+                                <div class="text-slate-400 font-bold">Alamat Domisili</div>
+                                <div class="col-span-2 text-slate-800 font-bold leading-relaxed">: {{ $selectedLapdu->alamat_pelapor }}</div>
+                            </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="space-y-2">
-                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Kategori</label>
-                                <div class="relative">
-                                    <select wire:model="kategori_laporan" class="block w-full rounded-xl bg-white border border-slate-200 text-slate-900 font-bold focus:border-cyan-500 focus:ring-cyan-500/20 transition-all py-3 px-4 shadow-sm appearance-none text-sm cursor-pointer">
-                                        <option value="">-- Pilih --</option>
-                                        <option value="Korupsi">Tindak Pidana Korupsi</option>
-                                        <option value="Pegawai">Penyalahgunaan Wewenang</option>
-                                        <option value="Umum">Tindak Pidana Umum</option>
-                                        <option value="Lainnya">Lainnya</option>
-                                    </select>
-                                    <i class="fas fa-chevron-down absolute right-4 top-4 text-slate-400 text-xs pointer-events-none"></i>
+
+                        {{-- BLOK 2: IDENTITAS TERLAPOR --}}
+                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                            <h4 class="text-[11px] font-black uppercase tracking-wider text-slate-400 border-b pb-3 flex items-center gap-2">
+                                <i class="fas fa-user-ninja text-slate-500"></i> Bagian II: Pihak Terlapor
+                            </h4>
+                            <div class="grid grid-cols-3 gap-y-3 text-xs">
+                                <div class="text-slate-400 font-bold">Nama Terlapor</div>
+                                <div class="col-span-2 text-red-700 font-black">: {{ $selectedLapdu->nama_terlapor }}</div>
+
+                                <div class="text-slate-400 font-bold">Jabatan/Instansi</div>
+                                <div class="col-span-2 text-slate-800 font-bold">: {{ $selectedLapdu->jabatan_terlapor }}</div>
+
+                                <div class="text-slate-400 font-bold">Kontak</div>
+                                <div class="col-span-2 text-slate-800 font-bold">: {{ $selectedLapdu->kontak_terlapor ?? '-' }}</div>
+
+                                <div class="text-slate-400 font-bold">Alamat Kantor</div>
+                                <div class="col-span-2 text-slate-800 font-bold leading-relaxed">: {{ $selectedLapdu->alamat_terlapor ?? '-' }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- BLOK 3: DETIL SUBSTANSI KASUS (5W + 1H) --}}
+                    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-5">
+                        <h4 class="text-[11px] font-black uppercase tracking-wider text-slate-400 border-b pb-3 flex items-center gap-2">
+                            <i class="fas fa-gavel text-slate-500"></i> Bagian III: Materiil Pengaduan (5W+1H)
+                        </h4>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <div>
+                                <div class="text-slate-400 font-bold uppercase text-[9px] tracking-wider">Kategori Kasus</div>
+                                <div class="text-red-700 font-black mt-0.5 uppercase tracking-wide">{{ str_replace('_', ' ', $selectedLapdu->kategori_laporan) }}</div>
+                            </div>
+                            <div>
+                                <div class="text-slate-400 font-bold uppercase text-[9px] tracking-wider">Waktu Kejadian (Tempus)</div>
+                                <div class="text-slate-800 font-bold mt-0.5">{{ date('d F Y', strtotime($selectedLapdu->waktu_kejadian)) }}</div>
+                            </div>
+                            <div>
+                                <div class="text-slate-400 font-bold uppercase text-[9px] tracking-wider">Tempat Kejadian (Locus)</div>
+                                <div class="text-slate-800 font-bold mt-0.5">{{ $selectedLapdu->tempat_kejadian }}</div>
+                            </div>
+                        </div>
+
+                        <div class="text-xs pt-1">
+                            <div class="text-slate-400 font-bold uppercase text-[9px] tracking-wider mb-1.5">Judul Pokok Laporan</div>
+                            <div class="text-slate-800 font-black text-sm bg-slate-50 px-4 py-3 rounded-xl border border-slate-100">{{ $selectedLapdu->judul_laporan }}</div>
+                        </div>
+
+                        <div class="text-xs">
+                            <div class="text-slate-400 font-bold uppercase text-[9px] tracking-wider mb-1.5">Uraian Kronologi Fakta</div>
+                            <div class="text-slate-700 leading-relaxed bg-slate-50 p-5 rounded-xl border border-slate-100 font-medium whitespace-pre-line text-xs">
+                                {{ $selectedLapdu->uraian_pengaduan }}
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- BLOK 4: BUKTI DUKUNG --}}
+                    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                        <h4 class="text-[11px] font-black uppercase tracking-wider text-slate-400 border-b pb-3 flex items-center gap-2">
+                            <i class="fas fa-paperclip text-slate-500"></i> Bagian IV: Dokumen Alat Bukti
+                        </h4>
+                        <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <div class="flex items-center gap-3.5 text-xs">
+                                <div class="w-10 h-10 bg-cyan-100 text-cyan-600 rounded-lg flex items-center justify-center text-lg shadow-inner">
+                                    <i class="fas fa-file-contract"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-slate-800">Berkas Lampiran Pengaduan</div>
+                                    <div class="text-[10px] text-slate-400 font-mono mt-0.5">Format Terverifikasi Dokumen/Media</div>
                                 </div>
                             </div>
-                            <div class="space-y-2">
-                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Tgl Laporan</label>
-                                <input wire:model="tanggal_terima" type="date" class="block w-full rounded-xl bg-white border border-slate-200 text-slate-900 font-bold focus:border-cyan-500 focus:ring-cyan-500/20 transition-all py-3 px-4 shadow-sm text-sm">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Uraian Pengaduan</label>
-                        <textarea wire:model="uraian_pengaduan" rows="5" class="block w-full rounded-2xl bg-white border border-slate-200 text-slate-900 font-medium focus:border-cyan-500 focus:ring-cyan-500/20 transition-all py-4 px-5 shadow-sm placeholder-slate-300 text-sm leading-relaxed" placeholder="Jelaskan kronologi secara mendalam..."></textarea>
-                        @error('uraian_pengaduan') <span class="text-red-500 text-[10px] font-bold uppercase ml-1">{{ $message }}</span> @enderror
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-slate-200 pt-6">
-                    <div class="space-y-4">
-                        <div class="space-y-2">
-                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Status Internal</label>
-                            <div class="relative">
-                                <select wire:model="status_laporan" class="block w-full rounded-xl bg-white border border-slate-200 text-slate-900 font-bold focus:border-cyan-500 focus:ring-cyan-500/20 transition-all py-3 px-4 shadow-sm appearance-none text-sm cursor-pointer">
-                                    <option value="menunggu">Menunggu / Baru</option>
-                                    <option value="proses">Sedang Diproses</option>
-                                    <option value="selesai">Selesai</option>
-                                </select>
-                                <i class="fas fa-chevron-down absolute right-4 top-4 text-slate-400 text-xs pointer-events-none"></i>
-                            </div>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Ket. Tindak Lanjut</label>
-                            <input wire:model="keterangan_tindak_lanjut" type="text" class="block w-full rounded-xl bg-white border border-slate-200 text-slate-900 font-bold focus:border-cyan-500 focus:ring-cyan-500/20 transition-all py-3 px-4 shadow-sm placeholder-slate-300 text-sm">
-                        </div>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Bukti Dukung (PDF/IMG)</label>
-                        <div class="flex items-center gap-4 p-4 border border-dashed border-slate-300 rounded-xl bg-white hover:border-cyan-400 transition-colors">
-                            <div class="w-12 h-12 bg-slate-100 rounded-xl border border-slate-200 flex items-center justify-center text-slate-400">
-                                <i class="fas fa-upload text-xl"></i>
-                            </div>
-                            <div class="flex-1">
-                                <input wire:model="bukti_dukung" type="file" class="block w-full text-[10px] text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:font-black file:uppercase file:tracking-widest file:bg-cyan-50 file:text-cyan-700 hover:file:bg-cyan-100 transition cursor-pointer">
-                                <p class="text-[9px] text-slate-400 mt-1 font-bold">MAX: 10MB</p>
-                            </div>
+                            <a href="{{ asset('storage/' . $selectedLapdu->bukti_dukung) }}" target="_blank" class="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition shadow-sm flex items-center gap-2">
+                                <i class="fas fa-download"></i> Unduh Berkas
+                            </a>
                         </div>
                     </div>
                 </div>
 
-                <div class="flex justify-end space-x-4 pt-6 border-t border-slate-200">
-                    <button type="button" wire:click="closeModal" class="px-6 py-2.5 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-100 font-bold uppercase text-[10px] tracking-widest transition">
-                        Batal
-                    </button>
-                    <button type="submit" class="px-8 py-2.5 rounded-xl bg-cyan-600 text-white font-black uppercase text-[10px] tracking-widest shadow-lg shadow-cyan-500/30 hover:bg-cyan-700 hover:-translate-y-0.5 transition-all flex items-center gap-2">
-                        <i class="fas fa-save"></i>
-                        <span>{{ $isEditMode ? 'Simpan Perubahan' : 'Kirim Laporan' }}</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-        @endif
-
-        {{-- ============================================================== --}}
-        {{-- MODAL VERIFIKASI STATUS                                        --}}
-        {{-- ============================================================== --}}
-        @if($showStatusModal)
-        <div class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 transition-opacity">
-            <div class="bg-white w-full max-w-sm rounded-[2rem] shadow-2xl p-8 relative animate-fade-in-up border border-slate-100">
-                <div class="text-center mb-8">
-                    <div class="w-16 h-16 bg-slate-50 text-slate-700 border-2 border-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
-                        <i class="fas fa-clipboard-check text-2xl"></i>
+                {{-- Kontrol Aksi & Disposisi Dokumen --}}
+                <div class="px-8 py-5 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    {{-- Fitur Hapus Khusus Admin --}}
+                    <div>
+                        @if(auth()->user()->isAdmin())
+                        <button wire:click="hapusLapdu({{ $selectedLapdu->id }})" onclick="confirm('Apakah Anda yakin ingin menghapus arsip pengaduan ini secara permanen?') || event.stopImmediatePropagation()" class="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 rounded-xl font-bold text-xs uppercase tracking-wider transition">
+                            <i class="fas fa-trash-alt mr-1.5"></i> Hapus Arsip
+                        </button>
+                        @endif
                     </div>
-                    <h3 class="text-lg font-black text-slate-800 uppercase tracking-widest">Verifikasi Laporan</h3>
-                    <p class="text-xs text-slate-500 mt-2 font-medium">Validasi status laporan pengaduan ini.</p>
-                </div>
 
-                <div class="space-y-3">
-                    <button wire:click="updateStatus('disetujui')" class="w-full py-3.5 rounded-xl bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white border border-emerald-200 hover:border-emerald-600 font-black uppercase text-xs tracking-widest transition-all flex items-center justify-center gap-3">
-                        <i class="fas fa-check-circle"></i> Setujui
-                    </button>
-                    <button wire:click="updateStatus('ditolak')" class="w-full py-3.5 rounded-xl bg-red-50 hover:bg-red-600 text-red-700 hover:text-white border border-red-200 hover:border-red-600 font-black uppercase text-xs tracking-widest transition-all flex items-center justify-center gap-3">
-                        <i class="fas fa-times-circle"></i> Tolak
-                    </button>
-                    <button wire:click="updateStatus('pending')" class="w-full py-3.5 rounded-xl bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 hover:border-amber-500 font-black uppercase text-xs tracking-widest transition-all flex items-center justify-center gap-3">
-                        <i class="fas fa-hourglass-half"></i> Pending
-                    </button>
+                    {{-- Perubahan Status Operasional Alur Intel --}}
+                    <div class="flex flex-wrap gap-2 justify-end">
+                        <button wire:click="perbaruiStatus({{ $selectedLapdu->id }}, 'menunggu')" class="px-3.5 py-2.5 text-[10px] font-black uppercase tracking-wider rounded-xl border transition {{ $selectedLapdu->status_laporan === 'menunggu' ? 'bg-slate-200 border-slate-400 text-slate-800 font-semibold' : 'bg-white border-slate-200 hover:bg-slate-100 text-slate-600' }}">
+                            Menunggu
+                        </button>
+                        <button wire:click="perbaruiStatus({{ $selectedLapdu->id }}, 'diproses')" class="px-3.5 py-2.5 text-[10px] font-black uppercase tracking-wider rounded-xl border transition {{ $selectedLapdu->status_laporan === 'diproses' ? 'bg-blue-100 border-blue-400 text-blue-800 font-semibold' : 'bg-white border-slate-200 hover:bg-slate-100 text-slate-600' }}">
+                            Proses Telaah
+                        </button>
+                        <button wire:click="perbaruiStatus({{ $selectedLapdu->id }}, 'tindak_lanjut')" class="px-3.5 py-2.5 text-[10px] font-black uppercase tracking-wider rounded-xl border transition {{ $selectedLapdu->status_laporan === 'tindak_lanjut' ? 'bg-amber-100 border-amber-400 text-amber-800 font-semibold' : 'bg-white border-slate-200 hover:bg-slate-100 text-slate-600' }}">
+                            Tindak Lanjut
+                        </button>
+                        <button wire:click="perbaruiStatus({{ $selectedLapdu->id }}, 'selesai')" class="px-3.5 py-2.5 text-[10px] font-black uppercase tracking-wider rounded-xl border transition {{ $selectedLapdu->status_laporan === 'selesai' ? 'bg-emerald-100 border-emerald-400 text-emerald-800 font-semibold' : 'bg-white border-slate-200 hover:bg-slate-100 text-slate-600' }}">
+                            Selesai / Arsip
+                        </button>
+                    </div>
                 </div>
-
-                <button wire:click="closeStatusModal" class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-500 transition">
-                    <i class="fas fa-times"></i>
-                </button>
             </div>
         </div>
-        @endif
-
     </div>
+    @endif
 </div>

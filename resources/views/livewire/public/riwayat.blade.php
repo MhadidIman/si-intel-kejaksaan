@@ -10,6 +10,14 @@ new #[Layout('layouts.app')] class extends Component
 
     public function mount()
     {
+        // =========================================================================
+        // SATPAM (GUARD): Tolak petugas masuk ke halaman riwayat publik
+        // =========================================================================
+        if (auth()->user()->role !== 'masyarakat') {
+            $this->redirectRoute('dashboard', navigate: true);
+            return;
+        }
+
         // Mengambil semua riwayat laporan khusus masyarakat yang sedang login
         $this->laporans = Lapdu::where('nama_pelapor', auth()->user()->name)
             ->orderBy('created_at', 'desc')

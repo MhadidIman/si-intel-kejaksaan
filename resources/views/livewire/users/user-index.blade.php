@@ -159,7 +159,6 @@
                             <td class="px-2 py-3 text-center border-r border-slate-100 text-xs font-bold text-slate-800">{{ $user->pam_sdos_count }}</td>
                             <td class="px-2 py-3 text-center border-r border-slate-100 text-xs font-bold text-slate-800">{{ $user->jms_activities_count }}</td>
                             <td class="px-2 py-3 text-center border-r border-slate-100 text-xs font-bold text-slate-800">{{ $user->kerawanans_count }}</td>
-                            <td class="px-2 py-3 text-center border-r border-slate-100 text-xs font-bold text-slate-800">{{ $user->lapdus_count }}</td>
                             <td class="px-4 py-3 text-center bg-emerald-50 text-emerald-700 font-black text-sm">{{ $total }}</td>
                         </tr>
                         @endforeach

@@ -114,26 +114,38 @@
                 <span class="text-emerald-400 font-bold border-b border-emerald-400/30">Akurat</span>.
             </p>
 
-            {{-- TOMBOL CALL TO ACTION (KHUSUS INTERNAL LOGIN) --}}
+            {{-- TOMBOL CALL TO ACTION (PINTAR & ANTI-BENTROK) --}}
             <div class="flex flex-col sm:flex-row gap-5 justify-center items-center">
-                @if (Route::has('login'))
                 @auth
+                @if(auth()->user()->role === 'masyarakat')
+                {{-- Mencegah Masyarakat masuk ke Dashboard Internal --}}
+                <div class="flex flex-col items-center">
+                    <span class="text-amber-400 text-[10px] font-black uppercase tracking-widest mb-3 bg-amber-400/10 px-4 py-1.5 rounded-full border border-amber-400/20">
+                        <i class="fas fa-exclamation-triangle mr-1"></i> Sesi Masyarakat Sedang Aktif
+                    </span>
+                    <a href="{{ route('publik.dashboard') }}" class="w-full sm:w-auto px-10 py-4 bg-slate-800 border border-slate-700 rounded-2xl text-slate-300 font-black text-sm uppercase tracking-[0.1em] shadow-xl hover:bg-slate-700 hover:text-white hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3">
+                        Kembali ke Portal Publik <i class="fas fa-external-link-alt text-lg"></i>
+                    </a>
+                </div>
+                @else
+                {{-- Jika murni Petugas yang sedang login --}}
                 <a href="{{ url('/dashboard') }}" class="w-full sm:w-auto px-10 py-5 bg-emerald-600 rounded-2xl text-white font-black text-sm uppercase tracking-[0.1em] shadow-2xl shadow-emerald-900/50 hover:bg-emerald-500 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3">
                     Masuk Ke Dashboard <i class="fas fa-arrow-right text-lg"></i>
                 </a>
+                @endif
                 @else
+                {{-- Jika belum ada sesi login sama sekali --}}
                 <a href="{{ route('login') }}" class="w-full sm:w-auto px-10 py-5 bg-emerald-600 rounded-2xl text-white font-black text-sm uppercase tracking-[0.1em] shadow-2xl shadow-emerald-900/50 hover:bg-emerald-500 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3">
                     Akses Portal Intelijen <i class="fas fa-shield-halved text-lg"></i>
                 </a>
                 @endauth
-                @endif
             </div>
 
             <div class="mt-8 text-slate-500 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2">
                 <i class="fas fa-lock text-emerald-500"></i> Encrypted Connection (Internal Use Only)
             </div>
 
-            {{-- FITUR HIGHLIGHTS (Bisa dibiarkan di Internal) --}}
+            {{-- FITUR HIGHLIGHTS --}}
             <div class="mt-24 grid grid-cols-2 lg:grid-cols-4 gap-6 text-left">
                 <div class="p-8 bg-white/5 rounded-3xl border border-white/10 backdrop-blur-md group hover:bg-white/10 transition-all duration-500">
                     <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center text-xl mb-6 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500">

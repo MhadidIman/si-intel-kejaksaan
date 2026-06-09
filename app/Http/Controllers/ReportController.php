@@ -169,7 +169,7 @@ class ReportController extends Controller
     // ==========================================================
     public function cetakLapdu()
     {
-        $data = \App\Models\Lapdu::orderBy('tanggal_terima', 'desc')->get();
+        $data = \App\Models\Lapdu::orderBy('created_at', 'desc')->get();
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.lapdu-pdf', ['data' => $data]);
         $pdf->setPaper('a4', 'landscape');
         return $pdf->stream('Rekap-Pengaduan-Masyarakat.pdf');

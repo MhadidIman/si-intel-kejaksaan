@@ -10,34 +10,35 @@ return new class extends Migration
     {
         Schema::create('lapdus', function (Blueprint $table) {
             $table->id();
-
-            // TAMBAHAN: Kolom User ID (Relasi ke tabel users)
-            // Agar tahu siapa petugas yang menginput (sesuai error user_id not found)
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
-
-            // TAMBAHAN: Data Surat (sesuai error nomor_surat & tanggal_terima not found)
-            $table->string('nomor_surat')->nullable();
-            $table->date('tanggal_terima')->nullable();
-
-            // Kolom Verifikasi Admin
-            $table->enum('status_verifikasi', ['pending', 'disetujui', 'ditolak'])->default('pending');
+            $table->string('nomor_tiket')->unique();
 
             // Data Pelapor
             $table->string('nama_pelapor');
-            $table->string('nik')->nullable();
-            // UBAH NAMA: no_hp menjadi no_hp_pelapor (sesuai error SQL)
-            $table->string('no_hp_pelapor')->nullable();
+            $table->boolean('is_anonim')->default(false);
+            $table->string('nik', 16);
+            $table->string('tempat_lahir')->nullable();
+            $table->date('tanggal_lahir')->nullable();
+            $table->enum('jenis_kelamin', ['L', 'P'])->nullable();
+            $table->string('pekerjaan')->nullable();
+            $table->text('alamat_pelapor');
+            $table->string('no_hp_pelapor');
 
-            // Data Pengaduan
-            $table->string('nama_terlapor')->nullable(); // Siapa yang dilaporkan
-            $table->string('kategori_laporan'); // Korupsi / Umum / Pegawai
-            $table->text('uraian_pengaduan'); // Kronologi singkat
-            $table->string('bukti_dukung')->nullable(); // File Upload
+            // Data Terlapor
+            $table->string('nama_terlapor');
+            $table->string('jabatan_terlapor');
+            $table->text('alamat_terlapor')->nullable();
+            $table->string('kontak_terlapor')->nullable();
 
-            // Status Tindak Lanjut (Operasional)
-            $table->enum('status_laporan', ['menunggu', 'proses', 'selesai'])->default('menunggu');
-            $table->text('keterangan_tindak_lanjut')->nullable();
+            // Substansi Laporan Case
+            $table->string('kategori_laporan');
+            $table->string('judul_laporan');
+            $table->date('waktu_kejadian'); // Tempus Delicti
+            $table->string('tempat_kejadian'); // Locus Delicti
+            $table->longText('uraian_pengaduan');
 
+            // Evidence & Status Tracking
+            $table->string('bukti_dukung');
+            $table->string('status_laporan')->default('menunggu');
             $table->timestamps();
         });
     }

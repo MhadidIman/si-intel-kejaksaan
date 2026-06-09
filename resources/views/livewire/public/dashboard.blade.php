@@ -6,19 +6,26 @@ use Livewire\Volt\Component;
 
 new #[Layout('layouts.app')] class extends Component
 {
-    // Kita deklarasikan variabel agar bisa diakses oleh view
+    // Deklarasikan variabel agar bisa diakses oleh view
     public $laporans;
-    public $totalLaporan;
-    public $laporanSelesai;
-    public $laporanProses;
+    public $totalLaporan = 0;
+    public $laporanSelesai = 0;
+    public $laporanProses = 0;
 
     public function mount()
     {
-        // Ambil data berdasarkan nama user yang login
+        // 1. SATPAM: Jika yang akses BUKAN masyarakat (Petugas/Admin), tendang ke portal internal
+        if (auth()->user()->role !== 'masyarakat') {
+            $this->redirectRoute('dashboard', navigate: true);
+            return;
+        }
+
+        // 2. Ambil data pengaduan berdasarkan nama user (masyarakat) yang login
         $data = Lapdu::where('nama_pelapor', auth()->user()->name)
             ->orderBy('created_at', 'desc')
             ->get();
 
+        // 3. Masukkan data ke variabel publik
         $this->laporans = $data;
         $this->totalLaporan = $data->count();
         $this->laporanSelesai = $data->where('status_laporan', 'selesai')->count();
@@ -35,7 +42,7 @@ new #[Layout('layouts.app')] class extends Component
         </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="flex items-center gap-4 mb-2">
-                <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-white text-xl border border-white/30 backdrop-blur-sm">
+                <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-white text-xl border border-white/30 backdrop-blur-sm shadow-inner">
                     {{ substr(auth()->user()->name, 0, 1) }}
                 </div>
                 <div>
@@ -123,6 +130,7 @@ new #[Layout('layouts.app')] class extends Component
                                 <i class="fas fa-folder-open text-4xl text-slate-300"></i>
                             </div>
                             <h4 class="text-lg font-black text-slate-700 mb-1">Belum Ada Pengaduan</h4>
+                            <p class="text-xs text-slate-500">Anda belum mengirimkan laporan apapun.</p>
                         </div>
                         @else
                         <div class="overflow-x-auto">
@@ -140,7 +148,7 @@ new #[Layout('layouts.app')] class extends Component
                                         <td class="p-4 font-black text-slate-700">{{ $laporan->nomor_tiket }}</td>
                                         <td class="p-4 font-bold text-slate-800">{{ ucwords(str_replace('_', ' ', $laporan->kategori_laporan)) }}</td>
                                         <td class="p-4 text-center">
-                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-slate-100 text-slate-600">
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-slate-100 text-slate-600 border border-slate-200">
                                                 {{ ucfirst($laporan->status_laporan) }}
                                             </span>
                                         </td>
@@ -153,6 +161,7 @@ new #[Layout('layouts.app')] class extends Component
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
