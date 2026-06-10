@@ -7,6 +7,7 @@ use Livewire\Volt\Volt;
 use App\Livewire\Dashboard\DashboardIndex;
 use App\Livewire\Users\UserIndex;
 use App\Livewire\Lapinhar\LapinharIndex;
+use App\Livewire\Lapsus\LapsusIndex;
 use App\Livewire\Dpo\DpoIndex;
 use App\Livewire\Wna\WnaIndex;
 use App\Livewire\Ormas\OrmasIndex;
@@ -60,6 +61,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardIndex::class)->name('dashboard');
     Route::get('/users', UserIndex::class)->name('users.index');
     Route::get('/lapinhar', LapinharIndex::class)->name('lapinhar.index');
+    Route::get('/lapsus', LapsusIndex::class)->name('lapsus.index');
     Route::get('/dpo', DpoIndex::class)->name('dpo.index');
     Route::get('/wna', WnaIndex::class)->name('wna.index');
     Route::get('/ormas', OrmasIndex::class)->name('ormas.index');
@@ -74,6 +76,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/cetak-dpo/{id}', 'cetakDpoSatuan')->name('cetak.dpo.satuan');
         Route::get('/cetak-lapinhar', 'cetakLapinhar')->name('cetak.lapinhar');
         Route::get('/cetak-lapinhar/{id}', 'cetakLapinharSatuan')->name('cetak.lapinhar.satuan');
+        Route::get('/cetak-lapsus', 'cetakLapsus')->name('cetak.lapsus');
+        Route::get('/cetak-lapsus/{id}', 'cetakLapsusSatuan')->name('cetak.lapsus.satuan');
         Route::get('/cetak-wna', 'cetakWna')->name('cetak.wna');
         Route::get('/cetak-wna/{id}', 'cetakWnaSatuan')->name('cetak.wna.satuan');
         Route::get('/cetak-ormas', 'cetakOrmas')->name('cetak.ormas');

@@ -65,7 +65,7 @@ new class extends Component
                     <div class="relative z-[100] flex items-center">
                         <x-dropdown align="left" width="56">
                             <x-slot name="trigger">
-                                <button class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-bold rounded-xl text-slate-300 bg-transparent hover:text-emerald-400 hover:bg-slate-800/80 focus:outline-none transition ease-in-out duration-150 gap-2 tracking-wide {{ request()->routeIs('lapinhar.*', 'dpo.*', 'wna.*', 'ormas.*', 'pam-sdo.*', 'jms.*', 'kerawanan.*') ? 'text-emerald-400 bg-slate-800/80' : '' }}">
+                                <button class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-bold rounded-xl text-slate-300 bg-transparent hover:text-emerald-400 hover:bg-slate-800/80 focus:outline-none transition ease-in-out duration-150 gap-2 tracking-wide {{ request()->routeIs('lapinhar.*', 'lapsus.*', 'dpo.*', 'wna.*', 'ormas.*', 'pam-sdo.*', 'jms.*', 'kerawanan.*') ? 'text-emerald-400 bg-slate-800/80' : '' }}">
                                     <i class="fas fa-layer-group"></i> Modul Intelijen
                                     <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -77,6 +77,9 @@ new class extends Component
                                 <div class="bg-white rounded-xl shadow-2xl ring-1 ring-slate-100 overflow-hidden py-2 font-bold relative z-[100]">
                                     <x-dropdown-link :href="route('lapinhar.index')" wire:navigate class="hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-3 text-slate-600 py-2.5">
                                         <i class="fas fa-bolt w-4 text-emerald-600 text-center"></i> Lapinhar
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="route('lapsus.index')" wire:navigate class="hover:bg-red-50 hover:text-red-700 flex items-center gap-3 text-slate-600 py-2.5 border-t border-slate-50">
+                                        <i class="fas fa-exclamation-triangle w-4 text-red-600 text-center"></i> Laporan Khusus
                                     </x-dropdown-link>
                                     <x-dropdown-link :href="route('dpo.index')" wire:navigate class="hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-3 text-slate-600 py-2.5 border-t border-slate-50">
                                         <i class="fas fa-user-secret w-4 text-emerald-600 text-center"></i> Buronan (DPO)
@@ -124,6 +127,9 @@ new class extends Component
                                     </x-dropdown-link>
                                     <x-dropdown-link :href="route('users.index', ['viewMode' => 'stats'])" wire:navigate class="hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-3 text-slate-600 py-2.5 border-t border-slate-50">
                                         <i class="fas fa-chart-line w-4 text-emerald-600 text-center"></i> Kinerja Staff
+                                    </x-dropdown-link>
+                                    <x-dropdown-link :href="route('users.index', ['viewMode' => 'logs'])" wire:navigate class="hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-3 text-slate-600 py-2.5 border-t border-slate-50">
+                                        <i class="fas fa-history w-4 text-emerald-600 text-center"></i> Aktivitas Login
                                     </x-dropdown-link>
                                 </div>
                             </x-slot>
@@ -269,6 +275,9 @@ new class extends Component
             <div class="px-4 py-2 text-[10px] font-black text-slate-500 uppercase tracking-widest mt-4 mb-1">Modul Intelijen</div>
             <x-responsive-nav-link :href="route('lapinhar.index')" :active="request()->routeIs('lapinhar.*')" wire:navigate class="text-slate-300 hover:text-emerald-400 hover:bg-slate-800 rounded-xl font-bold">
                 <i class="fas fa-bolt mr-2 w-5 text-center"></i> Lapinhar
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('lapsus.index')" :active="request()->routeIs('lapsus.*')" wire:navigate class="text-slate-300 hover:text-red-400 hover:bg-slate-800 rounded-xl font-bold">
+                <i class="fas fa-exclamation-triangle mr-2 w-5 text-center text-red-500"></i> Laporan Khusus
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('dpo.index')" :active="request()->routeIs('dpo.*')" wire:navigate class="text-slate-300 hover:text-emerald-400 hover:bg-slate-800 rounded-xl font-bold">
                 <i class="fas fa-user-secret mr-2 w-5 text-center"></i> Buronan (DPO)

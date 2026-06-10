@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Rekap Laporan Khusus</title>
+    <style>
+        /* PENGATURAN KERTAS & FONT */
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11pt;
+            line-height: 1.3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* HILANGKAN TITLE, TANGGAL, DAN URL BAWAAN BROWSER SAAT PRINT */
+        @media print {
+            @page {
+                margin: 0;
+            }
+
+            body {
+                margin: 1.5cm;
+            }
+        }
+
+        /* CAP RAHASIA KHUSUS LAPSUS */
+        .rahasia-cap {
+            color: red;
+            font-weight: bold;
+            text-align: right;
+            text-decoration: underline;
+            margin-bottom: 5px;
+            font-size: 12pt;
+        }
+
+        /* KOP SURAT (STANDAR RESMI) */
+        .header-container {
+            text-align: center;
+            position: relative;
+            margin-bottom: 20px;
+            border-bottom: 3px double black;
+            padding-bottom: 10px;
+        }
+
+        .logo {
+            width: 85px;
+            position: absolute;
+            left: 0;
+            top: 5px;
+        }
+
+        .header-text h3 {
+            margin: 0;
+            font-size: 14pt;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header-text h2 {
+            margin: 2px 0;
+            font-size: 16pt;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header-text p {
+            margin: 0;
+            font-size: 9pt;
+            font-weight: normal;
+        }
+
+        /* JUDUL DOKUMEN */
+        .title-doc {
+            text-align: center;
+            font-weight: bold;
+            text-decoration: underline;
+            font-size: 12pt;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        /* TABEL DATA - ANTI MELEBAR */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 10pt;
+            table-layout: fixed;
+            /* Kunci proporsi kolom */
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            text-align: center;
+            font-weight: bold;
+            padding: 8px 5px;
+            vertical-align: middle;
+        }
+
+        td {
+            padding: 6px 8px;
+            text-align: left;
+            vertical-align: top;
+            word-wrap: break-word;
+            /* Paksa teks panjang turun baris */
+            overflow-wrap: break-word;
+        }
+
+        /* TANDA TANGAN */
+        .ttd-container {
+            float: right;
+            width: 40%;
+            text-align: center;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body onload="window.print()">
+
+    {{-- Trik Base64 untuk Logo --}}
+    @php
+    $logoPath = public_path('img/logo-kejaksaan.png');
+    $logoData = base64_encode(file_get_contents($logoPath));
+    $logoSrc = 'data:image/png;base64,' . $logoData;
+    @endphp
+
+    <div class="rahasia-cap">DOKUMEN RAHASIA</div>
+
+    {{-- KOP SURAT --}}
+    <div class="header-container">
+        <img src="{{ $logoSrc }}" class="logo">
+        <div class="header-text">
+            <h3>KEJAKSAAN REPUBLIK INDONESIA</h3>
+            <h3>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h3>
+            <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
+            <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
+            <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
+        </div>
+    </div>
+
+    {{-- JUDUL DOKUMEN --}}
+    <div class="title-doc">
+        REKAPITULASI LAPORAN KHUSUS (LAPSUS)
+    </div>
+
+    {{-- TABEL DATA LAPSUS --}}
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 5%;">No</th>
+                <th style="width: 15%;">Tanggal & Waktu</th>
+                <th style="width: 10%;">Sifat</th>
+                <th style="width: 20%;">Siapa & Lokasi</th>
+                <th style="width: 25%;">Peristiwa (Apa)</th>
+                <th style="width: 25%;">Saran / Tindakan</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($lapsus as $index => $item)
+            <tr>
+                <td style="text-align: center;">{{ $index + 1 }}</td>
+                <td>
+                    <strong>{{ \Carbon\Carbon::parse($item->tanggal_laporan)->translatedFormat('d F Y') }}</strong><br>
+                    <span style="font-size: 9pt; color: #333;">Waktu: {{ $item->kapan }}</span>
+                </td>
+                <td style="text-align: center; font-weight: bold; font-size: 9pt; color: {{ $item->tingkat_kerahasiaan == 'Sangat Rahasia' ? 'red' : '#333' }};">
+                    {{ strtoupper($item->tingkat_kerahasiaan) }}
+                </td>
+                <td>
+                    <strong>Subjek:</strong> {{ $item->siapa }}<br>
+                    <strong>Lokasi:</strong> {{ $item->dimana }}
+                </td>
+                <td style="text-align: justify;">
+                    {{ $item->apa }}
+                </td>
+                <td style="text-align: justify;">
+                    {{ $item->saran ?? '-' }}
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    {{-- TANDA TANGAN --}}
+    <div class="ttd-container">
+        <p>Banjarmasin, {{ now()->translatedFormat('d F Y') }}</p>
+        <p>Kepala Seksi Intelijen,</p>
+        <br><br><br>
+        <p style="font-weight: bold; text-decoration: underline; margin-bottom: 0;">Dimas Purnama Putra, S.H.,M.H</p>
+        <p style="margin-top: 2px;">Jaksa Madya NIP. 19850101 201001 1 001</p>
+    </div>
+
+</body>
+
+</html>

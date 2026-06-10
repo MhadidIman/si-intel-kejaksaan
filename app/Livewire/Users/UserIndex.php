@@ -76,7 +76,9 @@ class UserIndex extends Component
 
         // 2. Logika untuk Tampilan Log Aktivitas (Keamanan)
         if ($this->viewMode === 'logs') {
-            $logQuery = ActivityLog::with('user');
+            $logQuery = ActivityLog::whereHas('user', function ($q) {
+                $q->where('role', '!=', 'masyarakat');
+            })->with('user');
 
             if ($this->search) {
                 $logQuery->whereHas('user', function ($q) {

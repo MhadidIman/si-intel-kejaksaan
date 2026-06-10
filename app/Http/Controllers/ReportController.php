@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Dpo;
 use App\Models\Wna;
 use App\Models\Lapinhar;
+use App\Models\Lapsus;
 use App\Models\Ormas;
 use App\Models\PamSdo;
 use App\Models\JmsActivity;
@@ -208,5 +209,22 @@ class ReportController extends Controller
             ->setPaper('a4', 'landscape'); // Gunakan landscape agar tabel muat
 
         return $pdf->stream('Rekap_Kinerja_Staff_' . date('Y-m-d') . '.pdf');
+    }
+
+
+    // ==========================================================
+    // 10. Cetak LAPORAN KHUSUS
+    // ==========================================================
+    public function cetakLapsus()
+    {
+        $lapsus = Lapsus::with('user')->latest()->get();
+        // Asumsi Anda menggunakan library PDF bawaan Laravel (barryvdh/laravel-dompdf) atau sekadar print browser
+        return view('reports.lapsus-pdf', compact('lapsus'));
+    }
+
+    public function cetakLapsusSatuan($id)
+    {
+        $laporan = Lapsus::with('user')->findOrFail($id);
+        return view('reports.lapsus-satuan-pdf', compact('laporan'));
     }
 }
