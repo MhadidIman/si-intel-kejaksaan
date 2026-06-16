@@ -16,46 +16,61 @@ class UserSeeder extends Seeder
         // 1. Akun ADMIN (Role: Admin / Verifikator)
         User::create([
             'name' => 'Administrator Intel',
-            'nip' => '19900101 202001 1 001',
-            'email' => 'admin@kejaksaan.go.id',
+            'nip' => '199001012020011001',
+            'email' => 'admin@kejaribanjarmasin.go.id',
             'password' => Hash::make('password'),
             'role' => 'admin',
+            'jabatan' => 'Kasi Intelijen',
+            'pangkat' => 'Penata Tk.I (III/d)',
+            'satuan_kerja' => 'Kejari Banjarmasin',
         ]);
 
-        // 2. Akun STAFF 1 (Role: Staff / Penginput)
+        // 2. Akun STAFF 1 (Penginput / IT)
+        User::create([
+            'name' => 'Muhammad Hadid Iman Firdaus',
+            'nip' => '2210010068',
+            'email' => 'hadid@kejaribanjarmasin.go.id',
+            'password' => Hash::make('password'),
+            'role' => 'staff',
+            'jabatan' => 'Pengembang Sistem (IT)',
+            'pangkat' => 'Non-ASN',
+            'satuan_kerja' => 'Kejari Banjarmasin',
+        ]);
+
+        // 3. Akun STAFF 2 
         User::create([
             'name' => 'Jaksa Fulan, S.H.',
-            'nip' => '19950505 202101 1 002',
-            'email' => 'jaksa@kejaksaan.go.id',
+            'nip' => '199505052021011002',
+            'email' => 'jaksa@kejaribanjarmasin.go.id',
             'password' => Hash::make('password'),
             'role' => 'staff',
+            'jabatan' => 'Jaksa Fungsional',
+            'pangkat' => 'Ajun Jaksa Madya (III/a)',
+            'satuan_kerja' => 'Kejari Banjarmasin',
         ]);
 
-        // 3. Akun STAFF 2 (Untuk Demo Leaderboard Peringkat)
+        // 4. Akun STAFF 3 (Untuk Demo Leaderboard Peringkat)
         User::create([
             'name' => 'Andi Pratama, S.H.',
-            'nip' => '19930312 201902 1 003',
-            'email' => 'andi@kejaksaan.go.id',
+            'nip' => '199303122019021003',
+            'email' => 'andi@kejaribanjarmasin.go.id',
             'password' => Hash::make('password'),
             'role' => 'staff',
-        ]);
-
-        // 4. Akun STAFF 3
-        User::create([
-            'name' => 'Siti Aminah, S.H., M.H.',
-            'nip' => '19960722 202203 2 004',
-            'email' => 'siti@kejaksaan.go.id',
-            'password' => Hash::make('password'),
-            'role' => 'staff',
+            'jabatan' => 'Staff Intelijen',
+            'pangkat' => 'Pengatur (II/c)',
+            'satuan_kerja' => 'Kejari Banjarmasin',
         ]);
 
         // 5. Akun STAFF 4
         User::create([
-            'name' => 'Budi Santoso, S.Kom.',
-            'nip' => '19981130 202301 1 005',
-            'email' => 'budi@kejaksaan.go.id',
+            'name' => 'Siti Aminah, S.H., M.H.',
+            'nip' => '199607222022032004',
+            'email' => 'siti@kejaribanjarmasin.go.id',
             'password' => Hash::make('password'),
             'role' => 'staff',
+            'jabatan' => 'Staff TU Intelijen',
+            'pangkat' => 'Penata Muda (III/a)',
+            'satuan_kerja' => 'Kejari Banjarmasin',
         ]);
     }
 }

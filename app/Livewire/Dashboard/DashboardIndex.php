@@ -13,6 +13,7 @@ use App\Models\Kerawanan;
 use App\Models\Ormas;
 use App\Models\PamSdo;
 use App\Models\JmsActivity;
+use App\Models\Lapsus;
 use Carbon\Carbon;
 
 class DashboardIndex extends Component
@@ -23,12 +24,16 @@ class DashboardIndex extends Component
     public $total_wna_overstay = 0;
     public $total_lapdu_masuk = 0;
     public $total_rawan_tinggi = 0;
+    public $total_lapsus = 0;
+
+    // Variabel untuk pengecekan Notifikasi Real-time
+    public $last_lapdu_count = 0;
 
     // Variabel Grafik (Statistik Tren)
     public $chartLabels = [];
     public $chartLapinhar = [];
     public $chartLapdu = [];
-    public $chartDpo = [];
+    public $chartLapsus = []; // <-- VARIABEL DITAMBAHKAN DI SINI
 
     // Array untuk menampung Notifikasi Sistem Cerdas
     public $system_alerts = [];
@@ -37,7 +42,9 @@ class DashboardIndex extends Component
     {
         $this->loadSummaryData();
         $this->generateChartData();
-        $this->generateSystemAlerts(); 
+        $this->generateSystemAlerts();
+
+        $this->last_lapdu_count = Lapdu::count();
     }
 
     private function loadSummaryData()
@@ -47,16 +54,33 @@ class DashboardIndex extends Component
         $this->total_wna_overstay = Wna::whereDate('masa_berlaku_izin_tinggal', '<', now())->count();
         $this->total_lapdu_masuk = Lapdu::where('status_laporan', 'menunggu')->count();
         $this->total_rawan_tinggi = Kerawanan::where('tingkat_rawan', 'tinggi')->count();
+        $this->total_lapsus = Lapsus::count();
+    }
+
+    public function checkNewLapdu()
+    {
+        $current_count = Lapdu::count();
+
+        if ($current_count > $this->last_lapdu_count) {
+            $new_lapdu = Lapdu::latest()->first();
+
+            $this->dispatch(
+                'lapdu-masuk',
+                title: 'LAPDU BAHARU MASUK!',
+                message: 'Terlapor: ' . ($new_lapdu->nama_terlapor ?? 'TIDAK DIKETAHUI')
+            );
+
+            $this->last_lapdu_count = $current_count;
+            $this->loadSummaryData();
+            $this->generateSystemAlerts();
+        }
     }
 
     private function generateChartData()
     {
-        // Mengambil data tren 6 bulan terakhir
         for ($i = 5; $i >= 0; $i--) {
-            // Gunakan startOfMonth() dan subMonthsNoOverflow() agar aman dari bug tanggal 31
             $date = Carbon::now()->startOfMonth()->subMonthsNoOverflow($i);
-            
-            // Format label menjadi "Bulan Tahun" (Contoh: "Januari 2026")
+
             $this->chartLabels[] = $date->isoFormat('MMMM YYYY');
 
             $this->chartLapinhar[] = Lapinhar::whereMonth('tanggal_surat', $date->month)
@@ -64,16 +88,17 @@ class DashboardIndex extends Component
 
             $this->chartLapdu[] = Lapdu::whereMonth('created_at', $date->month)
                 ->whereYear('created_at', $date->year)->count();
-                
-            $this->chartDpo[] = Dpo::whereMonth('created_at', $date->month)
+
+            // <-- QUERY UNTUK LAPSUS DITAMBAHKAN DI SINI (DPO DIHAPUS)
+            $this->chartLapsus[] = Lapsus::whereMonth('created_at', $date->month)
                 ->whereYear('created_at', $date->year)->count();
         }
     }
 
-    // --- LOGIKA NOTIFIKASI SISTEM (CATATAN PANELIS NO. 4) ---
     private function generateSystemAlerts()
     {
-        // 1. Notifikasi WNA Overstay
+        $this->system_alerts = [];
+
         if ($this->total_wna_overstay > 0) {
             $this->system_alerts[] = [
                 'type' => 'danger',
@@ -83,7 +108,6 @@ class DashboardIndex extends Component
             ];
         }
 
-        // 2. Notifikasi Ormas Status "Diawasi"
         $ormas_diawasi = Ormas::where('status', 'diawasi')->count();
         if ($ormas_diawasi > 0) {
             $this->system_alerts[] = [
@@ -94,13 +118,20 @@ class DashboardIndex extends Component
             ];
         }
 
-        // 3. Notifikasi Lonjakan Laporan (Lapdu)
-        $lapduBulanIni = Lapdu::whereMonth('created_at', now()->month)
-                            ->whereYear('created_at', now()->year)->count();
-        $lapduBulanLalu = Lapdu::whereMonth('created_at', now()->subMonthNoOverflow()->month)
-                             ->whereYear('created_at', now()->subMonthNoOverflow()->year)->count();
+        if ($this->total_lapdu_masuk > 0) {
+            $this->system_alerts[] = [
+                'type' => 'info',
+                'icon' => 'fa-envelope-open-text',
+                'title' => 'LAPDU MENUNGGU DIPROSES',
+                'message' => 'Terdapat ' . $this->total_lapdu_masuk . ' Laporan Pengaduan (Lapdu) baru yang masuk dan belum diproses. Segera lakukan peninjauan.'
+            ];
+        }
 
-        // Asumsi: Lonjakan terjadi jika laporan bulan ini meningkat lebih dari 50% dari bulan lalu DAN minimal ada 5 laporan.
+        $lapduBulanIni = Lapdu::whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)->count();
+        $lapduBulanLalu = Lapdu::whereMonth('created_at', now()->subMonthNoOverflow()->month)
+            ->whereYear('created_at', now()->subMonthNoOverflow()->year)->count();
+
         if ($lapduBulanLalu > 0 && $lapduBulanIni >= 5) {
             $persentaseKenaikan = (($lapduBulanIni - $lapduBulanLalu) / $lapduBulanLalu) * 100;
             if ($persentaseKenaikan >= 50) {

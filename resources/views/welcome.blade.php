@@ -155,13 +155,7 @@
                     <a href="{{ route('publik.login') }}" class="w-full sm:w-auto px-8 py-4 bg-emerald-600 rounded-2xl text-white font-black text-sm uppercase tracking-[0.1em] shadow-xl shadow-emerald-600/30 hover:bg-emerald-700 hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 flex items-center justify-center gap-3">
                         <i class="fas fa-bullhorn text-lg"></i> Buat Pengaduan
                     </a>
-                    @endauth
 
-                    {{-- Hanya tampilkan tombol Riwayat jika yang login bukan petugas (atau belum login) --}}
-                    @if(!auth()->check() || auth()->user()->role === 'masyarakat')
-                    <a href="{{ route('publik.riwayat') }}" class="w-full sm:w-auto px-8 py-4 bg-white border-2 border-slate-200 rounded-2xl text-slate-700 font-black text-sm uppercase tracking-[0.1em] hover:border-emerald-500 hover:text-emerald-600 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-3">
-                        <i class="fas fa-history text-lg"></i> Riwayat Status
-                    </a>
                     @endif
                 </div>
 

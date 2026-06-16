@@ -123,7 +123,7 @@ class LapduForm extends Component
         $this->reset(['nik', 'tempat_lahir', 'tanggal_lahir', 'jenis_kelamin', 'pekerjaan', 'alamat_pelapor', 'nama_terlapor', 'jabatan_terlapor', 'alamat_terlapor', 'kontak_terlapor', 'kategori_laporan', 'judul_laporan', 'waktu_kejadian', 'tempat_kejadian', 'uraian_pengaduan', 'bukti_dukung', 'disclaimer']);
     }
 
-    #[Layout('layouts.app')]
+    #[Layout('layouts.public')]
     public function render()
     {
         return view('livewire.public.lapdu-form');

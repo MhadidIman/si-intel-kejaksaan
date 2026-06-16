@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         // ==============================================================
         $admin = User::create([
             'name' => 'Jaksa Intel',
-            'nip' => '198501012010011001',
+            'nip' => '198501012010011021',
             'email' => 'admin@kejaribjm.go.id',
             'password' => Hash::make('password'),
             'role' => 'admin',

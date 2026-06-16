@@ -39,6 +39,7 @@ Route::get('/petugas', function () {
 // Rute Login Khusus Masyarakat
 Route::middleware('guest')->group(function () {
     Volt::route('/masyarakat/login', 'public.login')->name('publik.login');
+    Volt::route('/masyarakat/register', 'public.register-publik')->name('publik.register');
 });
 
 

@@ -1,5 +1,6 @@
-<div class="py-10 bg-[#f8fafc] min-h-screen font-sans">
-    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 space-y-10">
+{{-- Tambahkan wire:poll untuk memicu fungsi checkNewLapdu setiap 10 detik --}}
+<div wire:poll.10s="checkNewLapdu" class="py-10 bg-[#f8fafc] min-h-screen font-sans">
+    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 space-y-10 relative">
 
         {{-- HEADER: COMMAND CENTER --}}
         <div class="relative overflow-hidden bg-slate-900 rounded-[2.5rem] p-8 md:p-12 shadow-2xl border-b-4 border-emerald-500 group">
@@ -52,9 +53,7 @@
             </div>
         </div>
 
-        {{-- ============================================================== --}}
-        {{-- SYSTEM ALERTS (NOTIFIKASI PREDIKTIF INTELIJEN)                 --}}
-        {{-- ============================================================== --}}
+        {{-- SYSTEM ALERTS --}}
         @if(count($system_alerts) > 0)
         <div class="space-y-4">
             @foreach($system_alerts as $alert)
@@ -84,50 +83,68 @@
         @endif
 
         {{-- METRIK UTAMA --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="bg-red-600 rounded-3xl p-7 shadow-xl shadow-red-600/20 flex flex-col justify-between h-44 relative overflow-hidden group hover:-translate-y-1.5 transition-all duration-300">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+
+            {{-- DPO --}}
+            <div class="bg-red-600 rounded-3xl p-6 shadow-xl shadow-red-600/20 flex flex-col justify-between h-44 relative overflow-hidden group hover:-translate-y-1.5 transition-all duration-300">
                 <div class="absolute -right-6 -top-6 opacity-20 text-white text-8xl transform rotate-12 group-hover:scale-110 transition duration-500"><i class="fas fa-user-secret"></i></div>
                 <div class="relative z-10 flex justify-between items-start">
                     <div>
                         <p class="text-[10px] font-black text-red-100 uppercase tracking-[0.2em] mb-1">Buronan (DPO)</p>
-                        <p class="text-5xl font-black text-white tracking-tighter drop-shadow-md">{{ $total_dpo_buron ?? 0 }}</p>
+                        <p class="text-4xl lg:text-5xl font-black text-white tracking-tighter drop-shadow-md">{{ $total_dpo_buron ?? 0 }}</p>
                     </div>
-                    <div class="p-3 bg-white/20 rounded-2xl text-white backdrop-blur-md border border-white/20 shadow-inner"><i class="fas fa-user-secret text-xl"></i></div>
+                    <div class="p-3 bg-white/20 rounded-2xl text-white backdrop-blur-md border border-white/20 shadow-inner"><i class="fas fa-user-secret text-lg"></i></div>
                 </div>
             </div>
 
-            <div class="bg-orange-500 rounded-3xl p-7 shadow-xl shadow-orange-500/20 flex flex-col justify-between h-44 relative overflow-hidden group hover:-translate-y-1.5 transition-all duration-300">
+            {{-- RAWAN TINGGI --}}
+            <div class="bg-orange-500 rounded-3xl p-6 shadow-xl shadow-orange-500/20 flex flex-col justify-between h-44 relative overflow-hidden group hover:-translate-y-1.5 transition-all duration-300">
                 <div class="absolute -right-6 -top-6 opacity-20 text-white text-8xl transform rotate-12 group-hover:scale-110 transition duration-500"><i class="fas fa-exclamation-triangle"></i></div>
                 <div class="relative z-10 flex justify-between items-start">
                     <div>
                         <p class="text-[10px] font-black text-orange-50 uppercase tracking-[0.2em] mb-1">Rawan Tinggi</p>
-                        <p class="text-5xl font-black text-white tracking-tighter drop-shadow-md">{{ $total_rawan_tinggi ?? 0 }}</p>
+                        <p class="text-4xl lg:text-5xl font-black text-white tracking-tighter drop-shadow-md">{{ $total_rawan_tinggi ?? 0 }}</p>
                     </div>
-                    <div class="p-3 bg-white/20 rounded-2xl text-white backdrop-blur-md border border-white/20 shadow-inner"><i class="fas fa-map-marker-alt text-xl"></i></div>
+                    <div class="p-3 bg-white/20 rounded-2xl text-white backdrop-blur-md border border-white/20 shadow-inner"><i class="fas fa-map-marker-alt text-lg"></i></div>
                 </div>
             </div>
 
-            <div class="bg-blue-600 rounded-3xl p-7 shadow-xl shadow-blue-600/20 flex flex-col justify-between h-44 relative overflow-hidden group hover:-translate-y-1.5 transition-all duration-300">
+            {{-- WNA OVERSTAY --}}
+            <div class="bg-blue-600 rounded-3xl p-6 shadow-xl shadow-blue-600/20 flex flex-col justify-between h-44 relative overflow-hidden group hover:-translate-y-1.5 transition-all duration-300">
                 <div class="absolute -right-6 -top-6 opacity-20 text-white text-8xl transform rotate-12 group-hover:scale-110 transition duration-500"><i class="fas fa-globe-americas"></i></div>
                 <div class="relative z-10 flex justify-between items-start">
                     <div>
                         <p class="text-[10px] font-black text-blue-50 uppercase tracking-[0.2em] mb-1">WNA Overstay</p>
-                        <p class="text-5xl font-black text-white tracking-tighter drop-shadow-md">{{ $total_wna_overstay ?? 0 }}</p>
+                        <p class="text-4xl lg:text-5xl font-black text-white tracking-tighter drop-shadow-md">{{ $total_wna_overstay ?? 0 }}</p>
                     </div>
-                    <div class="p-3 bg-white/20 rounded-2xl text-white backdrop-blur-md border border-white/20 shadow-inner"><i class="fas fa-passport text-xl"></i></div>
+                    <div class="p-3 bg-white/20 rounded-2xl text-white backdrop-blur-md border border-white/20 shadow-inner"><i class="fas fa-passport text-lg"></i></div>
                 </div>
             </div>
 
-            <div class="bg-emerald-600 rounded-3xl p-7 shadow-xl shadow-emerald-600/20 flex flex-col justify-between h-44 relative overflow-hidden group hover:-translate-y-1.5 transition-all duration-300">
+            {{-- LAPDU MASUK --}}
+            <div class="bg-emerald-600 rounded-3xl p-6 shadow-xl shadow-emerald-600/20 flex flex-col justify-between h-44 relative overflow-hidden group hover:-translate-y-1.5 transition-all duration-300">
                 <div class="absolute -right-6 -top-6 opacity-20 text-white text-8xl transform rotate-12 group-hover:scale-110 transition duration-500"><i class="fas fa-envelope-open-text"></i></div>
                 <div class="relative z-10 flex justify-between items-start">
                     <div>
                         <p class="text-[10px] font-black text-emerald-50 uppercase tracking-[0.2em] mb-1">Lapdu Masuk</p>
-                        <p class="text-5xl font-black text-white tracking-tighter drop-shadow-md">{{ $total_lapdu_masuk ?? 0 }}</p>
+                        <p class="text-4xl lg:text-5xl font-black text-white tracking-tighter drop-shadow-md">{{ $total_lapdu_masuk ?? 0 }}</p>
                     </div>
-                    <div class="p-3 bg-white/20 rounded-2xl text-white backdrop-blur-md border border-white/20 shadow-inner"><i class="fas fa-inbox text-xl"></i></div>
+                    <div class="p-3 bg-white/20 rounded-2xl text-white backdrop-blur-md border border-white/20 shadow-inner"><i class="fas fa-inbox text-lg"></i></div>
                 </div>
             </div>
+
+            {{-- LAPSUS --}}
+            <div class="bg-indigo-600 rounded-3xl p-6 shadow-xl shadow-indigo-600/20 flex flex-col justify-between h-44 relative overflow-hidden group hover:-translate-y-1.5 transition-all duration-300">
+                <div class="absolute -right-6 -top-6 opacity-20 text-white text-8xl transform rotate-12 group-hover:scale-110 transition duration-500"><i class="fas fa-file-shield"></i></div>
+                <div class="relative z-10 flex justify-between items-start">
+                    <div>
+                        <p class="text-[10px] font-black text-indigo-50 uppercase tracking-[0.2em] mb-1">Lapsus</p>
+                        <p class="text-4xl lg:text-5xl font-black text-white tracking-tighter drop-shadow-md">{{ $total_lapsus ?? 0 }}</p>
+                    </div>
+                    <div class="p-3 bg-white/20 rounded-2xl text-white backdrop-blur-md border border-white/20 shadow-inner"><i class="fas fa-folder-open text-lg"></i></div>
+                </div>
+            </div>
+
         </div>
 
         {{-- DASHBOARD INTELIJEN PREDIKTIF (PETA & HEATMAP) --}}
@@ -150,7 +167,7 @@
             </div>
         </div>
 
-        {{-- BAGIAN BAWAH (SHORTCUT DIHILANGKAN, GRAFIK SEJAJAR) --}}
+        {{-- BAGIAN BAWAH --}}
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
 
             {{-- KIRI: GRAFIK STATISTIK TREN --}}
@@ -158,7 +175,7 @@
                 <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-[600px]">
                     <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 shrink-0">
                         <h3 class="font-black text-slate-800 text-sm uppercase tracking-widest flex items-center gap-3">
-                            <i class="fas fa-chart-line text-blue-500"></i> Statistik Tren Tindak Pidana & Laporan
+                            <i class="fas fa-chart-line text-emerald-500"></i> Statistik Tren Volume Data Laporan
                         </h3>
                     </div>
                     <div class="p-6 relative flex-1">
@@ -179,7 +196,7 @@
 
                     <div class="flex-1 overflow-y-auto custom-scrollbar p-2">
                         @forelse($recent_lapdus as $lapdu)
-                        <div class="p-4 hover:bg-slate-50 border-l-4 border-transparent hover:border-emerald-500 rounded-xl mb-1">
+                        <div class="p-4 hover:bg-slate-50 border-l-4 border-transparent hover:border-emerald-500 rounded-xl mb-1 transition-all">
                             <div class="flex gap-4 items-start">
                                 <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center shadow-sm shrink-0">
                                     <i class="fas fa-envelope-open-text text-sm"></i>
@@ -195,6 +212,33 @@
                         @endforelse
                     </div>
                 </div>
+            </div>
+        </div>
+
+        {{-- POPUP NOTIFIKASI LAPDU (ALPINE.JS) --}}
+        <div x-data="{ show: false, title: '', message: '' }"
+            x-on:lapdu-masuk.window="show = true; title = $event.detail.title; message = $event.detail.message; setTimeout(() => show = false, 6000)"
+            class="fixed bottom-8 right-8 z-[100]"
+            x-show="show"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-y-10"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 translate-y-10"
+            style="display: none;">
+
+            <div class="bg-emerald-600 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 border-2 border-emerald-400/50">
+                <div class="bg-white/20 p-3 rounded-full flex items-center justify-center animate-bounce">
+                    <i class="fas fa-bell text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-black uppercase tracking-widest" x-text="title"></p>
+                    <p class="text-xs font-medium opacity-90 mt-0.5" x-text="message"></p>
+                </div>
+                <button @click="show = false" class="ml-4 p-1 opacity-70 hover:opacity-100 transition">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
         </div>
 
@@ -218,7 +262,7 @@
 
         <script>
             document.addEventListener('livewire:navigated', function() {
-                // INIT CHART TREN PENGADUAN & DPO
+                // INIT CHART (LAPINHAR, LAPSUS, LAPDU)
                 const ctx = document.getElementById('reportsChart');
                 if (ctx) {
                     new Chart(ctx, {
@@ -234,25 +278,33 @@
                                     tension: 0.4
                                 },
                                 {
+                                    label: 'Lapsus',
+                                    data: @json($chartLapsus),
+                                    borderColor: '#6366f1',
+                                    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                                    fill: true,
+                                    tension: 0.4
+                                },
+                                {
                                     label: 'Lapdu',
                                     data: @json($chartLapdu),
                                     borderColor: '#3b82f6',
                                     borderDash: [5, 5],
-                                    tension: 0.4
-                                },
-                                {
-                                    label: 'DPO / Tindak Pidana',
-                                    data: @json($chartDpo),
-                                    borderColor: '#ef4444',
-                                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                                    fill: true,
                                     tension: 0.4
                                 }
                             ]
                         },
                         options: {
                             responsive: true,
-                            maintainAspectRatio: false
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 1
+                                    }
+                                }
+                            }
                         }
                     });
                 }
@@ -260,12 +312,9 @@
                 // INIT GIS & HEATMAP
                 if (document.getElementById('prediktifMap')) {
                     var container = L.DomUtil.get('prediktifMap');
-                    if (container != null) {
-                        container._leaflet_id = null;
-                    }
+                    if (container != null) container._leaflet_id = null;
 
                     var map = L.map('prediktifMap').setView([-3.316694, 114.590111], 12);
-
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         attribution: '&copy; OpenStreetMap Kejaksaan'
                     }).addTo(map);
@@ -277,10 +326,9 @@
                         if (item.latitude && item.longitude) {
                             var lat = parseFloat(item.latitude);
                             var lng = parseFloat(item.longitude);
-
                             var intensity = parseFloat(item.skor_spk) / 100;
-                            heatPoints.push([lat, lng, intensity]);
 
+                            heatPoints.push([lat, lng, intensity]);
                             var color = item.tingkat_rawan == 'tinggi' ? '#ef4444' : (item.tingkat_rawan == 'sedang' ? '#f97316' : '#10b981');
 
                             var circle = L.circleMarker([lat, lng], {
@@ -290,16 +338,15 @@
                                 radius: 8,
                                 weight: 2
                             }).addTo(map);
-
                             circle.bindPopup(`
-                            <div style="min-width: 220px; font-family: sans-serif;">
-                                <div style="font-weight: 900; font-size: 13px; text-transform: uppercase; color: #1e293b; margin-bottom: 4px;">${item.kecamatan}</div>
-                                <div style="font-size: 11px; color: #64748b; margin-bottom: 10px; line-height: 1.4;">${item.potensi_ancaman}</div>
-                                <div style="font-size: 10px; font-weight: 800; background: ${color}20; color: ${color}; padding: 6px 10px; border-radius: 6px; border: 1px solid ${color}40; display: inline-block;">
-                                    SKOR SPK: ${item.skor_spk} | ${item.tingkat_rawan.toUpperCase()}
+                                <div style="min-width: 220px; font-family: sans-serif;">
+                                    <div style="font-weight: 900; font-size: 13px; text-transform: uppercase; color: #1e293b; margin-bottom: 4px;">${item.kecamatan}</div>
+                                    <div style="font-size: 11px; color: #64748b; margin-bottom: 10px; line-height: 1.4;">${item.potensi_ancaman}</div>
+                                    <div style="font-size: 10px; font-weight: 800; background: ${color}20; color: ${color}; padding: 6px 10px; border-radius: 6px; border: 1px solid ${color}40; display: inline-block;">
+                                        SKOR SPK: ${item.skor_spk} | ${item.tingkat_rawan.toUpperCase()}
+                                    </div>
                                 </div>
-                            </div>
-                        `);
+                            `);
                         }
                     });
 
@@ -320,5 +367,5 @@
                 }
             });
         </script>
-    </div> {{-- / CONTAINER MAX-WIDTH --}}
-</div> {{-- / ROOT DIV (HANYA ADA 1 TAG INI SEBAGAI PARENT) --}}
+    </div>
+</div>

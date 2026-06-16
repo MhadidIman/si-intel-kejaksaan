@@ -18,6 +18,10 @@ class LapduIndex extends Component
     public $selectedLapduId = null;
     public $showDetailModal = false;
 
+    // Properti untuk Sprintug
+    public $nomor_sprintug = '';
+    public $tanggal_sprintug = '';
+
     protected $queryString = [
         'search' => ['except' => ''],
         'filterStatus' => ['except' => ''],
@@ -36,6 +40,12 @@ class LapduIndex extends Component
     public function bukaDetail($id)
     {
         $this->selectedLapduId = $id;
+        $lapdu = Lapdu::findOrFail($id);
+
+        // Tarik data sprintug jika sudah pernah diisi
+        $this->nomor_sprintug = $lapdu->nomor_sprintug ?? '';
+        $this->tanggal_sprintug = $lapdu->tanggal_sprintug ?? '';
+
         $this->showDetailModal = true;
     }
 
@@ -43,6 +53,20 @@ class LapduIndex extends Component
     {
         $this->showDetailModal = false;
         $this->selectedLapduId = null;
+    }
+
+    // Fungsi Baru: Menyimpan Sprintug sekaligus ubah status
+    public function simpanSprintug()
+    {
+        $lapdu = Lapdu::findOrFail($this->selectedLapduId);
+
+        $lapdu->update([
+            'nomor_sprintug' => $this->nomor_sprintug,
+            'tanggal_sprintug' => $this->tanggal_sprintug,
+            'status_laporan' => 'diproses' // Otomatis naik status
+        ]);
+
+        session()->flash('message', 'Surat Perintah Tugas (Sprintug) berhasil diterbitkan. Status laporan naik menjadi "Proses Telaah".');
     }
 
     public function perbaruiStatus($id, $statusBaru)

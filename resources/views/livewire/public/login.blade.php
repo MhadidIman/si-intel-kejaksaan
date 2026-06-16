@@ -6,9 +6,9 @@ use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
-new #[Layout('layouts.guest')] class extends Component
+new #[Layout('layouts.public')] class extends Component // Menggunakan layout public agar seragam
 {
-    // Deklarasikan variabel secara mandiri (tanpa LoginForm bawaan)
+    // Deklarasikan variabel secara mandiri
     public string $email = '';
     public string $password = '';
     public bool $remember = false;
@@ -42,54 +42,96 @@ new #[Layout('layouts.guest')] class extends Component
     }
 }; ?>
 
-<div class="bg-white p-8 sm:p-10 rounded-3xl shadow-[0_20px_50px_rgba(16,185,129,0.1)] border border-emerald-100 relative overflow-hidden">
-    <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-bl-full -z-10"></div>
-    <div class="absolute bottom-0 left-0 w-24 h-24 bg-amber-400/10 rounded-tr-full -z-10"></div>
+<div class="min-h-screen bg-white flex">
 
-    <div class="text-center mb-8">
-        <h2 class="text-2xl font-black text-slate-800 tracking-tight">Masuk Layanan Publik</h2>
-        <p class="text-xs text-slate-500 mt-2 font-medium">Gunakan email yang Anda daftarkan untuk masuk</p>
+    {{-- BAGIAN KIRI: Form Login --}}
+    <div class="w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-16 lg:px-24 py-12">
+
+        <div class="mb-10 text-center lg:text-left">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 mb-6 lg:hidden shadow-inner border border-emerald-100">
+                <i class="fas fa-shield-alt text-3xl"></i>
+            </div>
+            <h2 class="text-3xl font-black text-slate-800 tracking-tight">Masuk Layanan Publik</h2>
+            <p class="text-slate-500 text-sm mt-2 font-medium">Gunakan email dan kata sandi yang Anda daftarkan untuk masuk dan memantau status pengaduan.</p>
+        </div>
+
+        {{-- Pesan Status (Misal: setelah berhasil reset password) --}}
+        <x-auth-session-status class="mb-4" :status="session('status')" />
+
+        <form wire:submit="login" class="space-y-5">
+
+            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5" for="email">Alamat Email <span class="text-red-500">*</span></label>
+                    <input wire:model="email" id="email" type="email" placeholder="email@contoh.com" required autofocus autocomplete="username"
+                        class="w-full rounded-xl border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 text-sm bg-white shadow-sm transition">
+                    @error('email') <span class="text-[10px] font-bold text-red-500 mt-1.5 block">{{ $message }}</span> @enderror
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label class="block text-xs font-bold text-slate-700" for="password">Kata Sandi <span class="text-red-500">*</span></label>
+                        @if (Route::has('password.request'))
+                        <a class="text-[10px] font-bold text-emerald-600 hover:text-emerald-500 hover:underline" href="{{ route('password.request') }}" wire:navigate>
+                            Lupa Sandi?
+                        </a>
+                        @endif
+                    </div>
+                    <input wire:model="password" id="password" type="password" placeholder="Masukkan kata sandi Anda" required autocomplete="current-password"
+                        class="w-full rounded-xl border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 text-sm bg-white shadow-sm transition">
+                    @error('password') <span class="text-[10px] font-bold text-red-500 mt-1.5 block">{{ $message }}</span> @enderror
+                </div>
+            </div>
+
+            <div class="flex items-center px-1">
+                <label class="flex items-center cursor-pointer group">
+                    <input wire:model="remember" type="checkbox" class="w-4 h-4 text-emerald-600 bg-white border-slate-300 rounded focus:ring-emerald-500 focus:ring-2 transition cursor-pointer">
+                    <span class="ml-2 text-xs font-bold text-slate-600 group-hover:text-emerald-600 transition">Ingat Saya di Perangkat Ini</span>
+                </label>
+            </div>
+
+            <div class="pt-4">
+                <button type="submit" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm uppercase tracking-widest rounded-xl transition shadow-xl shadow-emerald-600/20 flex items-center justify-center gap-2">
+                    <span wire:loading.remove wire:target="login"><i class="fas fa-sign-in-alt text-emerald-200"></i> Masuk ke Portal</span>
+                    <span wire:loading wire:target="login"><i class="fas fa-circle-notch fa-spin text-emerald-200"></i> Memverifikasi...</span>
+                </button>
+            </div>
+
+            <p class="text-center text-xs text-slate-500 font-medium pt-4">
+                Belum punya akun? <a href="{{ route('publik.register') }}" wire:navigate class="font-bold text-emerald-600 hover:underline">Daftar sekarang</a>
+            </p>
+        </form>
     </div>
 
-    <x-auth-session-status class="mb-4" :status="session('status')" />
-
-    <form wire:submit="login" class="space-y-5">
-        <div>
-            <x-input-label for="email" value="Alamat Email" class="text-slate-700 font-bold" />
-            <x-text-input wire:model="email" id="email" class="block mt-1 w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl" type="email" name="email" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+    {{-- BAGIAN KANAN: Visual Edukasi (Hanya muncul di Layar Besar) --}}
+    <div class="hidden lg:flex lg:w-1/2 bg-slate-900 relative overflow-hidden items-center justify-center p-12">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+        <div class="absolute -right-20 -bottom-20 opacity-5 pointer-events-none">
+            <i class="fas fa-fingerprint text-[30rem] text-emerald-400 transform -rotate-12"></i>
         </div>
 
-        <div>
-            <div class="flex justify-between items-center">
-                <x-input-label for="password" value="Kata Sandi" class="text-slate-700 font-bold" />
-                @if (Route::has('password.request'))
-                <a class="text-xs font-bold text-emerald-600 hover:text-emerald-500" href="{{ route('password.request') }}" wire:navigate>
-                    Lupa Sandi?
-                </a>
-                @endif
-            </div>
-            <x-text-input wire:model="password" id="password" class="block mt-1 w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl" type="password" name="password" required autocomplete="current-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+        <div class="relative z-10 max-w-md text-center">
+            <img src="{{ asset('img/logo-kejaksaan.png') }}" class="h-28 mx-auto mb-8 drop-shadow-2xl" alt="Logo Kejaksaan">
+            <h2 class="text-3xl font-black text-white mb-4">Akses Aman & Terenkripsi</h2>
+            <p class="text-emerald-400 font-bold uppercase tracking-widest text-xs mb-8 border-b border-slate-700 pb-6">Sistem Informasi Intelijen Kejaksaan</p>
 
-        <div class="flex items-center justify-between mt-2">
-            <label for="remember" class="inline-flex items-center cursor-pointer group">
-                <input wire:model="remember" id="remember" type="checkbox"
-                    class="rounded-lg border-slate-300 text-emerald-600 shadow-sm focus:ring-emerald-500 transition cursor-pointer group-hover:border-emerald-400">
-                <span class="ml-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider group-hover:text-emerald-600 transition">Ingat Saya</span>
-            </label>
-        </div>
-
-        <div class="flex flex-col gap-4 mt-6">
-            <button type="submit" class="w-full flex justify-center items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3.5 px-4 rounded-xl transition-all shadow-lg shadow-emerald-600/30 transform hover:-translate-y-0.5">
-                <span wire:loading.remove wire:target="login">Masuk ke Portal Publik</span>
-                <span wire:loading wire:target="login"><i class="fas fa-circle-notch fa-spin"></i> Memeriksa...</span>
-            </button>
-            <div class="text-center text-sm text-slate-500 font-medium">
-                Belum punya akun?
-                <a href="{{ route('register') }}" wire:navigate class="font-bold text-emerald-600 hover:text-emerald-500 border-b border-emerald-600">Daftar sekarang</a>
+            <div class="space-y-6 text-left">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/30"><i class="fas fa-user-secret"></i></div>
+                    <div>
+                        <h4 class="text-white font-bold text-sm">Privasi & Identitas Dilindungi</h4>
+                        <p class="text-slate-400 text-xs mt-1 leading-relaxed">Sistem menjamin kerahasiaan identitas pelapor dari pihak manapun selama proses operasional intelijen berlangsung sesuai undang-undang.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0 border border-blue-500/30"><i class="fas fa-history"></i></div>
+                    <div>
+                        <h4 class="text-white font-bold text-sm">Lacak Riwayat Real-time</h4>
+                        <p class="text-slate-400 text-xs mt-1 leading-relaxed">Masuk ke dalam akun Anda untuk melacak status penanganan dan tindak lanjut laporan yang telah Anda kirimkan ke tim Intelijen.</p>
+                    </div>
+                </div>
             </div>
         </div>
-    </form>
+    </div>
+
 </div>

@@ -259,4 +259,113 @@
         </form>
         @endif
     </div>
+
+    {{-- ========================================== --}}
+    {{-- PUSAT BANTUAN & FAQ (HELPDESK) --}}
+    {{-- ========================================== --}}
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 mb-12 animate-fade-in-up relative z-20">
+        <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden">
+
+            {{-- Header Helpdesk --}}
+            <div class="bg-slate-900 px-8 py-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b-4 border-blue-500 relative overflow-hidden">
+                <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-500/20 blur-3xl rounded-full"></div>
+                <div class="relative z-10">
+                    <h2 class="text-2xl md:text-3xl font-black text-white tracking-wide flex items-center gap-3">
+                        <i class="fas fa-headset text-blue-400"></i> Pusat Bantuan & Informasi
+                    </h2>
+                    <p class="text-slate-400 text-sm md:text-base mt-2">Layanan bantuan, FAQ, dan kontak resmi Kejaksaan untuk pelaporan langsung.</p>
+                </div>
+            </div>
+
+            <div class="p-8 md:p-10 grid grid-cols-1 lg:grid-cols-2 gap-12 bg-slate-50/50">
+
+                {{-- KIRI: FAQ (Frequently Asked Questions) --}}
+                <div class="space-y-6">
+                    <h3 class="text-lg font-black text-slate-800 uppercase tracking-widest border-b-2 border-emerald-500 pb-2 inline-block">
+                        <i class="fas fa-question-circle text-emerald-500 mr-2"></i> F.A.Q
+                    </h3>
+
+                    <div class="space-y-4">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-emerald-300 hover:shadow-md transition duration-300">
+                            <h4 class="font-bold text-slate-800 text-sm flex items-start gap-2">
+                                <i class="fas fa-user-shield text-emerald-500 mt-0.5"></i>
+                                Apakah identitas saya aman?
+                            </h4>
+                            <p class="text-sm text-slate-500 mt-2 leading-relaxed ml-6">
+                                Tentu. Kami menjamin kerahasiaan identitas pelapor (Whistleblower) sepenuhnya. Data Anda dienkripsi dan hanya dapat diakses oleh petugas intelijen berwenang.
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-emerald-300 hover:shadow-md transition duration-300">
+                            <h4 class="font-bold text-slate-800 text-sm flex items-start gap-2">
+                                <i class="fas fa-clock text-emerald-500 mt-0.5"></i>
+                                Berapa lama laporan diproses?
+                            </h4>
+                            <p class="text-sm text-slate-500 mt-2 leading-relaxed ml-6">
+                                Laporan yang masuk akan ditelaah maksimal 2x24 jam hari kerja. Anda dapat memantau perkembangannya melalui menu "Cek Laporan" menggunakan Kode Tiket Anda.
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-emerald-300 hover:shadow-md transition duration-300">
+                            <h4 class="font-bold text-slate-800 text-sm flex items-start gap-2">
+                                <i class="fas fa-file-alt text-emerald-500 mt-0.5"></i>
+                                Bukti apa yang harus dilampirkan?
+                            </h4>
+                            <p class="text-sm text-slate-500 mt-2 leading-relaxed ml-6">
+                                Anda dapat melampirkan foto, dokumen (PDF), rekaman, atau bukti lain yang relevan dengan pelanggaran. Semakin lengkap bukti, semakin cepat laporan ditindaklanjuti.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- KANAN: KONTAK ALTERNATIF --}}
+                <div class="space-y-6">
+                    <h3 class="text-lg font-black text-slate-800 uppercase tracking-widest border-b-2 border-blue-500 pb-2 inline-block">
+                        <i class="fas fa-phone-alt text-blue-500 mr-2"></i> Kontak Alternatif
+                    </h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Jika Anda mengalami kesulitan menggunakan formulir online, Anda juga dapat menyampaikan laporan melalui jalur komunikasi resmi kami di bawah ini:
+                    </p>
+
+                    <div class="space-y-4 mt-2">
+                        <div class="flex items-start gap-4 p-5 bg-emerald-50 rounded-2xl border border-emerald-100 hover:bg-emerald-100 transition duration-300">
+                            <div class="w-12 h-12 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/30">
+                                <i class="fab fa-whatsapp text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm uppercase tracking-wider">Hotline / WhatsApp</h4>
+                                <p class="text-emerald-700 font-black text-lg tracking-wide mt-1">0812-XXXX-XXXX</p>
+                                <p class="text-xs text-slate-500 font-medium mt-1">Layanan 24 Jam (Hanya Chat)</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 p-5 bg-blue-50 rounded-2xl border border-blue-100 hover:bg-blue-100 transition duration-300">
+                            <div class="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-blue-500/30">
+                                <i class="fas fa-envelope text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm uppercase tracking-wider">Email Dinas Resmi</h4>
+                                <p class="text-blue-700 font-bold mt-1">pengaduan@kejaksaan.go.id</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 p-5 bg-orange-50 rounded-2xl border border-orange-100 hover:bg-orange-100 transition duration-300">
+                            <div class="w-12 h-12 rounded-full bg-orange-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-orange-500/30">
+                                <i class="fas fa-map-marker-alt text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm uppercase tracking-wider">Alamat Kantor</h4>
+                                <p class="text-sm text-slate-700 mt-2 leading-relaxed font-medium">
+                                    Pelayanan Terpadu Satu Pintu (PTSP) Kejaksaan Negeri<br>
+                                    Jl. Brigjen H. Hasan Basri No.3, Banjarmasin, Kalimantan Selatan
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 </div>

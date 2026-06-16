@@ -14,18 +14,24 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            // Tambahkan NIP dan Role di sini agar permanen
-            $table->string('nip')->unique()->nullable();
-            $table->string('role')->default('staff'); // Default role staff
+
+            // --- IDENTITAS ---
+            $table->string('nik', 16)->unique()->nullable(); // Untuk Masyarakat
+            $table->string('nip')->unique()->nullable();     // Untuk Petugas Internal
+
+            // --- HAK AKSES ---
+            $table->string('role')->default('masyarakat'); // Default paling aman
+
+            // --- KREDENSIAL LOGIN ---
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
 
-            // Atribut Pegawai Tambahan (yang kita bahas sebelumnya)
+            // --- ATRIBUT TAMBAHAN ---
+            $table->string('no_hp')->nullable();
             $table->string('satuan_kerja')->default('Kejari Banjarmasin');
             $table->string('pangkat')->nullable();
             $table->string('jabatan')->nullable();
-            $table->string('no_hp')->nullable();
             $table->string('foto_profile')->nullable();
 
             $table->rememberToken();
