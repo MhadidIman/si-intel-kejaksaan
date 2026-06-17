@@ -280,8 +280,14 @@
                             </div>
                         </div>
                         <div class="flex justify-end pt-2 relative z-10">
-                            <button wire:click="simpanSprintug" class="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition shadow-lg shadow-cyan-500/30 flex items-center gap-2">
-                                <i class="fas fa-paper-plane"></i> Simpan Sprintug & Proses Laporan
+                            {{-- ANIMASI LOADING SIMPAN SPRINTUG --}}
+                            <button wire:click="simpanSprintug" wire:loading.attr="disabled" class="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition shadow-lg shadow-cyan-500/30 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed min-w-[280px]">
+                                <span wire:loading.remove wire:target="simpanSprintug">
+                                    <i class="fas fa-paper-plane mr-1"></i> Simpan Sprintug & Proses Laporan
+                                </span>
+                                <span wire:loading wire:target="simpanSprintug">
+                                    <i class="fas fa-circle-notch fa-spin mr-1"></i> Mengirim Notifikasi Email...
+                                </span>
                             </button>
                         </div>
                     </div>
@@ -299,17 +305,25 @@
                     </div>
 
                     <div class="flex flex-wrap gap-2 justify-end">
-                        <button wire:click="perbaruiStatus({{ $selectedLapdu->id }}, 'menunggu')" class="px-3.5 py-2.5 text-[10px] font-black uppercase tracking-wider rounded-xl border transition {{ $selectedLapdu->status_laporan === 'menunggu' ? 'bg-slate-200 border-slate-400 text-slate-800 font-semibold' : 'bg-white border-slate-200 hover:bg-slate-100 text-slate-600' }}">
-                            Menunggu
+                        {{-- ANIMASI LOADING UNTUK PERUBAHAN STATUS --}}
+                        <button wire:click="perbaruiStatus({{ $selectedLapdu->id }}, 'menunggu')" wire:loading.attr="disabled" class="px-3.5 py-2.5 text-[10px] font-black uppercase tracking-wider rounded-xl border transition disabled:opacity-50 disabled:cursor-not-allowed min-w-[100px] {{ $selectedLapdu->status_laporan === 'menunggu' ? 'bg-slate-200 border-slate-400 text-slate-800 font-semibold' : 'bg-white border-slate-200 hover:bg-slate-100 text-slate-600' }}">
+                            <span wire:loading.remove wire:target="perbaruiStatus({{ $selectedLapdu->id }}, 'menunggu')">Menunggu</span>
+                            <span wire:loading wire:target="perbaruiStatus({{ $selectedLapdu->id }}, 'menunggu')"><i class="fas fa-spinner fa-spin"></i> Loading</span>
                         </button>
-                        <button wire:click="perbaruiStatus({{ $selectedLapdu->id }}, 'tindak_lanjut')" class="px-3.5 py-2.5 text-[10px] font-black uppercase tracking-wider rounded-xl border transition {{ $selectedLapdu->status_laporan === 'tindak_lanjut' ? 'bg-amber-100 border-amber-400 text-amber-800 font-semibold' : 'bg-white border-slate-200 hover:bg-slate-100 text-slate-600' }}">
-                            Tindak Lanjut Ops
+
+                        <button wire:click="perbaruiStatus({{ $selectedLapdu->id }}, 'tindak_lanjut')" wire:loading.attr="disabled" class="px-3.5 py-2.5 text-[10px] font-black uppercase tracking-wider rounded-xl border transition disabled:opacity-50 disabled:cursor-not-allowed min-w-[130px] {{ $selectedLapdu->status_laporan === 'tindak_lanjut' ? 'bg-amber-100 border-amber-400 text-amber-800 font-semibold' : 'bg-white border-slate-200 hover:bg-slate-100 text-slate-600' }}">
+                            <span wire:loading.remove wire:target="perbaruiStatus({{ $selectedLapdu->id }}, 'tindak_lanjut')">Tindak Lanjut Ops</span>
+                            <span wire:loading wire:target="perbaruiStatus({{ $selectedLapdu->id }}, 'tindak_lanjut')"><i class="fas fa-spinner fa-spin"></i> Memproses</span>
                         </button>
-                        <button wire:click="perbaruiStatus({{ $selectedLapdu->id }}, 'selesai')" class="px-3.5 py-2.5 text-[10px] font-black uppercase tracking-wider rounded-xl border transition {{ $selectedLapdu->status_laporan === 'selesai' ? 'bg-emerald-100 border-emerald-400 text-emerald-800 font-semibold' : 'bg-white border-slate-200 hover:bg-slate-100 text-slate-600' }}">
-                            Selesai / Arsip
+
+                        <button wire:click="perbaruiStatus({{ $selectedLapdu->id }}, 'selesai')" wire:loading.attr="disabled" class="px-3.5 py-2.5 text-[10px] font-black uppercase tracking-wider rounded-xl border transition disabled:opacity-50 disabled:cursor-not-allowed min-w-[110px] {{ $selectedLapdu->status_laporan === 'selesai' ? 'bg-emerald-100 border-emerald-400 text-emerald-800 font-semibold' : 'bg-white border-slate-200 hover:bg-slate-100 text-slate-600' }}">
+                            <span wire:loading.remove wire:target="perbaruiStatus({{ $selectedLapdu->id }}, 'selesai')">Selesai / Arsip</span>
+                            <span wire:loading wire:target="perbaruiStatus({{ $selectedLapdu->id }}, 'selesai')"><i class="fas fa-spinner fa-spin"></i> Memproses</span>
                         </button>
-                        <button wire:click="perbaruiStatus({{ $selectedLapdu->id }}, 'ditolak')" class="px-3.5 py-2.5 text-[10px] font-black uppercase tracking-wider rounded-xl border transition {{ $selectedLapdu->status_laporan === 'ditolak' ? 'bg-red-100 border-red-400 text-red-800 font-semibold' : 'bg-white border-slate-200 hover:bg-slate-100 text-slate-600' }}">
-                            Ditolak
+
+                        <button wire:click="perbaruiStatus({{ $selectedLapdu->id }}, 'ditolak')" wire:loading.attr="disabled" class="px-3.5 py-2.5 text-[10px] font-black uppercase tracking-wider rounded-xl border transition disabled:opacity-50 disabled:cursor-not-allowed min-w-[80px] {{ $selectedLapdu->status_laporan === 'ditolak' ? 'bg-red-100 border-red-400 text-red-800 font-semibold' : 'bg-white border-slate-200 hover:bg-slate-100 text-slate-600' }}">
+                            <span wire:loading.remove wire:target="perbaruiStatus({{ $selectedLapdu->id }}, 'ditolak')">Ditolak</span>
+                            <span wire:loading wire:target="perbaruiStatus({{ $selectedLapdu->id }}, 'ditolak')"><i class="fas fa-spinner fa-spin"></i> Loading</span>
                         </button>
                     </div>
                 </div>

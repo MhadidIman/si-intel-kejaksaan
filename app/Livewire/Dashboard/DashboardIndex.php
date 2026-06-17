@@ -15,6 +15,7 @@ use App\Models\PamSdo;
 use App\Models\JmsActivity;
 use App\Models\Lapsus;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB; // <-- Wajib ditambahkan untuk Query Group By
 
 class DashboardIndex extends Component
 {
@@ -29,11 +30,14 @@ class DashboardIndex extends Component
     // Variabel untuk pengecekan Notifikasi Real-time
     public $last_lapdu_count = 0;
 
-    // Variabel Grafik (Statistik Tren)
+    // Variabel Grafik (Statistik Tren Line Chart)
     public $chartLabels = [];
     public $chartLapinhar = [];
     public $chartLapdu = [];
-    public $chartLapsus = []; // <-- VARIABEL DITAMBAHKAN DI SINI
+    public $chartLapsus = [];
+
+    // <-- VARIABEL BARU UNTUK GRAFIK ANALISIS KRIMINAL (Saran Panelis) -->
+    public $kategoriList = [];
 
     // Array untuk menampung Notifikasi Sistem Cerdas
     public $system_alerts = [];
@@ -42,6 +46,7 @@ class DashboardIndex extends Component
     {
         $this->loadSummaryData();
         $this->generateChartData();
+        $this->generateKategoriKriminal(); // <-- Panggil fungsi baru di sini
         $this->generateSystemAlerts();
 
         $this->last_lapdu_count = Lapdu::count();
@@ -72,6 +77,7 @@ class DashboardIndex extends Component
 
             $this->last_lapdu_count = $current_count;
             $this->loadSummaryData();
+            $this->generateKategoriKriminal(); // <-- Perbarui grafik jika ada lapdu masuk
             $this->generateSystemAlerts();
         }
     }
@@ -89,10 +95,28 @@ class DashboardIndex extends Component
             $this->chartLapdu[] = Lapdu::whereMonth('created_at', $date->month)
                 ->whereYear('created_at', $date->year)->count();
 
-            // <-- QUERY UNTUK LAPSUS DITAMBAHKAN DI SINI (DPO DIHAPUS)
             $this->chartLapsus[] = Lapsus::whereMonth('created_at', $date->month)
                 ->whereYear('created_at', $date->year)->count();
         }
+    }
+
+    // <-- FUNGSI BARU UNTUK FITUR ANALISIS KRIMINAL (Saran Panelis) -->
+    private function generateKategoriKriminal()
+    {
+        $chartData = Lapdu::select('kategori_laporan', DB::raw('count(*) as total'))
+            ->groupBy('kategori_laporan')
+            ->get()
+            ->pluck('total', 'kategori_laporan')
+            ->toArray();
+
+        $this->kategoriList = [
+            'tipikor' => $chartData['tipikor'] ?? 0,
+            'pungli_gratifikasi' => $chartData['pungli_gratifikasi'] ?? 0,
+            'mafia_tanah' => $chartData['mafia_tanah'] ?? 0,
+            'aliran_sesat' => $chartData['aliran_sesat'] ?? 0,
+            'ancaman_ideologi' => $chartData['ancaman_ideologi'] ?? 0,
+            'pelanggaran_hukum_lain' => $chartData['pelanggaran_hukum_lain'] ?? 0,
+        ];
     }
 
     private function generateSystemAlerts()

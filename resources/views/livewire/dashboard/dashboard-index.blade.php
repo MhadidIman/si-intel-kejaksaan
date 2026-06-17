@@ -84,7 +84,6 @@
 
         {{-- METRIK UTAMA --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-
             {{-- DPO --}}
             <div class="bg-red-600 rounded-3xl p-6 shadow-xl shadow-red-600/20 flex flex-col justify-between h-44 relative overflow-hidden group hover:-translate-y-1.5 transition-all duration-300">
                 <div class="absolute -right-6 -top-6 opacity-20 text-white text-8xl transform rotate-12 group-hover:scale-110 transition duration-500"><i class="fas fa-user-secret"></i></div>
@@ -144,7 +143,6 @@
                     <div class="p-3 bg-white/20 rounded-2xl text-white backdrop-blur-md border border-white/20 shadow-inner"><i class="fas fa-folder-open text-lg"></i></div>
                 </div>
             </div>
-
         </div>
 
         {{-- DASHBOARD INTELIJEN PREDIKTIF (PETA & HEATMAP) --}}
@@ -167,12 +165,14 @@
             </div>
         </div>
 
-        {{-- BAGIAN BAWAH --}}
+        {{-- BAGIAN BAWAH: GRAFIK & LAPDU RECENT --}}
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
 
-            {{-- KIRI: GRAFIK STATISTIK TREN --}}
+            {{-- KIRI: GRAFIK STATISTIK (DIBAGI 2 BARIS) --}}
             <div class="xl:col-span-2 space-y-8">
-                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-[600px]">
+
+                {{-- 1. Grafik Tren Data (Line Chart) --}}
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-[380px]">
                     <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 shrink-0">
                         <h3 class="font-black text-slate-800 text-sm uppercase tracking-widest flex items-center gap-3">
                             <i class="fas fa-chart-line text-emerald-500"></i> Statistik Tren Volume Data Laporan
@@ -182,11 +182,24 @@
                         <canvas id="reportsChart"></canvas>
                     </div>
                 </div>
+
+                {{-- 2. GRAFIK BARU: ANALISIS KATEGORI KRIMINAL (Bar Chart) --}}
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-[380px]">
+                    <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 shrink-0">
+                        <h3 class="font-black text-slate-800 text-sm uppercase tracking-widest flex items-center gap-3">
+                            <i class="fas fa-chart-bar text-cyan-500"></i> Statistik Kategori Tindak Pidana (Analisis Kriminal)
+                        </h3>
+                    </div>
+                    <div class="p-6 relative flex-1">
+                        <canvas id="kriminalChart"></canvas>
+                    </div>
+                </div>
+
             </div>
 
             {{-- KANAN: SIGNAL LAPDU --}}
             <div class="space-y-8">
-                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-[600px]">
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-[790px]">
                     <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between shrink-0">
                         <h3 class="font-black text-slate-800 text-sm uppercase tracking-widest flex items-center gap-2">
                             <i class="fas fa-satellite-dish text-emerald-500"></i> Signal Lapdu
@@ -204,6 +217,7 @@
                                 <div>
                                     <h4 class="text-xs font-black text-slate-800 uppercase truncate">{{ $lapdu->nama_terlapor ?? 'TIDAK DIKETAHUI' }}</h4>
                                     <p class="text-[11px] text-slate-500 mt-1 line-clamp-2">"{{ $lapdu->uraian_pengaduan }}"</p>
+                                    <span class="text-[9px] font-bold text-cyan-600 mt-2 block uppercase tracking-wider">{{ str_replace('_', ' ', $lapdu->kategori_laporan) }}</span>
                                 </div>
                             </div>
                         </div>
@@ -262,10 +276,10 @@
 
         <script>
             document.addEventListener('livewire:navigated', function() {
-                // INIT CHART (LAPINHAR, LAPSUS, LAPDU)
-                const ctx = document.getElementById('reportsChart');
-                if (ctx) {
-                    new Chart(ctx, {
+                // 1. INIT CHART TREN VOLUME Laporan
+                const ctxReports = document.getElementById('reportsChart');
+                if (ctxReports) {
+                    new Chart(ctxReports, {
                         type: 'line',
                         data: {
                             labels: @json($chartLabels),
@@ -309,7 +323,63 @@
                     });
                 }
 
-                // INIT GIS & HEATMAP
+                // 2. INIT CHART ANALISIS KRIMINAL (BARU)
+                const ctxKriminal = document.getElementById('kriminalChart');
+                if (ctxKriminal) {
+                    const dataKategori = @json($kategoriList);
+                    new Chart(ctxKriminal, {
+                        type: 'bar',
+                        data: {
+                            labels: [
+                                'Korupsi (Tipikor)',
+                                'Pungli & Gratifikasi',
+                                'Mafia Tanah',
+                                'Aliran Sesat / Pakem',
+                                'Ancaman Ideologi',
+                                'Pelanggaran Lain'
+                            ],
+                            datasets: [{
+                                label: 'Jumlah Laporan',
+                                data: [
+                                    dataKategori.tipikor,
+                                    dataKategori.pungli_gratifikasi,
+                                    dataKategori.mafia_tanah,
+                                    dataKategori.aliran_sesat,
+                                    dataKategori.ancaman_ideologi,
+                                    dataKategori.pelanggaran_hukum_lain
+                                ],
+                                backgroundColor: [
+                                    'rgba(239, 68, 68, 0.85)', // Merah
+                                    'rgba(245, 158, 11, 0.85)', // Amber
+                                    'rgba(16, 185, 129, 0.85)', // Emerald
+                                    'rgba(59, 130, 246, 0.85)', // Blue
+                                    'rgba(139, 92, 246, 0.85)', // Purple
+                                    'rgba(100, 116, 139, 0.85)' // Slate
+                                ],
+                                borderRadius: 8,
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 1
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // 3. INIT GIS & HEATMAP
                 if (document.getElementById('prediktifMap')) {
                     var container = L.DomUtil.get('prediktifMap');
                     if (container != null) container._leaflet_id = null;
