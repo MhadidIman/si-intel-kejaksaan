@@ -29,9 +29,9 @@ return new class extends Migration
 
             // --- ATRIBUT TAMBAHAN ---
             $table->string('no_hp')->nullable();
-            $table->string('satuan_kerja')->default('Kejari Banjarmasin');
+            $table->string('satuan_kerja')->nullable(); // <-- Ditambahkan kembali
             $table->string('pangkat')->nullable();
-            $table->string('jabatan')->nullable();
+            $table->string('jabatan')->nullable();      // <-- Hanya ada 1 sekarang
             $table->string('foto_profile')->nullable();
 
             $table->rememberToken();

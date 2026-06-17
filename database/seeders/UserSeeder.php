@@ -23,19 +23,10 @@ class UserSeeder extends Seeder
             'jabatan' => 'Kasi Intelijen',
             'pangkat' => 'Penata Tk.I (III/d)',
             'satuan_kerja' => 'Kejari Banjarmasin',
+            'email_verified_at' => now(),
+
         ]);
 
-        // 2. Akun STAFF 1 (Penginput / IT)
-        User::create([
-            'name' => 'Muhammad Hadid Iman Firdaus',
-            'nip' => '2210010068',
-            'email' => 'hadid@kejaribanjarmasin.go.id',
-            'password' => Hash::make('password'),
-            'role' => 'staff',
-            'jabatan' => 'Pengembang Sistem (IT)',
-            'pangkat' => 'Non-ASN',
-            'satuan_kerja' => 'Kejari Banjarmasin',
-        ]);
 
         // 3. Akun STAFF 2 
         User::create([
@@ -47,6 +38,7 @@ class UserSeeder extends Seeder
             'jabatan' => 'Jaksa Fungsional',
             'pangkat' => 'Ajun Jaksa Madya (III/a)',
             'satuan_kerja' => 'Kejari Banjarmasin',
+            'email_verified_at' => now(),
         ]);
 
         // 4. Akun STAFF 3 (Untuk Demo Leaderboard Peringkat)
@@ -59,6 +51,7 @@ class UserSeeder extends Seeder
             'jabatan' => 'Staff Intelijen',
             'pangkat' => 'Pengatur (II/c)',
             'satuan_kerja' => 'Kejari Banjarmasin',
+            'email_verified_at' => now(),
         ]);
 
         // 5. Akun STAFF 4
@@ -71,6 +64,7 @@ class UserSeeder extends Seeder
             'jabatan' => 'Staff TU Intelijen',
             'pangkat' => 'Penata Muda (III/a)',
             'satuan_kerja' => 'Kejari Banjarmasin',
+            'email_verified_at' => now(),
         ]);
     }
 }

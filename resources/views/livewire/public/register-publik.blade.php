@@ -8,12 +8,13 @@ use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
-new #[Layout('layouts.public')] class extends Component
+new #[Layout('layouts.guest')] class extends Component
 {
     public string $nik = '';
     public string $name = '';
     public string $email = '';
     public string $no_hp = '';
+    public string $pekerjaan = ''; // <--- Tambahkan properti ini
     public string $password = '';
     public string $password_confirmation = '';
     public bool $terms = false;
@@ -25,14 +26,9 @@ new #[Layout('layouts.public')] class extends Component
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
             'no_hp' => ['required', 'string', 'max:20'],
+            'pekerjaan' => ['required', 'string', 'max:255'], // <--- Tambahkan aturan validasi
             'password' => ['required', 'string', 'confirmed', 'min:8'],
             'terms' => ['accepted']
-        ], [
-            'nik.digits' => 'NIK wajib terdiri dari 16 digit angka.',
-            'nik.unique' => 'NIK ini sudah terdaftar dalam sistem.',
-            'terms.accepted' => 'Anda wajib menyetujui pernyataan tanggung jawab hukum.',
-            'password.min' => 'Kata sandi minimal 8 karakter.',
-            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.'
         ]);
 
         $user = User::create([
@@ -40,8 +36,10 @@ new #[Layout('layouts.public')] class extends Component
             'name' => $validated['name'],
             'email' => $validated['email'],
             'no_hp' => $validated['no_hp'],
+            'jabatan' => $validated['pekerjaan'], // <--- Simpan nilai pekerjaan ke kolom jabatan database
+            'satuan_kerja' => null, // <--- Dipastikan NULL agar tidak terisi otomatis bawaan internal
             'password' => Hash::make($validated['password']),
-            'role' => 'masyarakat', // Kunci role otomatis
+            'role' => 'masyarakat',
         ]);
 
         // Mengirimkan Link Verifikasi Ke Email (Wajib implementasi MustVerifyEmail di Model User)
@@ -77,6 +75,13 @@ new #[Layout('layouts.public')] class extends Component
                     <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
                     <input wire:model="name" type="text" placeholder="Sesuai KTP" class="w-full rounded-xl border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 text-sm bg-white">
                     @error('name') <span class="text-[10px] font-bold text-red-500 mt-1 block">{{ $message }}</span> @enderror
+                </div>
+
+                {{-- INPUT BARU UNTUK PEKERJAAN --}}
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Pekerjaan / Profesi <span class="text-red-500">*</span></label>
+                    <input wire:model="pekerjaan" type="text" placeholder="Contoh: Wiraswasta, Karyawan Swasta" class="w-full rounded-xl border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 text-sm bg-white">
+                    @error('pekerjaan') <span class="text-[10px] font-bold text-red-500 mt-1 block">{{ $message }}</span> @enderror
                 </div>
             </div>
 

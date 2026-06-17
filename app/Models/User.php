@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable;
 
@@ -17,15 +18,16 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'nip',           // Nomor Induk Pegawai
-        'role',          // admin / staff
-        'satuan_kerja',  // Kejaksaan Negeri Banjarmasin
-        'pangkat',       // Jaksa Pratama, dll
-        'jabatan',       // Kasubsi, Staff, dll
-        'no_hp',         // Nomor WhatsApp
-        'foto_profile',  // <--- TAMBAHKAN INI AGAR FOTO BISA DISIMPAN
+        'nik',
+        'nip',
+        'role',
+        'satuan_kerja',
+        'pangkat',
+        'jabatan',
+        'no_hp',
+        'foto_profile',
+        'email_verified_at', // <--- TAMBAHKAN BARIS INI
     ];
-
     /**
      * Atribut yang disembunyikan saat serialisasi.
      */

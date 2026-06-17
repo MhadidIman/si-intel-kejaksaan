@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
-new #[Layout('layouts.public')] class extends Component // Menggunakan layout public agar seragam
+new #[Layout('layouts.guest')] class extends Component // Menggunakan layout public agar seragam
 {
     // Deklarasikan variabel secara mandiri
     public string $email = '';
