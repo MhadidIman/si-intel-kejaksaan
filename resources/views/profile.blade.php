@@ -62,17 +62,75 @@
     <div class="py-12 font-sans">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
 
-            {{-- Kartu Identitas Resmi Kejaksaan --}}
+            {{-- VOLT INLINE COMPONENT: Kartu Identitas & Uploader Foto --}}
+            @volt('profile-id-card')
+            <?php
+            // Menggunakan fully qualified class name untuk mencegah error "name is already in use"
+            new class extends \Livewire\Volt\Component {
+                use \Livewire\WithFileUploads;
+
+                public $photo;
+
+                public function updatedPhoto()
+                {
+                    $this->validate(['photo' => 'image|max:2048']); // Maks 2MB
+
+                    $user = auth()->user();
+
+                    // Hapus foto lama dari storage jika ada
+                    if ($user->foto_profil) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($user->foto_profil);
+                    }
+
+                    // Simpan foto baru dan update database
+                    $path = $this->photo->store('profil', 'public');
+                    $user->foto_profil = $path;
+                    $user->save();
+
+                    $this->dispatch('profile-updated'); // Refresh UI
+                }
+            };
+            ?>
             <div class="bg-slate-950 text-white rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden border border-slate-800">
+
+                {{-- Alert Sukses --}}
+                <div x-data="{ show: false }" x-on:profile-updated.window="show = true; setTimeout(() => show = false, 3000)"
+                    x-show="show" class="absolute top-4 right-4 bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg z-20" style="display: none;">
+                    <i class="fas fa-check-circle mr-1"></i> Foto diperbarui!
+                </div>
+
                 <div class="absolute -right-16 -bottom-16 opacity-10 text-emerald-400 pointer-events-none">
                     <img src="{{ asset('img/logo-kejaksaan.png') }}" class="w-72 h-auto">
                 </div>
 
                 <div class="flex flex-col md:flex-row items-center gap-6 relative z-10">
-                    <div class="w-24 h-24 rounded-2xl bg-emerald-900/50 border border-emerald-500/30 text-emerald-400 flex items-center justify-center text-4xl shadow-2xl shrink-0 backdrop-blur-sm">
-                        <i class="fas fa-id-badge"></i>
+
+                    {{-- BLOK FOTO PROFIL INTERAKTIF --}}
+                    <div class="relative w-28 h-28 rounded-2xl border-2 border-emerald-500/40 overflow-hidden shadow-[0_0_20px_rgba(16,185,129,0.2)] shrink-0 bg-slate-900 group">
+
+                        {{-- Tampilkan Foto atau Ikon Default --}}
+                        @if(auth()->user()->foto_profil)
+                        <img src="{{ asset('storage/' . auth()->user()->foto_profil) }}" class="w-full h-full object-cover">
+                        @else
+                        <div class="w-full h-full flex items-center justify-center text-emerald-500/50">
+                            <i class="fas fa-user-tie text-5xl"></i>
+                        </div>
+                        @endif
+
+                        {{-- Overlay Tombol Upload (Muncul saat Hover) --}}
+                        <label class="absolute inset-0 bg-slate-950/70 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer backdrop-blur-sm">
+                            <i class="fas fa-camera text-emerald-400 text-xl mb-1 mt-2"></i>
+                            <span class="text-[9px] font-black uppercase tracking-wider text-white">Ubah Foto</span>
+                            <input type="file" wire:model="photo" class="hidden" accept="image/*">
+                        </label>
+
+                        {{-- Animasi Loading saat proses upload --}}
+                        <div wire:loading wire:target="photo" class="absolute inset-0 bg-slate-950/80 flex items-center justify-center backdrop-blur-sm z-10">
+                            <i class="fas fa-circle-notch fa-spin text-emerald-400 text-2xl"></i>
+                        </div>
                     </div>
 
+                    {{-- Informasi Identitas --}}
                     <div class="text-center md:text-left grow">
                         <div class="flex flex-col md:flex-row md:items-center gap-3 mb-3">
                             <h3 class="text-2xl font-black tracking-tight text-white">{{ auth()->user()->name }}</h3>
@@ -92,6 +150,7 @@
                     </div>
                 </div>
             </div>
+            @endvolt
 
             {{-- Formulir Konfigurasi Internal --}}
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">

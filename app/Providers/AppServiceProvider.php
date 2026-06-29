@@ -8,6 +8,10 @@ use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use App\Models\ActivityLog;
 
+// 1. IMPORT CLASS UNTUK EMAIL VERIFIKASI
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Notifications\Messages\MailMessage;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -53,6 +57,17 @@ class AppServiceProvider extends ServiceProvider
                     'user_agent'  => request()->userAgent(),
                 ]);
             }
+        });
+
+        /*
+        |--------------------------------------------------------------------------
+        | KUSTOMISASI TAMPILAN SURAT EMAIL VERIFIKASI
+        |--------------------------------------------------------------------------
+        */
+        VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
+            return (new MailMessage)
+                ->subject('PENTING: Verifikasi Akun SI-INTEL Kejaksaan')
+                ->view('emails.verify-email', ['url' => $url, 'notifiable' => $notifiable]);
         });
     }
 }

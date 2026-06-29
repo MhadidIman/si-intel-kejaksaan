@@ -9,13 +9,12 @@ use Livewire\Volt\Component;
 new #[Layout('layouts.guest')] class extends Component
 {
     /**
-     * Send an email verification notification to the user.
+     * Send an email verification notification.
      */
     public function sendVerification(): void
     {
         if (Auth::user()->hasVerifiedEmail()) {
-            // PERBAIKAN: Arahkan ke dashboard publik, bukan dashboard internal
-            $this->redirectIntended(default: route('publik.dashboard', absolute: false), navigate: true);
+            $this->redirectIntended(default: route('publik.lapor', absolute: false), navigate: true);
 
             return;
         }
@@ -36,57 +35,80 @@ new #[Layout('layouts.guest')] class extends Component
     }
 }; ?>
 
-<div class="min-h-screen bg-slate-50 flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8 selection:bg-emerald-500 selection:text-white relative overflow-hidden">
+<div class="min-h-screen w-full flex flex-col items-center justify-center bg-[#f8fafc] px-4 sm:px-6 relative overflow-hidden font-sans">
 
-    {{-- Elemen Latar Belakang --}}
-    <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-bl-full -z-10 blur-3xl"></div>
-    <div class="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-tr-full -z-10 blur-3xl"></div>
+    {{-- Latar Belakang Modern --}}
+    <div class="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+    <div class="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] bg-cyan-500/10 blur-[100px] rounded-full pointer-events-none"></div>
 
-    <div class="w-full max-w-md bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden relative">
+    <div class="w-full max-w-lg relative z-10 animate-fade-in-up">
 
-        {{-- Garis Aksen Atas --}}
-        <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600"></div>
+        <div class="bg-white p-8 sm:p-12 rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden text-center">
 
-        <div class="p-8 sm:p-10 text-center">
+            {{-- Garis Dekorasi --}}
+            <div class="absolute top-0 left-0 w-full h-[4px] bg-gradient-to-r from-emerald-500 to-cyan-500"></div>
 
-            {{-- Ikon Amplop --}}
-            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-50 text-emerald-600 mb-6 shadow-inner border border-emerald-100">
-                <i class="fas fa-envelope-open-text text-4xl mt-1"></i>
+            {{-- Ikon Email & Logo --}}
+            <div class="relative inline-block mb-8 mt-2">
+                <div class="w-24 h-24 bg-emerald-50 rounded-full mx-auto flex items-center justify-center shadow-inner relative z-10 border-4 border-white">
+                    <i class="fas fa-envelope-open-text text-4xl text-emerald-600"></i>
+                </div>
+                <div class="absolute top-0 right-0 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md translate-x-1/4 -translate-y-1/4 z-20">
+                    <i class="fas fa-check-circle text-xl text-cyan-500"></i>
+                </div>
+                {{-- Efek Radar --}}
+                <div class="absolute inset-0 bg-emerald-400/30 rounded-full blur-md animate-ping"></div>
             </div>
 
+            {{-- Judul & Deskripsi --}}
             <h2 class="text-2xl font-black text-slate-800 tracking-tight mb-3">Verifikasi Email Anda</h2>
 
-            <p class="text-sm text-slate-500 leading-relaxed mb-6 font-medium">
-                Terima kasih telah mendaftar di <strong>SI-INTEL</strong>! Sebelum memulai, harap verifikasi alamat email Anda dengan mengklik tautan yang baru saja kami kirimkan. Jika Anda tidak menerima email tersebut, kami akan mengirimkan ulang.
+            <p class="text-sm text-slate-500 leading-relaxed mb-8">
+                Terima kasih telah mendaftar di <strong>Portal SI-INTEL Kejaksaan</strong>! Sebelum Anda dapat mulai membuat laporan pengaduan, kami perlu memastikan alamat email Anda valid. Silakan periksa kotak masuk Anda dan klik tautan verifikasi yang telah kami kirimkan.
             </p>
 
-            {{-- Pesan Sukses Kirim Ulang --}}
+            {{-- Pesan Status (Muncul jika tombol kirim ulang diklik) --}}
             @if (session('status') == 'verification-link-sent')
-            <div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl flex items-start gap-3 text-left">
-                <i class="fas fa-check-circle text-emerald-600 mt-0.5 text-lg shrink-0"></i>
-                <p class="text-xs font-bold text-emerald-800 leading-relaxed">
-                    Tautan verifikasi baru telah dikirim ke alamat email yang Anda berikan saat pendaftaran. Silakan periksa folder Inbox atau Spam Anda.
+            <div class="mb-8 bg-emerald-50 border border-emerald-200 p-4 rounded-2xl flex items-start gap-3 text-left animate-pulse">
+                <i class="fas fa-paper-plane text-emerald-500 mt-0.5"></i>
+                <p class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider leading-relaxed">
+                    Tautan verifikasi baru telah berhasil dikirim ke alamat email yang Anda gunakan saat registrasi.
                 </p>
             </div>
             @endif
 
-            <div class="space-y-4 mt-2">
-                {{-- Tombol Kirim Ulang --}}
-                <button wire:click="sendVerification" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase tracking-widest rounded-xl transition shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2">
-                    <span wire:loading.remove wire:target="sendVerification"><i class="fas fa-paper-plane"></i> Kirim Ulang Email</span>
-                    <span wire:loading wire:target="sendVerification"><i class="fas fa-circle-notch fa-spin"></i> Mengirim...</span>
+            {{-- Aksi Utama --}}
+            <div class="space-y-4">
+                <div class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-4">
+                    Belum menerima email?
+                </div>
+
+                <button wire:click="sendVerification" wire:loading.attr="disabled" class="w-full flex items-center justify-center gap-2 px-6 py-4 bg-slate-900 border border-slate-800 rounded-xl font-black text-xs text-white uppercase tracking-wider hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 transition-all duration-300 shadow-lg shadow-slate-900/30 transform hover:-translate-y-0.5 disabled:opacity-50">
+
+                    <span wire:loading.remove wire:target="sendVerification" class="flex items-center gap-2">
+                        <i class="fas fa-sync-alt"></i> Kirim Ulang Tautan
+                    </span>
+
+                    <span wire:loading wire:target="sendVerification" class="flex items-center gap-2">
+                        <i class="fas fa-circle-notch fa-spin"></i> Mengirim...
+                    </span>
                 </button>
 
-                {{-- Tombol Logout --}}
-                <button wire:click="logout" type="button" class="w-full py-3.5 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold text-xs uppercase tracking-widest rounded-xl border border-slate-200 transition flex items-center justify-center gap-2">
-                    <i class="fas fa-sign-out-alt text-slate-400"></i> Keluar (Log Out)
-                </button>
+                <div class="pt-4 border-t border-slate-100 mt-6 flex justify-center">
+                    <button wire:click="logout" class="text-[11px] font-bold text-red-500 uppercase tracking-wider hover:text-red-700 transition flex items-center gap-1.5 px-4 py-2 rounded-lg hover:bg-red-50">
+                        <i class="fas fa-sign-out-alt"></i> Logout Akun Ini
+                    </button>
+                </div>
             </div>
 
         </div>
-    </div>
 
-    <div class="mt-8 text-center text-xs font-bold text-slate-400 uppercase tracking-widest">
-        &copy; {{ date('Y') }} Kejaksaan Negeri Banjarmasin
+        {{-- Footer --}}
+        <div class="mt-8 text-center">
+            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+                <i class="fas fa-shield-halved"></i> Kejaksaan Negeri Banjarmasin
+            </p>
+        </div>
+
     </div>
 </div>

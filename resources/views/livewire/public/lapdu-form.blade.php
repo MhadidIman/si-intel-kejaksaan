@@ -71,7 +71,13 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">NIK / No. KTP <span class="text-red-500">*</span></label>
-                            <input wire:model="nik" type="text" maxlength="16" class="w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm font-mono transition" placeholder="16 Digit NIK Anda">
+                            <input wire:model="nik" type="text" maxlength="16"
+                                {{ Auth::user()->nik ? 'readonly' : '' }}
+                                class="w-full border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm font-mono transition {{ Auth::user()->nik ? 'bg-slate-200 text-slate-500 cursor-not-allowed' : 'bg-slate-50' }}"
+                                placeholder="16 Digit NIK Anda">
+                            @if(Auth::user()->nik)
+                            <span class="text-[10px] text-emerald-600 font-bold mt-1 block"><i class="fas fa-check-circle"></i> Terverifikasi dari akun Anda</span>
+                            @endif
                             @error('nik') <span class="text-[10px] text-red-500 font-bold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         <div>
