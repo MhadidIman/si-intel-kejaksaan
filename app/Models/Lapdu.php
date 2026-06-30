@@ -15,10 +15,12 @@ class Lapdu extends Model
         'nama_pelapor',
         'is_anonim',
         'nik',
+        'email_pelapor', // <-- INI DIA YANG DITAMBAHKAN
         'tempat_lahir',
         'tanggal_lahir',
         'jenis_kelamin',
         'pekerjaan',
+        'foto_ktp',
         'alamat_pelapor',
         'no_hp_pelapor',
         'nama_terlapor',

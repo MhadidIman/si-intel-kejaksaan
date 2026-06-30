@@ -172,7 +172,8 @@
 
                 <div class="p-8 space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar bg-slate-50/50">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        {{-- BLOK 1: IDENTITAS PELAPOR --}}
+
+                        {{-- BLOK 1: IDENTITAS PELAPOR (DIPERBARUI) --}}
                         <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
                             <h4 class="text-[11px] font-black uppercase tracking-wider text-slate-400 border-b pb-3 flex items-center gap-2">
                                 <i class="fas fa-user-shield text-slate-500"></i> Bagian I: Identitas Pelapor
@@ -185,13 +186,41 @@
                             <div class="grid grid-cols-3 gap-y-3 text-xs">
                                 <div class="text-slate-400 font-bold">Nama</div>
                                 <div class="col-span-2 text-slate-800 font-black">: {{ $selectedLapdu->nama_pelapor }}</div>
+
                                 <div class="text-slate-400 font-bold">NIK</div>
-                                <div class="col-span-2 text-slate-800 font-mono font-bold">: {{ $selectedLapdu->nik }}</div>
-                                <div class="text-slate-400 font-bold">Kontak</div>
+                                <div class="col-span-2 text-slate-800 font-mono font-bold">: {{ $selectedLapdu->nik ?? '-' }}</div>
+
+                                <div class="text-slate-400 font-bold">Email</div>
+                                <div class="col-span-2 text-slate-800 font-bold">: {{ $selectedLapdu->email_pelapor ?? '-' }}</div>
+
+                                <div class="text-slate-400 font-bold">Kontak/HP</div>
                                 <div class="col-span-2 text-slate-800 font-bold">: {{ $selectedLapdu->no_hp_pelapor }}</div>
+
+                                <div class="text-slate-400 font-bold">T.T.L</div>
+                                <div class="col-span-2 text-slate-800 font-bold">: {{ $selectedLapdu->tempat_lahir ?? '-' }}, {{ $selectedLapdu->tanggal_lahir ? date('d-m-Y', strtotime($selectedLapdu->tanggal_lahir)) : '-' }}</div>
+
+                                <div class="text-slate-400 font-bold">J. Kelamin</div>
+                                <div class="col-span-2 text-slate-800 font-bold">: {{ $selectedLapdu->jenis_kelamin === 'L' ? 'Laki-laki' : ($selectedLapdu->jenis_kelamin === 'P' ? 'Perempuan' : '-') }}</div>
+
+                                <div class="text-slate-400 font-bold">Pekerjaan</div>
+                                <div class="col-span-2 text-slate-800 font-bold">: {{ $selectedLapdu->pekerjaan ?? '-' }}</div>
+
                                 <div class="text-slate-400 font-bold">Alamat</div>
                                 <div class="col-span-2 text-slate-800 font-bold leading-relaxed">: {{ $selectedLapdu->alamat_pelapor }}</div>
                             </div>
+
+                            {{-- FOTO KTP PELAPOR --}}
+                            @if($selectedLapdu->foto_ktp)
+                            <div class="mt-4 pt-4 border-t border-slate-100">
+                                <div class="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
+                                    <span>Lampiran KTP</span>
+                                    <a href="{{ asset('storage/' . $selectedLapdu->foto_ktp) }}" target="_blank" class="text-cyan-600 hover:text-cyan-700">Lihat Penuh <i class="fas fa-external-link-alt ml-1"></i></a>
+                                </div>
+                                <div class="bg-slate-100 p-2 rounded-xl border border-slate-200">
+                                    <img src="{{ asset('storage/' . $selectedLapdu->foto_ktp) }}" class="w-full h-32 object-contain rounded-lg" alt="Foto KTP Pelapor">
+                                </div>
+                            </div>
+                            @endif
                         </div>
 
                         {{-- BLOK 2: IDENTITAS TERLAPOR --}}

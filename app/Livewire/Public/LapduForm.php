@@ -15,7 +15,7 @@ class LapduForm extends Component
 
     // 1. Identitas Pelapor
     public $is_anonim = false;
-    public $nik, $tempat_lahir, $tanggal_lahir, $jenis_kelamin, $pekerjaan, $alamat_pelapor, $no_hp_pelapor;
+    public $nik, $email_pelapor, $foto_ktp, $tempat_lahir, $tanggal_lahir, $jenis_kelamin, $pekerjaan, $alamat_pelapor, $no_hp_pelapor;
 
     // 2. Identitas Terlapor
     public $nama_terlapor, $jabatan_terlapor, $alamat_terlapor, $kontak_terlapor;
@@ -31,18 +31,15 @@ class LapduForm extends Component
 
     public function mount()
     {
-        // Satpam Proteksi: Jika petugas internal yang buka, alihkan ke dashboard internal
         if (Auth::check() && Auth::user()->role !== 'masyarakat') {
             $this->redirectRoute('dashboard', navigate: true);
             return;
         }
 
-        // ========================================================
-        // FITUR BARU: AUTO-FILL DATA DARI AKUN YANG SEDANG LOGIN
-        // ========================================================
         if (Auth::check()) {
             $this->no_hp_pelapor = Auth::user()->no_hp ?? '';
-            $this->nik = Auth::user()->nik ?? ''; // NIK otomatis ditarik dari database
+            $this->nik = Auth::user()->nik ?? '';
+            $this->email_pelapor = Auth::user()->email ?? '';
         }
     }
 
@@ -50,12 +47,15 @@ class LapduForm extends Component
     {
         return [
             'nik' => 'required|numeric|digits:16',
+            'email_pelapor' => 'required|email|max:255',
+            // Jika anonim, KTP opsional. Jika tidak anonim, KTP wajib (Maks 5MB)
+            'foto_ktp' => $this->is_anonim ? 'nullable|image|max:5120' : 'required|image|max:5120',
             'tempat_lahir' => 'nullable|string|max:100',
             'tanggal_lahir' => 'nullable|date',
             'jenis_kelamin' => 'nullable|in:L,P',
             'pekerjaan' => 'nullable|string|max:100',
             'alamat_pelapor' => 'required|string|min:10',
-            'no_hp_pelapor' => 'required|string|max:20',
+            'no_hp_pelapor' => 'required|numeric|digits_between:10,15',
 
             'nama_terlapor' => 'required|string|max:255',
             'jabatan_terlapor' => 'required|string|max:255',
@@ -76,13 +76,23 @@ class LapduForm extends Component
     protected $messages = [
         'disclaimer.accepted' => 'Anda wajib menyetujui pernyataan tanggung jawab hukum untuk mengirim laporan.',
         'bukti_dukung.max' => 'Ukuran berkas bukti pendukung tidak boleh melebihi 10MB.',
+        'foto_ktp.required' => 'Foto KTP wajib dilampirkan untuk verifikasi identitas (kecuali Anda lapor sebagai anonim).',
+        'foto_ktp.image' => 'File KTP harus berupa gambar (JPG, PNG).',
+        'foto_ktp.max' => 'Ukuran foto KTP tidak boleh melebihi 5MB.',
     ];
 
     public function kirimLaporan()
     {
         $this->validate();
 
-        $path = $this->bukti_dukung->store('lapdu_bukti', 'public');
+        // Simpan file bukti dukung utama
+        $pathBukti = $this->bukti_dukung->store('lapdu_bukti', 'public');
+
+        // Simpan file KTP jika diunggah
+        $pathKtp = null;
+        if ($this->foto_ktp) {
+            $pathKtp = $this->foto_ktp->store('lapdu_ktp', 'public');
+        }
 
         $kodeAcak = strtoupper(Str::random(5));
         $tiketBaru = 'LAPDU-' . date('Ym') . '-' . $kodeAcak;
@@ -91,7 +101,9 @@ class LapduForm extends Component
             'nomor_tiket' => $tiketBaru,
             'nama_pelapor' => Auth::user()->name,
             'is_anonim' => $this->is_anonim,
-            'nik' => $this->nik,
+            'nik' => $this->is_anonim ? null : $this->nik,
+            'email_pelapor' => $this->is_anonim ? null : $this->email_pelapor,
+            'foto_ktp' => $this->is_anonim ? null : $pathKtp, // <-- Simpan KTP ke database
             'tempat_lahir' => $this->tempat_lahir,
             'tanggal_lahir' => $this->tanggal_lahir,
             'jenis_kelamin' => $this->jenis_kelamin,
@@ -110,14 +122,14 @@ class LapduForm extends Component
             'tempat_kejadian' => $this->tempat_kejadian,
             'uraian_pengaduan' => $this->uraian_pengaduan,
 
-            'bukti_dukung' => $path,
+            'bukti_dukung' => $pathBukti,
             'status_laporan' => 'menunggu',
         ]);
 
         $this->nomorTiket = $tiketBaru;
 
-        // Reset form (kecuali NIK dan HP agar tidak hilang setelah kirim laporan)
-        $this->reset(['tempat_lahir', 'tanggal_lahir', 'jenis_kelamin', 'pekerjaan', 'alamat_pelapor', 'nama_terlapor', 'jabatan_terlapor', 'alamat_terlapor', 'kontak_terlapor', 'kategori_laporan', 'judul_laporan', 'waktu_kejadian', 'tempat_kejadian', 'uraian_pengaduan', 'bukti_dukung', 'disclaimer']);
+        // Reset form
+        $this->reset(['tempat_lahir', 'tanggal_lahir', 'jenis_kelamin', 'pekerjaan', 'alamat_pelapor', 'nama_terlapor', 'jabatan_terlapor', 'alamat_terlapor', 'kontak_terlapor', 'kategori_laporan', 'judul_laporan', 'waktu_kejadian', 'tempat_kejadian', 'uraian_pengaduan', 'bukti_dukung', 'foto_ktp', 'disclaimer']);
     }
 
     #[Layout('layouts.public')]

@@ -59,11 +59,11 @@
                     <div class="bg-purple-50 border border-purple-200 p-4 rounded-2xl">
                         <label class="flex items-start cursor-pointer group">
                             <div class="flex items-center h-5">
-                                <input wire:model="is_anonim" type="checkbox" class="w-5 h-5 text-purple-600 bg-white border-purple-300 rounded focus:ring-purple-500 focus:ring-2 transition cursor-pointer">
+                                <input wire:model.live="is_anonim" type="checkbox" class="w-5 h-5 text-purple-600 bg-white border-purple-300 rounded focus:ring-purple-500 focus:ring-2 transition cursor-pointer">
                             </div>
                             <div class="ml-3 text-sm">
                                 <span class="font-black text-purple-900 block mb-0.5 group-hover:text-purple-700 transition">Sembunyikan Identitas Saya (Lapor Sebagai Anonim)</span>
-                                <span class="text-purple-700 text-xs font-medium">Sistem tidak akan menampilkan nama Anda pada lembar laporan petugas operasional lapangan. Identitas Anda hanya bisa diakses oleh level Admin Utama.</span>
+                                <span class="text-purple-700 text-xs font-medium">Sistem tidak akan menampilkan nama dan KTP Anda pada lembar laporan petugas operasional lapangan.</span>
                             </div>
                         </label>
                     </div>
@@ -75,14 +75,20 @@
                                 {{ Auth::user()->nik ? 'readonly' : '' }}
                                 class="w-full border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm font-mono transition {{ Auth::user()->nik ? 'bg-slate-200 text-slate-500 cursor-not-allowed' : 'bg-slate-50' }}"
                                 placeholder="16 Digit NIK Anda">
-                            @if(Auth::user()->nik)
-                            <span class="text-[10px] text-emerald-600 font-bold mt-1 block"><i class="fas fa-check-circle"></i> Terverifikasi dari akun Anda</span>
-                            @endif
                             @error('nik') <span class="text-[10px] text-red-500 font-bold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         <div>
+                            <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Alamat Email <span class="text-red-500">*</span></label>
+                            <input wire:model="email_pelapor" type="email"
+                                {{ Auth::user()->email ? 'readonly' : '' }}
+                                class="w-full border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm font-mono transition {{ Auth::user()->email ? 'bg-slate-200 text-slate-500 cursor-not-allowed' : 'bg-slate-50' }}"
+                                placeholder="email@contoh.com">
+                            @error('email_pelapor') <span class="text-[10px] text-red-500 font-bold mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+                        <div>
                             <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Nomor HP/WhatsApp Aktif <span class="text-red-500">*</span></label>
-                            <input wire:model="no_hp_pelapor" type="text" class="w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm font-mono transition" placeholder="08xxxxxxxxxx">
+                            {{-- Ubah type="text" menjadi type="number" di bawah ini --}}
+                            <input wire:model="no_hp_pelapor" type="number" class="w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm font-mono transition" placeholder="08xxxxxxxxxx">
                             @error('no_hp_pelapor') <span class="text-[10px] text-red-500 font-bold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         <div>
@@ -104,11 +110,37 @@
                             </select>
                             @error('jenis_kelamin') <span class="text-[10px] text-red-500 font-bold mt-1 block">{{ $message }}</span> @enderror
                         </div>
-                        <div>
+                        <div class="md:col-span-2">
                             <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Pekerjaan/Profesi</label>
                             <input wire:model="pekerjaan" type="text" class="w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm transition" placeholder="Contoh: Wiraswasta">
                             @error('pekerjaan') <span class="text-[10px] text-red-500 font-bold mt-1 block">{{ $message }}</span> @enderror
                         </div>
+
+                        {{-- UPLOAD FOTO KTP --}}
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Upload Foto KTP (Untuk Validasi) @if(!$is_anonim) <span class="text-red-500">*</span> @endif</label>
+                            <div class="w-full relative border-2 border-dashed border-slate-300 rounded-2xl p-4 text-center hover:bg-slate-50 hover:border-emerald-500 transition-colors cursor-pointer" onclick="document.getElementById('ktp-upload').click()">
+                                <input id="ktp-upload" wire:model="foto_ktp" type="file" class="hidden" accept="image/png, image/jpeg, image/jpg">
+
+                                <div wire:loading.remove wire:target="foto_ktp">
+                                    @if($foto_ktp)
+                                    <img src="{{ $foto_ktp->temporaryUrl() }}" class="h-32 object-contain mx-auto rounded-lg mb-2 shadow-sm border border-slate-200">
+                                    <p class="text-[10px] text-emerald-600 font-bold uppercase tracking-widest mt-1">Foto KTP Terpilih</p>
+                                    @else
+                                    <div class="w-12 h-12 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center text-xl mx-auto mb-2 shadow-inner"><i class="fas fa-id-card"></i></div>
+                                    <p class="text-xs font-bold text-slate-700">Klik untuk mengunggah foto KTP</p>
+                                    <p class="text-[10px] text-slate-400 font-bold mt-1">Format: JPG, JPEG, PNG (Maks 5MB)</p>
+                                    @endif
+                                </div>
+
+                                <div wire:loading wire:target="foto_ktp" class="w-full py-4">
+                                    <div class="w-12 h-12 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center text-xl mx-auto mb-2 shadow-inner"><i class="fas fa-spinner fa-spin"></i></div>
+                                    <p class="text-xs font-bold text-slate-700">Memproses gambar KTP...</p>
+                                </div>
+                            </div>
+                            @error('foto_ktp') <span class="text-[10px] text-red-500 font-bold mt-1 block text-center">{{ $message }}</span> @enderror
+                        </div>
+
                         <div class="md:col-span-2">
                             <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Alamat Domisili <span class="text-red-500">*</span></label>
                             <textarea wire:model="alamat_pelapor" rows="2" class="w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm transition" placeholder="Tulis alamat lengkap Anda saat ini..."></textarea>
@@ -213,7 +245,7 @@
 
                 <div class="p-6 sm:p-8 space-y-8">
                     <div>
-                        <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-3">Upload Bukti Dokumen/Media <span class="text-red-500">*</span></label>
+                        <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-3">Upload Bukti Dokumen/Media Tambahan <span class="text-red-500">*</span></label>
 
                         <div class="w-full relative border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center hover:bg-slate-50 hover:border-emerald-500 transition-colors cursor-pointer" onclick="document.getElementById('file-upload').click()">
                             <input id="file-upload" wire:model="bukti_dukung" type="file" class="hidden" accept=".pdf,.jpg,.jpeg,.png,.mp4,.mp3">
@@ -225,7 +257,7 @@
                                 <p class="text-[10px] text-emerald-600 font-bold uppercase tracking-widest mt-1">Berkas Berhasil Dipilih</p>
                                 @else
                                 <div class="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center text-2xl mx-auto mb-3 shadow-inner"><i class="fas fa-cloud-upload-alt"></i></div>
-                                <p class="text-sm font-bold text-slate-700">Klik di sini untuk mengunggah file</p>
+                                <p class="text-sm font-bold text-slate-700">Klik di sini untuk mengunggah file bukti tambahan</p>
                                 <p class="text-[10px] text-slate-400 font-bold mt-1">Format: PDF, JPG, PNG, MP4, MP3 (Maksimal 10MB)</p>
                                 @endif
                             </div>
