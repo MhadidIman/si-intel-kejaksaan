@@ -248,12 +248,21 @@
             {{ $data->upaya_pencegahan ?? 'Belum ada rekomendasi khusus yang dicatat.' }}
         </div>
 
-        <div class="ttd-container">
-            <p>Banjarmasin, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</p>
-            <p>Petugas Analis Intelijen,</p>
+        <div style="width: 100%; margin-top: 50px;">
+            <div style="float: right; width: 300px; text-align: center;">
+                <p>Mengetahui,</p>
+                <p><strong>Kepala Seksi Intelijen</strong></p>
+                <div style="margin: 15px 0;">
+                    @php
+                    $qrContent = route('verifikasi.dokumen', ['tipe' => 'kerawanan', 'id' => $data->id]);
+                    @endphp
+                    <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(100)->generate($qrContent)) !!} ">
+                </div>
 
-            <div class="nama-pejabat">{{ auth()->user()->name }}</div>
-            <div>Jaksa Intelijen / NIP. {{ auth()->user()->nip ?? '....................' }}</div>
+                <p><u>Nama Kasi Intelijen</u></p>
+                <p>NIP. 1234567890</p>
+            </div>
+            <div style="clear: both;"></div>
         </div>
         <div class="clear"></div>
 

@@ -252,14 +252,21 @@
         Demikian laporan khusus ini dibuat untuk menjadi periksa dan mohon petunjuk Pimpinan lebih lanjut.
     </div>
 
-    <div class="ttd-container">
-        <p>Banjarmasin, {{ \Carbon\Carbon::parse($laporan->tanggal_laporan)->isoFormat('D MMMM Y') }}</p>
-        <p>Kepala Seksi Intelijen,</p>
+    <div style="width: 100%; margin-top: 50px;">
+        <div style="float: right; width: 300px; text-align: center;">
+            <p>Mengetahui,</p>
+            <p><strong>Kepala Seksi Intelijen</strong></p>
+            <div style="margin: 15px 0;">
+                @php
+                $qrContent = route('verifikasi.dokumen', ['tipe' => 'lapsus', 'id' => $laporan->id]);
+                @endphp
+                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(100)->generate($qrContent)) !!} ">
+            </div>
 
-        <br><br><br>
-
-        <div class="nama-terang">Dimas Purnama Putra, S.H.,M.H</div>
-        <div>Jaksa Madya / NIP. 19850101 201001 1 001</div>
+            <p><u>Nama Kasi Intelijen</u></p>
+            <p>NIP. 1234567890</p>
+        </div>
+        <div style="clear: both;"></div>
     </div>
 
     <div class="clear"></div>

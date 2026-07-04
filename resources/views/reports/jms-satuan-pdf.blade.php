@@ -219,12 +219,21 @@
         @endif
     </div>
 
-    <div class="ttd">
-        <p>Banjarmasin, {{ \Carbon\Carbon::parse($data->tanggal_kegiatan)->isoFormat('D MMMM Y') }}</p>
-        <p>Petugas Pelaksana,</p>
-        <br><br><br><br>
-        <p style="text-decoration: underline; font-weight: bold;">{{ auth()->user()->name }}</p>
-        <p>Jaksa Intelijen / NIP. {{ auth()->user()->nip ?? '....................' }}</p>
+    <div style="width: 100%; margin-top: 50px;">
+        <div style="float: right; width: 300px; text-align: center;">
+            <p>Mengetahui,</p>
+            <p><strong>Kepala Seksi Intelijen</strong></p>
+            <div style="margin: 15px 0;">
+                @php
+                $qrContent = route('verifikasi.dokumen', ['tipe' => 'jms', 'id' => $data->id]);
+                @endphp
+                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(100)->generate($qrContent)) !!} ">
+            </div>
+
+            <p><u>Nama Kasi Intelijen</u></p>
+            <p>NIP. 1234567890</p>
+        </div>
+        <div style="clear: both;"></div>
     </div>
 
     <div class="clear"></div>

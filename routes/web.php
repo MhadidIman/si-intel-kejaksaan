@@ -15,6 +15,7 @@ use App\Livewire\PamSdo\PamSdoIndex;
 use App\Livewire\Jms\JmsIndex;
 use App\Livewire\Kerawanan\KerawananIndex;
 use App\Livewire\Lapdu\LapduIndex;
+use App\Livewire\Public\VerifikasiDokumen;
 use App\Http\Controllers\ReportController;
 
 // Import Component Livewire Publik
@@ -35,6 +36,13 @@ Route::get('/publik', function () {
 Route::get('/petugas', function () {
     return view('welcome-internal');
 })->name('welcome.internal');
+
+// ====================================================================
+// ROUTE PUBLIK (TIDAK PERLU LOGIN)
+// ====================================================================
+// Route untuk scan barcode diletakkan di sini agar bisa diakses bebas
+Route::get('/verifikasi/{tipe}/{id}', VerifikasiDokumen::class)->name('verifikasi.dokumen');
+
 
 // Rute Login Khusus Masyarakat
 Route::middleware('guest')->group(function () {

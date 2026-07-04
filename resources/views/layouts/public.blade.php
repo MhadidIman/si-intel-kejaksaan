@@ -14,8 +14,11 @@
 
 <body class="font-sans antialiased text-slate-900 bg-slate-50">
 
-    {{-- MEMANGGIL NAVBAR PUBLIK --}}
+    @if (!request()->routeIs('verifikasi.dokumen'))
+
     <livewire:layout.navigation-publik />
+
+    @endif
 
     {{-- KONTEN HALAMAN UTAMA --}}
     <main>

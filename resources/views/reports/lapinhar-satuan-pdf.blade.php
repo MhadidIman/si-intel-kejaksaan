@@ -234,14 +234,25 @@
     <div class="content-text">
         Berdasarkan uraian fakta dan analisa di atas, disarankan kepada Pimpinan untuk menindaklanjuti informasi ini sesuai dengan prosedur yang berlaku serta terus melakukan monitoring terhadap perkembangan situasi.
     </div>
-    <div class="ttd-container">
-        <p>Banjarmasin, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</p>
-        <p>Kepala Seksi Intelijen,</p>
 
-        <br><br><br>
+    <div style="width: 100%; margin-top: 50px;">
+        <div style="float: right; width: 300px; text-align: center;">
+            <p>Mengetahui,</p>
+            <p><strong>Kepala Seksi Intelijen</strong></p>
 
-        <div class="nama-terang">Dimas Purnama Putra, S.H.,M.H</div>
-        <div>Jaksa Madya / NIP. 19850101 201001 1 001</div>
+            <div style="margin: 15px 0;">
+                @php
+                // Diubah ke $item->id agar sesuai dengan variabel data di file ini
+                $qrContent = route('verifikasi.dokumen', ['tipe' => 'lapinhar', 'id' => $item->id]);
+                @endphp
+
+                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(100)->generate($qrContent)) !!} ">
+            </div>
+
+            <p><u>Nama Kasi Intelijen</u></p>
+            <p>NIP. 1234567890</p>
+        </div>
+        <div style="clear: both;"></div>
     </div>
 
     <div class="clear"></div>

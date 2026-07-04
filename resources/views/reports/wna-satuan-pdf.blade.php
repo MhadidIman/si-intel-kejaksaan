@@ -279,15 +279,23 @@
     @endif
 
     {{-- TANDA TANGAN --}}
-    <div class="signature">
-        <p>Banjarmasin, {{ now()->translatedFormat('d F Y') }}</p>
-        <p>Kepala Seksi Intelijen,</p>
+    <div style="width: 100%; margin-top: 50px;">
+        <div style="float: right; width: 300px; text-align: center;">
+            <p>Mengetahui,</p>
+            <p><strong>Kepala Seksi Intelijen</strong></p>
+            <div style="margin: 15px 0;">
+                @php
+                $qrContent = route('verifikasi.dokumen', ['tipe' => 'wna', 'id' => $item->id]);
+                @endphp
+                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(100)->generate($qrContent)) !!} ">
+            </div>
 
-        <br><br><br>
-
-        <p style="font-weight: bold; text-decoration: underline; margin-bottom: 0;">Dimas Purnama Putra, S.H.,M.H</p>
-        <p style="margin-top: 0;">Jaksa Madya / NIP. 19850101 201001 1 001</p>
+            <p><u>Nama Kasi Intelijen</u></p>
+            <p>NIP. 1234567890</p>
+        </div>
+        <div style="clear: both;"></div>
     </div>
+
 
     <div class="clear"></div>
     <div class="rahasia-top" style="margin-top: 30px;">RAHASIA</div>
