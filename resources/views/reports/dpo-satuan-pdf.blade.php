@@ -9,13 +9,11 @@
         @page {
             size: A4 portrait;
             margin: 1.5cm 2cm;
-            /* Margin sedikit diperkecil agar muat */
         }
 
         body {
             font-family: 'Times New Roman', Times, serif;
             font-size: 11pt;
-            /* Font sedikit diperkecil agar hemat ruang */
             line-height: 1.3;
             color: #000;
         }
@@ -42,7 +40,6 @@
             text-align: center;
             vertical-align: middle;
             padding-right: 90px;
-            /* Kompensasi lebar logo agar teks tetap di tengah */
         }
 
         .teks-cell h1 {
@@ -127,7 +124,6 @@
         .table-data td {
             vertical-align: top;
             padding: 3px 0;
-            /* Padding diperkecil */
         }
 
         .label {
@@ -171,7 +167,6 @@
             margin: 0 auto;
             border: 1px dashed #ccc;
             line-height: 190px;
-            /* Vertikal center trick untuk dompdf */
         }
 
         .status-stamp {
@@ -212,26 +207,6 @@
             min-height: 60px;
             font-size: 10.5pt;
             margin-bottom: 10px;
-        }
-
-        /* TANDA TANGAN (FIX PAGE BREAK) */
-        .ttd-wrapper {
-            width: 100%;
-            page-break-inside: avoid;
-            /* Mencegah ttd terpotong */
-            margin-top: 20px;
-        }
-
-        .ttd-container {
-            float: right;
-            width: 280px;
-            text-align: center;
-        }
-
-        .nama-terang {
-            font-weight: bold;
-            text-decoration: underline;
-            margin-top: 60px;
         }
 
         .footer-rahasia {
@@ -328,24 +303,23 @@
     {{-- KASUS POSISI --}}
     <div class="section-title">KASUS POSISI / URAIAN PERKARA</div>
     <div class="box-text">
-        {{-- Gunakan limit atau nl2br agar rapi --}}
         {!! nl2br(e($data->kasus_posisi ?? $data->kasus ?? '-')) !!}
     </div>
 
-    {{-- TANDA TANGAN (WRAPPER AGAR TIDAK PECAH HALAMAN) --}}
+    {{-- TANDA TANGAN (SAMA PERSIS DENGAN FILE LAPSUS ANDA) --}}
     <div style="width: 100%; margin-top: 50px;">
         <div style="float: right; width: 300px; text-align: center;">
-            <p>Mengetahui,</p>
+            <p>Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
             <p><strong>Kepala Seksi Intelijen</strong></p>
             <div style="margin: 15px 0;">
                 @php
+                // Hanya ubah 'lapsus' menjadi 'dpo', dan $laporan->id menjadi $data->id
                 $qrContent = route('verifikasi.dokumen', ['tipe' => 'dpo', 'id' => $data->id]);
                 @endphp
                 <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(100)->generate($qrContent)) !!} ">
             </div>
-
-            <p><u>Nama Kasi Intelijen</u></p>
-            <p>NIP. 1234567890</p>
+            <p><u>NAMA KEPALA SEKSI INTELIJEN</u></p>
+            <p>Jaksa Madya / NIP. 198XXXXXXXXXXXXXX</p>
         </div>
         <div style="clear: both;"></div>
     </div>

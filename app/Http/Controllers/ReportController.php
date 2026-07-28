@@ -12,7 +12,7 @@ use App\Models\Ormas;
 use App\Models\PamSdo;
 use App\Models\JmsActivity;
 use App\Models\Kerawanan;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Lapdu;
 
 class ReportController extends Controller
 {
@@ -22,20 +22,13 @@ class ReportController extends Controller
     public function cetakDpo()
     {
         $data = Dpo::orderBy('created_at', 'desc')->get();
-        $pdf = Pdf::loadView('reports.dpo-pdf', ['data' => $data]);
-        $pdf->setPaper('a4', 'landscape');
-        return $pdf->stream('Laporan-Data-DPO.pdf');
+        return view('reports.dpo-pdf', compact('data'));
     }
 
     public function cetakDpoSatuan($id)
     {
         $data = Dpo::findOrFail($id);
-        $namaFile = str_replace([' ', '/', '\\'], '-', $data->nama_lengkap);
-
-        $pdf = Pdf::loadView('reports.dpo-satuan-pdf', ['data' => $data]);
-
-        $pdf->setPaper('a4', 'portrait');
-        return $pdf->stream('Biodata-DPO-' . $namaFile . '.pdf');
+        return view('reports.dpo-satuan-pdf', compact('data'));
     }
 
     // ==========================================================
@@ -44,19 +37,13 @@ class ReportController extends Controller
     public function cetakWna()
     {
         $data = Wna::orderBy('masa_berlaku_izin_tinggal', 'asc')->get();
-        $pdf = Pdf::loadView('reports.wna-pdf', ['data' => $data]);
-        $pdf->setPaper('a4', 'landscape');
-        return $pdf->stream('Laporan-Pengawasan-WNA.pdf');
+        return view('reports.wna-pdf', compact('data'));
     }
 
     public function cetakWnaSatuan($id)
     {
         $data = Wna::findOrFail($id);
-        $namaFile = str_replace([' ', '/', '\\'], '-', $data->nama_lengkap);
-
-        $pdf = Pdf::loadView('reports.wna-satuan-pdf', ['item' => $data]);
-        $pdf->setPaper('a4', 'portrait');
-        return $pdf->stream('Biodata-WNA-' . $namaFile . '.pdf');
+        return view('reports.wna-satuan-pdf', ['item' => $data]);
     }
 
     // ==========================================================
@@ -65,20 +52,13 @@ class ReportController extends Controller
     public function cetakLapinhar()
     {
         $data = Lapinhar::orderBy('tanggal_surat', 'desc')->get();
-        $pdf = Pdf::loadView('reports.lapinhar-pdf', ['data' => $data]);
-        $pdf->setPaper('a4', 'landscape');
-        return $pdf->stream('Laporan-Informasi-Harian.pdf');
+        return view('reports.lapinhar-pdf', compact('data'));
     }
 
     public function cetakLapinharSatuan($id)
     {
         $data = Lapinhar::findOrFail($id);
-        $nomorSurat = $data->nomor_surat ?? 'Tanpa-Nomor';
-        $namaFileAman = str_replace(['/', '\\'], '-', $nomorSurat);
-
-        $pdf = Pdf::loadView('reports.lapinhar-satuan-pdf', ['item' => $data]);
-        $pdf->setPaper('a4', 'portrait');
-        return $pdf->stream('LI-No-' . $namaFileAman . '.pdf');
+        return view('reports.lapinhar-satuan-pdf', ['item' => $data]);
     }
 
     // ==========================================================
@@ -87,18 +67,13 @@ class ReportController extends Controller
     public function cetakOrmas()
     {
         $data = Ormas::orderBy('nama_organisasi', 'asc')->get();
-        $pdf = Pdf::loadView('reports.ormas-pdf', ['data' => $data]);
-        $pdf->setPaper('a4', 'landscape');
-        return $pdf->stream('Laporan-Data-Ormas.pdf');
+        return view('reports.ormas-pdf', compact('data'));
     }
 
     public function cetakOrmasSatuan($id)
     {
         $data = Ormas::findOrFail($id);
-        $namaFile = str_replace([' ', '/', '\\'], '-', $data->nama_organisasi);
-        $pdf = Pdf::loadView('reports.ormas-satuan-pdf', ['item' => $data]);
-        $pdf->setPaper('a4', 'portrait');
-        return $pdf->stream('Data-Ormas-' . $namaFile . '.pdf');
+        return view('reports.ormas-satuan-pdf', ['item' => $data]);
     }
 
     // ==========================================================
@@ -106,24 +81,14 @@ class ReportController extends Controller
     // ==========================================================
     public function cetakPamSdo()
     {
-        // PERBAIKAN: Menggunakan 'created_at' karena 'tanggal_laporan' tidak ada di tabel pam_sdos
         $data = PamSdo::orderBy('created_at', 'desc')->get();
-
-        $pdf = Pdf::loadView('reports.pam-sdo-pdf', ['data' => $data]);
-        $pdf->setPaper('a4', 'landscape');
-        return $pdf->stream('Laporan-PAM-SDO.pdf');
+        return view('reports.pam-sdo-pdf', compact('data'));
     }
 
     public function cetakPamSdoSatuan($id)
     {
         $data = PamSdo::findOrFail($id);
-        // Catatan: Pastikan menggunakan field yang benar untuk nama file.
-        // Di tabel pam_sdos kolomnya adalah 'nama_pegawai', bukan 'target'.
-        $namaFile = str_replace([' ', '/', '\\'], '-', $data->nama_pegawai);
-
-        $pdf = Pdf::loadView('reports.pam-sdo-satuan-pdf', ['item' => $data]);
-        $pdf->setPaper('a4', 'portrait');
-        return $pdf->stream('Laporan-Pengamanan-' . $namaFile . '.pdf');
+        return view('reports.pam-sdo-satuan-pdf', ['item' => $data]);
     }
 
     // ==========================================================
@@ -132,18 +97,13 @@ class ReportController extends Controller
     public function cetakJms()
     {
         $data = JmsActivity::orderBy('tanggal_kegiatan', 'desc')->get();
-        $pdf = Pdf::loadView('reports.jms-pdf', ['data' => $data]);
-        $pdf->setPaper('a4', 'landscape');
-        return $pdf->stream('Laporan-JMS-Rekap.pdf');
+        return view('reports.jms-pdf', compact('data'));
     }
 
     public function cetakJmsSatuan($id)
     {
         $jmsData = JmsActivity::findOrFail($id);
-        $namaFile = str_replace([' ', '/', '\\'], '-', $jmsData->nama_sekolah);
-        $pdf = Pdf::loadView('reports.jms-satuan-pdf', ['data' => $jmsData]);
-        $pdf->setPaper('a4', 'portrait');
-        return $pdf->stream('Laporan-Kegiatan-JMS-' . $namaFile . '.pdf');
+        return view('reports.jms-satuan-pdf', ['data' => $jmsData]);
     }
 
     // ==========================================================
@@ -152,17 +112,13 @@ class ReportController extends Controller
     public function cetakKerawanan()
     {
         $data = Kerawanan::orderByRaw("FIELD(tingkat_rawan, 'tinggi', 'sedang', 'rendah')")->get();
-        $pdf = Pdf::loadView('reports.kerawanan-pdf', ['data' => $data]);
-        $pdf->setPaper('a4', 'landscape');
-        return $pdf->stream('Rekap-Peta-Kerawanan.pdf');
+        return view('reports.kerawanan-pdf', compact('data'));
     }
 
     public function cetakKerawananSatuan($id)
     {
         $data = Kerawanan::findOrFail($id);
-        $pdf = Pdf::loadView('reports.kerawanan-satuan-pdf', ['data' => $data]);
-        $pdf->setPaper('a4', 'portrait');
-        return $pdf->stream('Analisa-Kerawanan-' . $data->kecamatan . '.pdf');
+        return view('reports.kerawanan-satuan-pdf', compact('data'));
     }
 
     // ==========================================================
@@ -170,27 +126,21 @@ class ReportController extends Controller
     // ==========================================================
     public function cetakLapdu()
     {
-        $data = \App\Models\Lapdu::orderBy('created_at', 'desc')->get();
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.lapdu-pdf', ['data' => $data]);
-        $pdf->setPaper('a4', 'landscape');
-        return $pdf->stream('Rekap-Pengaduan-Masyarakat.pdf');
+        $data = Lapdu::orderBy('created_at', 'desc')->get();
+        return view('reports.lapdu-pdf', compact('data'));
     }
 
     public function cetakLapduSatuan($id)
     {
-        $data = \App\Models\Lapdu::findOrFail($id);
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.lapdu-satuan-pdf', ['data' => $data]);
-        $pdf->setPaper('a4', 'portrait');
-        return $pdf->stream('Lembar-Disposisi-Lapdu-' . $data->id . '.pdf');
+        $data = Lapdu::findOrFail($id);
+        return view('reports.lapdu-satuan-pdf', compact('data'));
     }
-
 
     // ==========================================================
     // 9. Cetak Statistik Kinerja Staff
     // ==========================================================
     public function cetakUserStats()
     {
-        // Ambil data staff dengan hitungan laporan dari tiap modul
         $data = User::where('role', '!=', 'admin')
             ->withCount([
                 'lapinhars',
@@ -205,12 +155,8 @@ class ReportController extends Controller
             ->orderBy('name', 'asc')
             ->get();
 
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.user-stats-pdf', compact('data'))
-            ->setPaper('a4', 'landscape'); // Gunakan landscape agar tabel muat
-
-        return $pdf->stream('Rekap_Kinerja_Staff_' . date('Y-m-d') . '.pdf');
+        return view('reports.user-stats-pdf', compact('data'));
     }
-
 
     // ==========================================================
     // 10. Cetak LAPORAN KHUSUS
@@ -218,7 +164,6 @@ class ReportController extends Controller
     public function cetakLapsus()
     {
         $lapsus = Lapsus::with('user')->latest()->get();
-        // Asumsi Anda menggunakan library PDF bawaan Laravel (barryvdh/laravel-dompdf) atau sekadar print browser
         return view('reports.lapsus-pdf', compact('lapsus'));
     }
 

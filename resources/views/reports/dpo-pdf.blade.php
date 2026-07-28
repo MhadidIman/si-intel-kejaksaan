@@ -153,7 +153,7 @@
                 <th style="width: 4%">No</th>
                 <th style="width: 20%">Identitas Buronan</th>
                 <th style="width: 14%">Tempat/Tgl Lahir</th>
-                <th style="width: 34%">Kasus Posisi</th> {{-- Kolom diperlebar --}}
+                <th style="width: 34%">Kasus Posisi</th>
                 <th style="width: 13%">Status Hukum</th>
                 <th style="width: 15%">Status DPO</th>
             </tr>
@@ -181,7 +181,7 @@
                     </span>
                 </td>
 
-                {{-- Kasus Posisi (FIX: Cek beberapa kemungkinan nama kolom) --}}
+                {{-- Kasus Posisi --}}
                 <td style="text-align: justify;">
                     {{ \Illuminate\Support\Str::limit($item->kasus_posisi ?? $item->kronologi ?? $item->kasus ?? '-', 250) }}
                 </td>
@@ -193,7 +193,6 @@
 
                 {{-- Status DPO --}}
                 <td style="text-align: center;">
-                    {{-- Cek berbagai kemungkinan value status (buron, DPO, tertangkap) --}}
                     @if(in_array(strtolower($item->status_dpo ?? $item->status_pencarian), ['buron', 'dpo', 'masih buron']))
                     <span class="status-badge buron">MASIH BURON</span>
                     @else
@@ -205,15 +204,37 @@
         </tbody>
     </table>
 
-    {{-- TANDA TANGAN --}}
-    <div class="ttd-container">
-        <p>Banjarmasin, {{ now()->translatedFormat('d F Y') }}</p>
-        <p>Kepala Seksi Intelijen,</p>
-        <br><br><br>
-        <p style="font-weight: bold; text-decoration: underline; margin-bottom: 0;">Dimas Purnama Putra, S.H.,M.H</p>
-        <p style="margin-top: 2px;">Jaksa Madya NIP. 19850101 201001 1 001</p>
-    </div>
+   {{-- TANDA TANGAN (MENGGUNAKAN TABLE AGAR TIDAK TERPOTONG) --}}
+    <table style="width: 100%; margin-top: 40px; border: none !important; page-break-inside: avoid;">
+        <tr style="border: none !important;">
+            <td style="width: 60%; border: none !important;"></td>
+            <td style="width: 40%; text-align: center; border: none !important; vertical-align: top; padding: 0;">
+                
+                Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}<br>
+                <strong>Kepala Seksi Intelijen</strong><br>
+                
+                <div style="margin: 15px 0;">
+                    @php
+                        // 1. Definisikan isi barcode
+                        $qrContent = 'Dokumen Rekapitulasi Resmi SI-INTEL. Dicetak: ' . date('d-m-Y H:i');
+                        
+                        // 2. Buat SVG
+                        $qrSvg = QrCode::format('svg')->size(90)->generate($qrContent);
+                        
+                        // 3. Bersihkan tag XML bawaan pembuat QR yang bikin DOMPDF error (Kotak Silang)
+                        $qrSvg = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $qrSvg);
+                    @endphp
+                    
+                    {{-- 4. Cetak ke dalam tag img. (PERHATIKAN: Tidak boleh ada SPASI setelah base64,) --}}
+                    <img src="data:image/svg+xml;base64,{!! base64_encode(trim($qrSvg)) !!}" alt="QR Code">
+                </div>
 
+                <u>NAMA KEPALA SEKSI INTELIJEN</u><br>
+                Jaksa Madya / NIP. 198XXXXXXXXXXXXXX
+                
+            </td>
+        </tr>
+    </table>
 </body>
 
 </html>
