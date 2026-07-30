@@ -1,176 +1,212 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
-    <title>Laporan Pengawasan Orang Asing</title>
+    <meta charset="UTF-8">
+    <title>Laporan Data WNA</title>
     <style>
-        /* PENGATURAN KERTAS & FONT */
+        /* --- PENGATURAN KERTAS & FONT --- */
+        @page {
+            size: A4 landscape;
+            margin: 1.5cm 2cm;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            font-size: 10px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 10pt;
             line-height: 1.3;
-            margin: 0;
-            padding: 0;
+            color: #000;
+            -webkit-print-color-adjust: exact;
         }
 
-        /* KOP SURAT */
-        .header-container {
+        /* --- KOP SURAT 3 KOLOM --- */
+        .kop-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-bottom: 3px solid black;
+        }
+
+        .kop-table td {
+            vertical-align: middle;
+            padding-bottom: 5px;
+        }
+
+        .teks-center {
             text-align: center;
-            position: relative;
-            margin-bottom: 20px;
-            border-bottom: 3px double black;
-            padding-bottom: 10px;
         }
 
-        .logo {
-            width: 70px;
-            position: absolute;
-            left: 0;
-            top: 0;
-        }
-
-        .header-text h3 {
-            margin: 0;
-            font-size: 12pt;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .header-text h2 {
-            margin: 2px 0;
+        .teks-center h1 {
             font-size: 14pt;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .header-text p {
             margin: 0;
-            font-size: 8pt;
-            font-weight: normal;
+            font-weight: bold;
         }
 
-        /* JUDUL DOKUMEN */
+        .teks-center h2 {
+            font-size: 16pt;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .teks-center p {
+            font-size: 9pt;
+            margin: 2px 0 0 0;
+            line-height: 1.2;
+        }
+
+        .garis-tipis {
+            border-top: 1px solid black;
+            margin-top: 2px;
+            margin-bottom: 20px;
+        }
+
+        /* --- JUDUL DOKUMEN --- */
         .title-doc {
             text-align: center;
             font-weight: bold;
             text-decoration: underline;
-            font-size: 11pt;
+            font-size: 12pt;
             margin-bottom: 5px;
             text-transform: uppercase;
         }
 
-        /* TABEL DATA */
-        table {
+        .tgl-cetak {
+            text-align: center;
+            font-size: 10pt;
+            margin-bottom: 20px;
+        }
+
+        /* --- TABEL DATA (SESUAI GAMBAR) --- */
+        .table-data {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
-            font-size: 9pt;
+            font-size: 10pt;
+            table-layout: fixed;
         }
 
-        table,
-        th,
-        td {
+        .table-data th,
+        .table-data td {
             border: 1px solid black;
+            padding: 8px 6px;
         }
 
-        th {
-            background-color: #f2f2f2;
+        .table-data th {
             text-align: center;
             font-weight: bold;
-            padding: 6px 4px;
             vertical-align: middle;
+            text-transform: uppercase;
+            background-color: transparent;
+            /* Background dihilangkan agar formal */
         }
 
-        td {
-            padding: 5px 6px;
-            text-align: left;
+        .table-data td {
             vertical-align: top;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
-        /* STATUS BADGE */
+        /* --- STATUS BADGE --- */
         .status-aman {
-            color: green;
+            color: #15803d;
+            /* Hijau */
             font-weight: bold;
         }
 
         .status-overstay {
-            color: red;
+            color: #b91c1c;
+            /* Merah */
             font-weight: bold;
         }
 
         .status-warning {
             color: #d97706;
+            /* Orange */
             font-weight: bold;
         }
 
-        /* TANDA TANGAN */
-        .ttd-container {
+        /* --- TANDA TANGAN --- */
+        .ttd-wrapper {
+            width: 100%;
+            margin-top: 40px;
+            page-break-inside: avoid;
+        }
+
+        .ttd-box {
             float: right;
-            width: 35%;
+            width: 300px;
             text-align: center;
-            margin-top: 30px;
+        }
+
+        .clear {
+            clear: both;
         }
     </style>
 </head>
 
-<body>
+<body onload="window.print()">
 
-    {{-- KOP SURAT --}}
-    <div class="header-container">
-        <img src="{{ public_path('img/logo-kejaksaan.png') }}" class="logo">
-        <div class="header-text">
-            <h3>KEJAKSAAN REPUBLIK INDONESIA</h3>
-            <h3>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h3>
-            <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
-            <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
-            <p>Website: kejari-banjarmasin.go.id</p>
-        </div>
-    </div>
+    <!-- KOP SURAT -->
+    <table class="kop-table">
+        <tr>
+            <td style="width: 15%; text-align: center;">
+                <img src="{{ asset('img/logo-kejaksaan.png') }}" style="width: 75px; height: auto;">
+            </td>
+            <td class="teks-center" style="width: 70%;">
+                <h1>KEJAKSAAN REPUBLIK INDONESIA</h1>
+                <h1>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h1>
+                <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
+                <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
+                <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
+            </td>
+            <td style="width: 15%;"></td>
+        </tr>
+    </table>
+    <div class="garis-tipis"></div>
 
-    {{-- JUDUL DOKUMEN --}}
+    <!-- JUDUL DOKUMEN -->
     <div class="title-doc">
         DATA PENGAWASAN ORANG ASING (WNA)
     </div>
-    <div style="text-align: center; font-size: 9pt; margin-bottom: 15px;">
-        Tanggal Cetak: {{ date('d F Y') }}
+    <div class="tgl-cetak">
+        Tanggal Cetak: {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
     </div>
 
-    {{-- TABEL DATA --}}
-    <table>
+    <!-- TABEL DATA -->
+    <table class="table-data">
         <thead>
             <tr>
-                <th style="width: 4%">No</th>
-                <th style="width: 22%">Identitas WNA</th>
-                <th style="width: 15%">Izin Tinggal</th>
-                <th style="width: 20%">Tujuan & Sponsor</th>
-                <th style="width: 24%">Alamat Menginap</th>
-                <th style="width: 15%">Status Izin</th>
+                <th style="width: 5%">NO</th>
+                <th style="width: 25%">IDENTITAS WNA</th>
+                <th style="width: 15%">IZIN TINGGAL</th>
+                <th style="width: 20%">TUJUAN & SPONSOR</th>
+                <th style="width: 20%">ALAMAT MENGINAP</th>
+                <th style="width: 15%">STATUS IZIN</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($data as $index => $item)
+            @forelse($data as $index => $item)
             <tr>
-                <td style="text-align: center">{{ $index + 1 }}</td>
-                <td>
+                <td style="text-align: center;">{{ $index + 1 }}</td>
+                <td style="text-align: left;">
                     <strong style="text-transform: uppercase;">{{ $item->nama_lengkap }}</strong><br>
-                    <span style="font-size: 8pt; color: #444;">
+                    <span style="font-size: 9pt; color: #000;">
                         Paspor: {{ $item->nomor_paspor }}<br>
                         Negara: {{ $item->kebangsaan }}
                     </span>
                 </td>
-                <td>
-                    <span style="display: block; font-size: 8pt; color: #555;">Tiba:</span>
-                    {{ $item->tanggal_tiba ? \Carbon\Carbon::parse($item->tanggal_tiba)->format('d/m/Y') : '-' }}
-                    <br>
-                    <span style="display: block; font-size: 8pt; color: #555; margin-top: 2px;">Berlaku s/d:</span>
-                    <strong>{{ \Carbon\Carbon::parse($item->masa_berlaku_izin_tinggal)->format('d/m/Y') }}</strong>
+                <td style="text-align: left;">
+                    <span style="font-size: 9pt;">Tiba:<br>
+                        {{ $item->tanggal_tiba ? \Carbon\Carbon::parse($item->tanggal_tiba)->format('d/m/Y') : '-' }}</span>
+                    <br><br>
+                    <span style="font-size: 9pt;">Berlaku s/d:<br>
+                        <strong>{{ \Carbon\Carbon::parse($item->masa_berlaku_izin_tinggal)->format('d/m/Y') }}</strong></span>
                 </td>
-                <td>
-                    {{ $item->tujuan_kunjungan }}<br>
-                    <span style="font-size: 8pt; color: #555;">Sponsor: {{ $item->sponsor ?? '-' }}</span>
+                <td style="text-align: left;">
+                    {{ $item->tujuan_kunjungan }}<br><br>
+                    <span style="font-size: 9pt;">Sponsor: {{ $item->sponsor ?? '-' }}</span>
                 </td>
-                <td>
-                    {{ \Illuminate\Support\Str::limit($item->alamat_menginap, 100) }}
+                <td style="text-align: center;">
+                    {{ $item->alamat_menginap }}
                 </td>
                 <td style="text-align: center;">
                     @php
@@ -181,26 +217,40 @@
 
                     @if($diff < 0)
                         <span class="status-overstay">OVERSTAY</span><br>
-                        <span style="font-size: 8pt; color: red;">({{ abs($diff) }} Hari)</span>
+                        <span style="font-size: 9pt; color: #b91c1c;">({{ abs($diff) }} Hari)</span>
                         @elseif($diff <= 30)
                             <span class="status-warning">WARNING</span><br>
-                            <span style="font-size: 8pt;">(Sisa {{ $diff }} Hari)</span>
+                            <span style="font-size: 9pt; color: #d97706;">(Sisa {{ $diff }} Hari)</span>
                             @else
                             <span class="status-aman">AMAN</span>
                             @endif
                 </td>
             </tr>
-            @endforeach
+            @empty
+            <tr>
+                <td colspan="6" style="text-align: center; font-style: italic; padding: 15px;">Data WNA tidak ditemukan.</td>
+            </tr>
+            @endforelse
         </tbody>
     </table>
 
-    {{-- TANDA TANGAN --}}
-    <div class="ttd-container">
-        <p>Banjarmasin, {{ now()->translatedFormat('d F Y') }}</p>
-        <p>Kepala Seksi Intelijen,</p>
-        <br><br><br>
-        <p style="font-weight: bold; text-decoration: underline; margin-bottom: 0;">Dimas Purnama Putra, S.H.,M.H</p>
-        <p style="margin-top: 2px;">Jaksa Madya NIP. 19850101 201001 1 001</p>
+    <!-- TANDA TANGAN -->
+    <div class="ttd-wrapper">
+        <div class="ttd-box">
+            <p style="margin: 0;">Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+            <p style="margin: 0; font-weight: bold;">Kepala Seksi Intelijen,</p>
+
+            <div style="margin: 15px 0;">
+                @php
+                $qrContent = "Dokumen Valid: Rekapitulasi Pengawasan WNA\nDicetak pada: " . \Carbon\Carbon::now()->format('d/m/Y H:i:s');
+                @endphp
+                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(90)->generate($qrContent)) !!} ">
+            </div>
+
+            <p style="margin: 0; font-weight: bold; text-decoration: underline;">Nama Kasi Intelijen</p>
+            <p style="margin: 0;">NIP. 1234567890</p>
+        </div>
+        <div class="clear"></div>
     </div>
 
 </body>

@@ -1,145 +1,185 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
+    <meta charset="UTF-8">
     <title>Laporan Rekapitulasi JMS</title>
     <style>
-        /* PENGATURAN KERTAS & FONT */
+        /* --- PENGATURAN KERTAS & FONT --- */
+        @page {
+            size: A4 landscape;
+            margin: 1.5cm 2cm;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            font-size: 10px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 10pt;
             line-height: 1.3;
-            margin: 0;
-            padding: 0;
+            color: #000;
+            -webkit-print-color-adjust: exact;
         }
 
-        /* KOP SURAT */
-        .header-container {
+        /* --- KOP SURAT 3 KOLOM --- */
+        .kop-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-bottom: 3px solid black;
+        }
+
+        .kop-table td {
+            vertical-align: middle;
+            padding-bottom: 5px;
+        }
+
+        .teks-center {
             text-align: center;
-            position: relative;
-            margin-bottom: 20px;
-            border-bottom: 3px double black;
-            padding-bottom: 10px;
         }
 
-        .logo {
-            width: 70px;
-            position: absolute;
-            left: 0;
-            top: 0;
-        }
-
-        .header-text h3 {
-            margin: 0;
-            font-size: 12pt;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .header-text h2 {
-            margin: 2px 0;
+        .teks-center h1 {
             font-size: 14pt;
+            margin: 0;
             font-weight: bold;
             text-transform: uppercase;
         }
 
-        .header-text p {
+        .teks-center h2 {
+            font-size: 16pt;
             margin: 0;
-            font-size: 8pt;
-            font-weight: normal;
+            font-weight: bold;
+            text-transform: uppercase;
         }
 
-        /* JUDUL DOKUMEN */
+        .teks-center p {
+            font-size: 9pt;
+            margin: 2px 0 0 0;
+            line-height: 1.2;
+        }
+
+        .garis-tipis {
+            border-top: 1px solid black;
+            margin-top: 2px;
+            margin-bottom: 20px;
+        }
+
+        /* --- JUDUL DOKUMEN --- */
         .title-doc {
             text-align: center;
             font-weight: bold;
             text-decoration: underline;
-            font-size: 11pt;
+            font-size: 12pt;
             margin-bottom: 5px;
             text-transform: uppercase;
         }
 
-        /* TABEL DATA */
-        table {
+        .sub-title {
+            text-align: center;
+            font-size: 10pt;
+            margin-bottom: 20px;
+        }
+
+        /* --- TABEL DATA (PERBAIKAN GARIS) --- */
+        .table-data {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
-            font-size: 9pt;
+            font-size: 10pt;
+            table-layout: fixed;
+            border: 1px solid black !important;
+            /* Paksa bingkai luar tabel */
         }
 
-        table,
-        th,
-        td {
-            border: 1px solid black;
+        .table-data th,
+        .table-data td {
+            border: 1px solid black !important;
+            /* Paksa garis tiap sel muncul */
+            padding: 10px 8px;
         }
 
-        th {
-            background-color: #f2f2f2;
+        .table-data th {
             text-align: center;
             font-weight: bold;
-            padding: 6px 4px;
             vertical-align: middle;
+            text-transform: uppercase;
+            background-color: transparent;
         }
 
-        td {
-            padding: 5px 6px;
-            text-align: left;
+        .table-data td {
             vertical-align: top;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
-        /* TANDA TANGAN */
-        .ttd-container {
+        /* --- TANDA TANGAN --- */
+        .ttd-wrapper {
+            width: 100%;
+            margin-top: 40px;
+            display: inline-block;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .ttd-box {
             float: right;
-            width: 35%;
+            width: 300px;
             text-align: center;
-            margin-top: 30px;
+        }
+
+        .clear {
+            clear: both;
         }
     </style>
 </head>
 
-<body>
+<body onload="window.print()">
 
-    {{-- KOP SURAT --}}
-    <div class="header-container">
-        <img src="{{ public_path('img/logo-kejaksaan.png') }}" class="logo">
-        <div class="header-text">
-            <h3>KEJAKSAAN REPUBLIK INDONESIA</h3>
-            <h3>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h3>
-            <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
-            <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
-            <p>Website: kejari-banjarmasin.go.id</p>
-        </div>
-    </div>
+    <!-- KOP SURAT 3 KOLOM -->
+    <table class="kop-table">
+        <tr>
+            <td style="width: 15%; text-align: center;">
+                <img src="{{ asset('img/logo-kejaksaan.png') }}" style="width: 75px; height: auto;">
+            </td>
+            <td class="teks-center" style="width: 70%;">
+                <h1>KEJAKSAAN REPUBLIK INDONESIA</h1>
+                <h1>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h1>
+                <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
+                <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
+                <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
+            </td>
+            <td style="width: 15%;"></td>
+        </tr>
+    </table>
+    <div class="garis-tipis"></div>
 
-    {{-- JUDUL DOKUMEN --}}
+    <!-- JUDUL DOKUMEN -->
     <div class="title-doc">
         LAPORAN KEGIATAN PENERANGAN HUKUM (JMS)
     </div>
-    <div style="text-align: center; font-size: 9pt; margin-bottom: 15px;">
-        Program Jaksa Masuk Sekolah
+    <div class="sub-title">
+        Program Jaksa Masuk Sekolah<br>
+        Tanggal Cetak: {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
     </div>
 
-    {{-- TABEL DATA --}}
-    <table>
+    <!-- TABEL DATA -->
+    <table class="table-data">
         <thead>
             <tr>
-                <th style="width: 5%">No</th>
-                <th style="width: 15%">Tanggal</th>
-                <th style="width: 20%">Nama Sekolah</th>
-                <th style="width: 30%">Materi Disampaikan</th>
-                <th style="width: 10%">Siswa</th>
-                <th style="width: 20%">Jaksa Pemateri</th>
+                <th style="width: 5%">NO</th>
+                <th style="width: 15%">TANGGAL</th>
+                <th style="width: 20%">NAMA SEKOLAH</th>
+                <th style="width: 30%">MATERI DISAMPAIKAN</th>
+                <th style="width: 10%">SISWA</th>
+                <th style="width: 20%">JAKSA PEMATERI</th>
             </tr>
         </thead>
         <tbody>
             @forelse($data as $index => $row)
             <tr>
-                <td style="text-align: center">{{ $index + 1 }}</td>
+                <td style="text-align: center;">{{ $index + 1 }}</td>
                 <td style="text-align: center;">
                     {{ \Carbon\Carbon::parse($row->tanggal_kegiatan)->translatedFormat('d F Y') }}
                 </td>
-                <td>
-                    <strong>{{ $row->nama_sekolah }}</strong>
+                <td style="text-align: left;">
+                    <strong style="text-transform: uppercase;">{{ $row->nama_sekolah }}</strong>
                 </td>
                 <td style="text-align: justify;">
                     {{ \Illuminate\Support\Str::limit($row->materi, 150) }}
@@ -147,23 +187,35 @@
                 <td style="text-align: center;">
                     {{ $row->jumlah_siswa }} Org
                 </td>
-                <td>{{ $row->nama_jaksa }}</td>
+                <td style="text-align: left;">
+                    {{ $row->nama_jaksa }}
+                </td>
             </tr>
             @empty
             <tr>
-                <td colspan="6" style="text-align: center; padding: 20px;">Belum ada data kegiatan JMS.</td>
+                <td colspan="6" style="text-align: center; font-style: italic; padding: 15px;">Belum ada data kegiatan JMS.</td>
             </tr>
             @endforelse
         </tbody>
     </table>
 
-    {{-- TANDA TANGAN --}}
-    <div class="ttd-container">
-        <p>Banjarmasin, {{ now()->translatedFormat('d F Y') }}</p>
-        <p>Kepala Seksi Intelijen,</p>
-        <br><br><br>
-        <p style="font-weight: bold; text-decoration: underline; margin-bottom: 0;">Dimas Purnama Putra, S.H.,M.H</p>
-        <p style="margin-top: 2px;">Jaksa Madya NIP. 19850101 201001 1 001</p>
+    <!-- TANDA TANGAN & QR CODE -->
+    <div class="ttd-wrapper">
+        <div class="ttd-box">
+            <p style="margin: 0;">Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+            <p style="margin: 0; font-weight: bold;">Kepala Seksi Intelijen,</p>
+
+            <div style="margin: 15px 0;">
+                @php
+                $qrContent = "Dokumen Valid: Rekapitulasi Kegiatan JMS\nDicetak pada: " . \Carbon\Carbon::now()->format('d/m/Y H:i:s');
+                @endphp
+                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(90)->generate($qrContent)) !!} ">
+            </div>
+
+            <p style="margin: 0; font-weight: bold; text-decoration: underline;">Nama Kasi Intelijen</p>
+            <p style="margin: 0;">NIP. 1234567890</p>
+        </div>
+        <div class="clear"></div>
     </div>
 
 </body>

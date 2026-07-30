@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Laporan PAM SDO - {{ $item->nama_pegawai }}</title>
     <style>
-        /* PENGATURAN KERTAS (MARGIN DIKURANGI SEDIKIT AGAR MUAT) */
+        /* --- PENGATURAN KERTAS & FONT --- */
         @page {
             size: A4 portrait;
             margin: 1.5cm 2cm;
@@ -14,72 +14,71 @@
         body {
             font-family: 'Times New Roman', Times, serif;
             font-size: 11pt;
-            /* Font sedikit diperkecil agar hemat ruang */
             line-height: 1.3;
             color: #000;
+            -webkit-print-color-adjust: exact;
+            /* Wajib agar background warna status tercetak */
         }
 
-        /* --- KOP SURAT --- */
-        .kop-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 0;
-        }
-
-        .logo-cell {
-            width: 90px;
-            vertical-align: middle;
-            text-align: left;
-        }
-
-        .logo-img {
-            width: 80px;
-            height: auto;
-        }
-
-        .teks-cell {
-            text-align: center;
-            vertical-align: middle;
-            padding-right: 90px;
-        }
-
-        .teks-cell h1 {
-            font-size: 13pt;
-            margin: 0;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .teks-cell h2 {
-            font-size: 15pt;
-            margin: 0;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .teks-cell p {
-            font-size: 9pt;
-            margin: 1px 0;
-            line-height: 1.1;
-        }
-
-        .garis-kop-ganda {
-            border-top: 3px solid black;
-            border-bottom: 1px solid black;
-            height: 2px;
-            margin-top: 5px;
-            margin-bottom: 20px;
-        }
-
-        /* --- KONTEN --- */
+        /* --- STYLING LABEL RAHASIA --- */
         .rahasia-top {
+            text-align: right;
             font-weight: bold;
             text-decoration: underline;
-            text-align: right;
-            font-size: 10pt;
+            font-size: 11pt;
             margin-bottom: 5px;
         }
 
+        .rahasia-bottom {
+            text-align: right;
+            font-weight: bold;
+            text-decoration: underline;
+            font-size: 11pt;
+            margin-top: 20px;
+            clear: both;
+        }
+
+        /* --- KOP SURAT 3 KOLOM --- */
+        .kop-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-bottom: 3px solid black;
+        }
+
+        .kop-table td {
+            vertical-align: middle;
+            padding-bottom: 5px;
+        }
+
+        .teks-center {
+            text-align: center;
+        }
+
+        .teks-center h1 {
+            font-size: 13pt;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .teks-center h2 {
+            font-size: 15pt;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .teks-center p {
+            font-size: 9pt;
+            margin: 2px 0 0 0;
+            line-height: 1.2;
+        }
+
+        .garis-tipis {
+            border-top: 1px solid black;
+            margin-top: 2px;
+            margin-bottom: 20px;
+        }
+
+        /* --- JUDUL --- */
         .judul {
             text-align: center;
             font-size: 13pt;
@@ -89,27 +88,9 @@
             text-transform: uppercase;
         }
 
+        /* --- KONTEN BIODATA --- */
         .content-block {
             margin-bottom: 15px;
-        }
-
-        .label-heading {
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-            text-decoration: underline;
-            font-size: 11pt;
-        }
-
-        .value-text {
-            text-align: justify;
-            padding-left: 0;
-            /* Hemat ruang */
-            margin-bottom: 10px;
-            border: 1px solid #000;
-            /* Tambah border agar rapi & jelas batasnya */
-            padding: 8px;
-            min-height: 50px;
         }
 
         .table-info {
@@ -121,6 +102,7 @@
         .table-info td {
             vertical-align: top;
             padding: 3px 0;
+            font-size: 11pt;
         }
 
         .col-label {
@@ -131,19 +113,48 @@
         .col-sep {
             width: 15px;
             text-align: center;
+            font-weight: bold;
         }
 
-        /* FOTO */
+        /* --- KONTEN URAIAN --- */
+        .label-heading {
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            text-decoration: underline;
+            font-size: 11pt;
+        }
+
+        .value-text {
+            text-align: justify;
+            margin-bottom: 10px;
+            border: 1px solid #000;
+            padding: 8px 10px;
+            min-height: 50px;
+        }
+
+        /* --- STATUS BOX --- */
+        .status-box {
+            border: 2px solid black;
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-top: 20px;
+            background-color: #f0f0f0;
+            font-size: 11pt;
+            page-break-inside: avoid;
+        }
+
+        /* --- FOTO LAMPIRAN --- */
         .foto-wrapper {
-            margin-top: 15px;
+            margin-top: 20px;
             text-align: center;
             page-break-inside: avoid;
-            /* Jangan potong foto */
         }
 
         .foto-container {
             width: 250px;
-            /* Perkecil sedikit agar muat */
             height: auto;
             border: 1px solid #000;
             padding: 4px;
@@ -158,52 +169,24 @@
         }
 
         .foto-label {
-            font-size: 9pt;
+            font-size: 10pt;
             font-weight: bold;
-            margin-bottom: 3px;
+            margin-bottom: 5px;
             text-transform: uppercase;
+            text-decoration: underline;
         }
 
-        /* STATUS BOX */
-        .status-box {
-            border: 2px solid black;
-            padding: 8px;
-            text-align: center;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-top: 20px;
-            background-color: #f0f0f0;
-            font-size: 11pt;
-            page-break-inside: avoid;
-        }
-
-        /* TANDA TANGAN (FIX PAGE BREAK) */
+        /* --- TANDA TANGAN --- */
         .ttd-wrapper {
             width: 100%;
             margin-top: 30px;
             page-break-inside: avoid;
-            /* KUNCI UTAMA: Agar ttd tidak pindah halaman sendirian */
         }
 
         .ttd-container {
             float: right;
-            width: 280px;
+            width: 250px;
             text-align: center;
-        }
-
-        .nama-terang {
-            font-weight: bold;
-            text-decoration: underline;
-            margin-top: 60px;
-        }
-
-        .rahasia-bottom {
-            font-weight: bold;
-            text-decoration: underline;
-            text-align: right;
-            font-size: 10pt;
-            margin-top: 20px;
-            clear: both;
         }
 
         .clear {
@@ -212,30 +195,31 @@
     </style>
 </head>
 
-<body>
+<body onload="window.print()">
 
     <div class="rahasia-top">RAHASIA</div>
 
-    {{-- KOP SURAT --}}
+    <!-- KOP SURAT 3 KOLOM AGAR PRESISI DI TENGAH -->
     <table class="kop-table">
         <tr>
-            <td class="logo-cell">
-                <img src="{{ public_path('img/logo-kejaksaan.png') }}" class="logo-img">
+            <td style="width: 15%; text-align: center;">
+                <img src="{{ asset('img/logo-kejaksaan.png') }}" style="width: 75px; height: auto;">
             </td>
-            <td class="teks-cell">
+            <td class="teks-center" style="width: 70%;">
                 <h1>KEJAKSAAN REPUBLIK INDONESIA</h1>
                 <h1>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h1>
                 <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
                 <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
                 <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
             </td>
+            <td style="width: 15%;"></td>
         </tr>
     </table>
-    <div class="garis-kop-ganda"></div>
+    <div class="garis-tipis"></div>
 
     <div class="judul">LAPORAN PENGAMANAN SUMBER DAYA ORGANISASI (SDO)</div>
 
-    {{-- BIODATA --}}
+    <!-- BIODATA -->
     <div class="content-block">
         <table class="table-info">
             <tr>
@@ -266,22 +250,22 @@
         </table>
     </div>
 
-    {{-- ISI LAPORAN (DIBERI BORDER AGAR RAPI) --}}
+    <!-- ISI LAPORAN -->
     <div class="content-block">
         <div class="label-heading">I. URAIAN PERMASALAHAN / INDIKASI</div>
         <div class="value-text">
-            {{ $item->permasalahan }}
+            {!! nl2br(e($item->permasalahan)) !!}
         </div>
     </div>
 
     <div class="content-block">
         <div class="label-heading">II. KETERANGAN / TINDAK LANJUT</div>
         <div class="value-text">
-            {{ $item->keterangan ?? 'Tidak ada keterangan tambahan.' }}
+            {!! nl2br(e($item->keterangan ?? 'Tidak ada keterangan tambahan.')) !!}
         </div>
     </div>
 
-    {{-- STATUS BOX --}}
+    <!-- STATUS BOX -->
     <div class="status-box">
         STATUS:
         @if($item->status_pam == 'clear')
@@ -293,32 +277,34 @@
         @endif
     </div>
 
-    {{-- LAMPIRAN FOTO --}}
+    <!-- LAMPIRAN FOTO -->
     @if($item->foto && file_exists(public_path('storage/' . $item->foto)))
     <div class="foto-wrapper">
         <div class="foto-label">Lampiran Dokumentasi</div>
         <div class="foto-container">
-            <img src="{{ public_path('storage/' . $item->foto) }}" class="foto-img">
+            <img src="{{ asset('storage/' . $item->foto) }}" class="foto-img">
         </div>
     </div>
     @endif
 
-    {{-- TANDA TANGAN (WRAPPER AGAR TIDAK PECAH HALAMAN) --}}
-    <div style="width: 100%; margin-top: 50px;">
-        <div style="float: right; width: 300px; text-align: center;">
-            <p>Mengetahui,</p>
-            <p><strong>Kepala Seksi Intelijen</strong></p>
-            <div style="margin: 15px 0;">
+    <!-- TANDA TANGAN -->
+    <div class="ttd-wrapper">
+        <div class="ttd-container">
+            <p style="margin: 0;">Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+            <p style="margin: 0; font-weight: bold;">Mengetahui,</p>
+            <p style="margin: 0; font-weight: bold;">Kepala Seksi Intelijen</p>
+
+            <div style="margin: 10px 0;">
                 @php
                 $qrContent = route('verifikasi.dokumen', ['tipe' => 'pam-sdo', 'id' => $item->id]);
                 @endphp
-                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(100)->generate($qrContent)) !!} ">
+                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(90)->generate($qrContent)) !!} ">
             </div>
 
-            <p><u>Nama Kasi Intelijen</u></p>
-            <p>NIP. 1234567890</p>
+            <p style="margin: 0; font-weight: bold; text-decoration: underline;">NAMA KEPALA SEKSI INTELIJEN</p>
+            <p style="margin: 0;">Jaksa Madya / NIP. 198XXXXXXXXXXXXXX</p>
         </div>
-        <div style="clear: both;"></div>
+        <div class="clear"></div>
     </div>
 
     <div class="rahasia-bottom">RAHASIA</div>

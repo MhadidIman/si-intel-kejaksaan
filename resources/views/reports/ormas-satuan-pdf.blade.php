@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Data Ormas - {{ $item->nama_organisasi }}</title>
     <style>
-        /* Pengaturan Kertas */
+        /* --- PENGATURAN KERTAS & FONT --- */
         @page {
             size: A4 portrait;
             margin: 2cm;
@@ -13,61 +13,52 @@
 
         body {
             font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
+            font-size: 11pt;
+            /* Disesuaikan agar proporsional */
             line-height: 1.5;
             color: #000;
+            -webkit-print-color-adjust: exact;
+            /* Wajib agar background warna status tercetak */
         }
 
-        /* --- STYLING KOP SURAT (SERAGAM) --- */
+        /* --- KOP SURAT 3 KOLOM --- */
         .kop-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 0;
+            border-bottom: 3px solid black;
         }
 
-        .logo-cell {
-            width: 100px;
+        .kop-table td {
             vertical-align: middle;
-            text-align: left;
+            padding-bottom: 5px;
         }
 
-        .logo-img {
-            width: 80px;
-            height: auto;
-        }
-
-        .teks-cell {
+        .teks-center {
             text-align: center;
-            vertical-align: middle;
-            padding-right: 80px;
         }
 
-        .teks-cell h1 {
+        .teks-center h1 {
             font-size: 14pt;
             margin: 0;
             font-weight: bold;
-            text-transform: uppercase;
         }
 
-        .teks-cell h2 {
+        .teks-center h2 {
             font-size: 16pt;
             margin: 0;
             font-weight: bold;
-            text-transform: uppercase;
         }
 
-        .teks-cell p {
+        .teks-center p {
             font-size: 9pt;
-            margin: 1px 0;
+            margin: 2px 0 0 0;
             line-height: 1.2;
         }
 
-        .garis-kop-ganda {
-            border-top: 3px solid black;
-            border-bottom: 1px solid black;
-            height: 2px;
-            margin-top: 5px;
-            margin-bottom: 25px;
+        .garis-tipis {
+            border-top: 1px solid black;
+            margin-top: 2px;
+            margin-bottom: 20px;
         }
 
         /* --- STYLING ISI DOKUMEN --- */
@@ -75,7 +66,7 @@
             text-align: center;
             font-weight: bold;
             text-decoration: underline;
-            font-size: 14pt;
+            font-size: 13pt;
             margin-bottom: 30px;
             text-transform: uppercase;
         }
@@ -86,6 +77,7 @@
             margin-top: 20px;
             margin-bottom: 10px;
             text-decoration: underline;
+            font-size: 11pt;
         }
 
         .data-table {
@@ -97,6 +89,7 @@
         .data-table td {
             vertical-align: top;
             padding: 5px 0;
+            font-size: 11pt;
         }
 
         .label {
@@ -107,9 +100,10 @@
         .sep {
             width: 15px;
             text-align: center;
+            font-weight: bold;
         }
 
-        /* Stampel Status */
+        /* --- STAMPEL STATUS --- */
         .status-box {
             margin-top: 30px;
             padding: 15px;
@@ -147,18 +141,16 @@
             background-color: #f9fafb;
         }
 
-        /* Tanda Tangan */
+        /* --- TANDA TANGAN --- */
         .ttd-container {
-            float: right;
-            width: 300px;
-            text-align: center;
-            margin-top: 50px;
+            width: 100%;
+            margin-top: 40px;
         }
 
-        .nama-terang {
-            font-weight: bold;
-            text-decoration: underline;
-            margin-top: 70px;
+        .ttd-box {
+            float: right;
+            width: 250px;
+            text-align: center;
         }
 
         .clear {
@@ -167,23 +159,25 @@
     </style>
 </head>
 
-<body>
+<body onload="window.print()">
 
+    <!-- KOP SURAT 3 KOLOM AGAR PRESISI DI TENGAH -->
     <table class="kop-table">
         <tr>
-            <td class="logo-cell">
-                <img src="{{ public_path('img/logo-kejaksaan.png') }}" class="logo-img">
+            <td style="width: 15%; text-align: center;">
+                <img src="{{ asset('img/logo-kejaksaan.png') }}" style="width: 75px; height: auto;">
             </td>
-            <td class="teks-cell">
+            <td class="teks-center" style="width: 70%;">
                 <h1>KEJAKSAAN REPUBLIK INDONESIA</h1>
                 <h1>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h1>
                 <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
                 <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
                 <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
             </td>
+            <td style="width: 15%;"></td>
         </tr>
     </table>
-    <div class="garis-kop-ganda"></div>
+    <div class="garis-tipis"></div>
 
     <div class="judul">LEMBAR DATA ORGANISASI KEMASYARAKATAN</div>
 
@@ -251,21 +245,24 @@
     </div>
     @endif
 
-    <div style="width: 100%; margin-top: 50px;">
-        <div style="float: right; width: 300px; text-align: center;">
-            <p>Mengetahui,</p>
-            <p><strong>Kepala Seksi Intelijen</strong></p>
-            <div style="margin: 15px 0;">
+    <!-- TANDA TANGAN -->
+    <div class="ttd-container">
+        <div class="ttd-box">
+            <p style="margin: 0;">Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+            <p style="margin: 0; font-weight: bold;">Mengetahui,</p>
+            <p style="margin: 0; font-weight: bold;">Kepala Seksi Intelijen</p>
+
+            <div style="margin: 10px 0;">
                 @php
                 $qrContent = route('verifikasi.dokumen', ['tipe' => 'ormas', 'id' => $item->id]);
                 @endphp
-                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(100)->generate($qrContent)) !!} ">
+                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(90)->generate($qrContent)) !!} ">
             </div>
 
-            <p><u>Nama Kasi Intelijen</u></p>
-            <p>NIP. 1234567890</p>
+            <p style="margin: 0; font-weight: bold; text-decoration: underline;">NAMA KEPALA SEKSI INTELIJEN</p>
+            <p style="margin: 0;">Jaksa Madya / NIP. 198XXXXXXXXXXXXXX</p>
         </div>
-        <div style="clear: both;"></div>
+        <div class="clear"></div>
     </div>
 
 </body>

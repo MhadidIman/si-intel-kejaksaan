@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Biodata WNA - {{ $item->nama_lengkap }}</title>
     <style>
-        /* PENGATURAN KERTAS */
+        /* --- PENGATURAN KERTAS & FONT --- */
         @page {
             size: A4 portrait;
             margin: 2cm;
@@ -13,60 +13,80 @@
 
         body {
             font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
-            line-height: 1.4;
+            font-size: 11pt;
+            line-height: 1.5;
             color: #000;
+            -webkit-print-color-adjust: exact;
         }
 
-        /* KOP SURAT */
-        .header {
-            text-align: center;
-            border-bottom: 3px double black;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .logo {
-            width: 80px;
-            position: absolute;
-            left: 0;
-            top: 0;
-        }
-
-        .header h3,
-        .header h2,
-        .header p {
-            margin: 2px 0;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .header p {
-            font-size: 9pt;
-            font-weight: normal;
-            text-transform: none;
-        }
-
-        /* JUDUL */
+        /* --- STYLING LABEL RAHASIA --- */
         .rahasia-top {
             text-align: right;
             font-weight: bold;
             text-decoration: underline;
-            font-size: 10pt;
+            font-size: 11pt;
             margin-bottom: 10px;
         }
 
+        .rahasia-bottom {
+            text-align: right;
+            font-weight: bold;
+            text-decoration: underline;
+            font-size: 11pt;
+            margin-top: 30px;
+        }
+
+        /* --- KOP SURAT 3 KOLOM --- */
+        .kop-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-bottom: 3px solid black;
+        }
+
+        .kop-table td {
+            vertical-align: middle;
+            padding-bottom: 5px;
+        }
+
+        .teks-center {
+            text-align: center;
+        }
+
+        .teks-center h1 {
+            font-size: 14pt;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .teks-center h2 {
+            font-size: 16pt;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .teks-center p {
+            font-size: 9pt;
+            margin: 2px 0 0 0;
+            line-height: 1.2;
+        }
+
+        .garis-tipis {
+            border-top: 1px solid black;
+            margin-top: 2px;
+            margin-bottom: 20px;
+        }
+
+        /* --- JUDUL --- */
         .judul {
             text-align: center;
             font-weight: bold;
             text-decoration: underline;
-            font-size: 14pt;
+            font-size: 13pt;
             margin-bottom: 25px;
             text-transform: uppercase;
         }
 
-        /* LAYOUT UTAMA (TABEL 2 KOLOM) */
+        /* --- LAYOUT UTAMA (TABEL 2 KOLOM) --- */
         .main-layout {
             width: 100%;
             border-collapse: collapse;
@@ -85,7 +105,7 @@
             text-align: center;
         }
 
-        /* TABEL BIODATA */
+        /* --- TABEL BIODATA --- */
         .bio-table {
             width: 100%;
             border-collapse: collapse;
@@ -93,7 +113,8 @@
 
         .bio-table td {
             vertical-align: top;
-            padding: 4px 0;
+            padding-bottom: 8px;
+            font-size: 11pt;
         }
 
         .label {
@@ -104,33 +125,54 @@
         .sep {
             width: 15px;
             text-align: center;
+            font-weight: bold;
         }
 
         .val {
             text-align: justify;
         }
 
-        /* FOTO */
+        /* --- FOTO --- */
         .photo-box {
             width: 150px;
             height: 200px;
             border: 2px solid black;
             padding: 4px;
+            box-sizing: border-box;
+            background-color: #fff;
+            display: inline-block;
+        }
+
+        .photo-img {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
         }
 
         .no-photo {
-            width: 150px;
-            height: 200px;
-            border: 2px solid black;
-            background: #eee;
+            width: 100%;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10pt;
+            background-color: #f3f4f6;
+            font-size: 9pt;
+            color: #666;
+            border: 1px dashed #ccc;
+            box-sizing: border-box;
+            line-height: 1.2;
         }
 
-        /* STATUS BOX */
+        /* --- STATUS BOX --- */
+        .section-sub {
+            font-weight: bold;
+            text-decoration: underline;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-size: 11pt;
+        }
+
         .status-box {
             margin-top: 15px;
             padding: 10px;
@@ -152,21 +194,16 @@
             background-color: #e6fffa;
         }
 
-        /* SECTION SUB */
-        .section-sub {
-            font-weight: bold;
-            text-decoration: underline;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            text-transform: uppercase;
+        /* --- TANDA TANGAN --- */
+        .ttd-container {
+            width: 100%;
+            margin-top: 40px;
         }
 
-        /* TANDA TANGAN */
-        .signature {
+        .ttd-box {
             float: right;
-            width: 40%;
+            width: 250px;
             text-align: center;
-            margin-top: 40px;
         }
 
         .clear {
@@ -175,25 +212,34 @@
     </style>
 </head>
 
-<body>
+<body onload="window.print()">
 
     <div class="rahasia-top">RAHASIA</div>
 
-    <div class="header">
-        <img src="{{ public_path('img/logo-kejaksaan.png') }}" class="logo">
-        <h3>KEJAKSAAN REPUBLIK INDONESIA</h3>
-        <h3>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h3>
-        <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
-        <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
-        <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
-    </div>
+    <!-- KOP SURAT 3 KOLOM AGAR PRESISI DI TENGAH -->
+    <table class="kop-table">
+        <tr>
+            <td style="width: 15%; text-align: center;">
+                <img src="{{ asset('img/logo-kejaksaan.png') }}" style="width: 75px; height: auto;">
+            </td>
+            <td class="teks-center" style="width: 70%;">
+                <h1>KEJAKSAAN REPUBLIK INDONESIA</h1>
+                <h1>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h1>
+                <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
+                <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
+                <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
+            </td>
+            <td style="width: 15%;"></td>
+        </tr>
+    </table>
+    <div class="garis-tipis"></div>
 
     <div class="judul">LEMBAR DATA PENGAWASAN ORANG ASING</div>
 
-    {{-- LAYOUT UTAMA: BIODATA KIRI - FOTO KANAN --}}
+    <!-- LAYOUT UTAMA: BIODATA KIRI - FOTO KANAN -->
     <table class="main-layout">
         <tr>
-            {{-- KOLOM KIRI --}}
+            <!-- KOLOM KIRI -->
             <td class="col-left">
                 <table class="bio-table">
                     <tr>
@@ -229,13 +275,16 @@
                 </table>
             </td>
 
-            {{-- KOLOM KANAN --}}
+            <!-- KOLOM KANAN (FOTO) -->
             <td class="col-right">
-                @if($item->foto_dokumen && file_exists(public_path('storage/' . $item->foto_dokumen)))
-                <img src="{{ public_path('storage/' . $item->foto_dokumen) }}" class="photo-box">
-                @else
-                <div class="photo-box" style="display:inline-block; line-height:200px; text-align:center; background:#eee;">FOTO TIDAK ADA</div>
-                @endif
+                <div class="photo-box">
+                    @if($item->foto_dokumen)
+                    <!-- Pemanggilan foto menggunakan asset() -->
+                    <img src="{{ asset('storage/' . $item->foto_dokumen) }}" class="photo-img">
+                    @else
+                    <div class="no-photo">FOTO<br>TIDAK TERSEDIA</div>
+                    @endif
+                </div>
             </td>
         </tr>
     </table>
@@ -259,7 +308,7 @@
         </tr>
     </table>
 
-    {{-- LOGIKA OVERSTAY --}}
+    <!-- LOGIKA OVERSTAY -->
     @php
     $tglIzin = \Carbon\Carbon::parse($item->masa_berlaku_izin_tinggal)->startOfDay();
     $tglSkrg = \Carbon\Carbon::now()->startOfDay();
@@ -278,27 +327,27 @@
     </div>
     @endif
 
-    {{-- TANDA TANGAN --}}
-    <div style="width: 100%; margin-top: 50px;">
-        <div style="float: right; width: 300px; text-align: center;">
-            <p>Mengetahui,</p>
-            <p><strong>Kepala Seksi Intelijen</strong></p>
-            <div style="margin: 15px 0;">
+    <!-- TANDA TANGAN -->
+    <div class="ttd-container">
+        <div class="ttd-box">
+            <p style="margin: 0;">Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+            <p style="margin: 0; font-weight: bold;">Mengetahui,</p>
+            <p style="margin: 0; font-weight: bold;">Kepala Seksi Intelijen</p>
+
+            <div style="margin: 10px 0;">
                 @php
                 $qrContent = route('verifikasi.dokumen', ['tipe' => 'wna', 'id' => $item->id]);
                 @endphp
-                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(100)->generate($qrContent)) !!} ">
+                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(90)->generate($qrContent)) !!} ">
             </div>
 
-            <p><u>Nama Kasi Intelijen</u></p>
-            <p>NIP. 1234567890</p>
+            <p style="margin: 0; font-weight: bold; text-decoration: underline;">NAMA KEPALA SEKSI INTELIJEN</p>
+            <p style="margin: 0;">Jaksa Madya / NIP. 198XXXXXXXXXXXXXX</p>
         </div>
-        <div style="clear: both;"></div>
+        <div class="clear"></div>
     </div>
 
-
-    <div class="clear"></div>
-    <div class="rahasia-top" style="margin-top: 30px;">RAHASIA</div>
+    <div class="rahasia-bottom">RAHASIA</div>
 
 </body>
 

@@ -1,172 +1,213 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
+    <meta charset="UTF-8">
     <title>Laporan Data Ormas & LSM</title>
     <style>
-        /* PENGATURAN KERTAS & FONT */
+        /* --- PENGATURAN KERTAS & FONT --- */
+        @page {
+            size: A4 landscape;
+            /* Kertas Landscape untuk tabel lebar */
+            margin: 1.5cm 2cm;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            font-size: 10px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 10pt;
+            /* Font sedikit diperkecil untuk tabel */
             line-height: 1.3;
-            margin: 0;
-            padding: 0;
+            color: #000;
+            -webkit-print-color-adjust: exact;
         }
 
-        /* KOP SURAT */
-        .header-container {
+        /* --- KOP SURAT 3 KOLOM --- */
+        .kop-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-bottom: 3px solid black;
+        }
+
+        .kop-table td {
+            vertical-align: middle;
+            padding-bottom: 5px;
+        }
+
+        .teks-center {
             text-align: center;
-            position: relative;
-            margin-bottom: 20px;
-            border-bottom: 3px double black;
-            padding-bottom: 10px;
         }
 
-        .logo {
-            width: 70px;
-            position: absolute;
-            left: 0;
-            top: 0;
-        }
-
-        .header-text h3 {
-            margin: 0;
-            font-size: 12pt;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .header-text h2 {
-            margin: 2px 0;
+        .teks-center h1 {
             font-size: 14pt;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .header-text p {
             margin: 0;
-            font-size: 8pt;
-            font-weight: normal;
+            font-weight: bold;
         }
 
-        /* JUDUL DOKUMEN */
+        .teks-center h2 {
+            font-size: 16pt;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .teks-center p {
+            font-size: 9pt;
+            margin: 2px 0 0 0;
+            line-height: 1.2;
+        }
+
+        .garis-tipis {
+            border-top: 1px solid black;
+            margin-top: 2px;
+            margin-bottom: 20px;
+        }
+
+        /* --- JUDUL DOKUMEN --- */
         .title-doc {
             text-align: center;
             font-weight: bold;
             text-decoration: underline;
-            font-size: 11pt;
+            font-size: 12pt;
             margin-bottom: 5px;
             text-transform: uppercase;
         }
 
-        /* TABEL DATA */
-        table {
+        .tgl-cetak {
+            text-align: center;
+            font-size: 10pt;
+            margin-bottom: 20px;
+        }
+
+        /* --- TABEL DATA --- */
+        .table-data {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
-            font-size: 9pt;
+            font-size: 10pt;
+            table-layout: fixed;
         }
 
-        table,
-        th,
-        td {
+        .table-data th,
+        .table-data td {
             border: 1px solid black;
+            padding: 8px 6px;
         }
 
-        th {
-            background-color: #f2f2f2;
+        .table-data th {
             text-align: center;
             font-weight: bold;
-            padding: 6px 4px;
             vertical-align: middle;
+            text-transform: uppercase;
+            background-color: transparent;
+            /* Formal look */
         }
 
-        td {
-            padding: 5px 6px;
-            text-align: left;
+        .table-data td {
             vertical-align: top;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
-        /* STATUS BADGE */
+        /* --- STATUS BADGE --- */
         .status-aktif {
-            color: green;
+            color: #16a34a;
+            /* Hijau */
             font-weight: bold;
         }
 
         .status-diawasi {
             color: #d97706;
+            /* Orange/Kuning */
             font-weight: bold;
         }
 
         .status-dilarang {
-            color: red;
+            color: #dc2626;
+            /* Merah */
             font-weight: bold;
         }
 
         .status-vakum {
-            color: #6b7280;
+            color: #4b5563;
+            /* Abu-abu gelap */
             font-style: italic;
         }
 
-        /* TANDA TANGAN */
-        .ttd-container {
+        /* --- TANDA TANGAN --- */
+        .ttd-wrapper {
+            width: 100%;
+            margin-top: 40px;
+            page-break-inside: avoid;
+        }
+
+        .ttd-box {
             float: right;
-            width: 35%;
+            width: 300px;
             text-align: center;
-            margin-top: 30px;
+        }
+
+        .clear {
+            clear: both;
         }
     </style>
 </head>
 
-<body>
+<body onload="window.print()">
 
-    {{-- KOP SURAT --}}
-    <div class="header-container">
-        <img src="{{ public_path('img/logo-kejaksaan.png') }}" class="logo">
-        <div class="header-text">
-            <h3>KEJAKSAAN REPUBLIK INDONESIA</h3>
-            <h3>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h3>
-            <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
-            <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
-            <p>Website: kejari-banjarmasin.go.id</p>
-        </div>
-    </div>
+    <!-- KOP SURAT 3 KOLOM -->
+    <table class="kop-table">
+        <tr>
+            <td style="width: 15%; text-align: center;">
+                <img src="{{ asset('img/logo-kejaksaan.png') }}" style="width: 75px; height: auto;">
+            </td>
+            <td class="teks-center" style="width: 70%;">
+                <h1>KEJAKSAAN REPUBLIK INDONESIA</h1>
+                <h1>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h1>
+                <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
+                <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
+                <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
+            </td>
+            <td style="width: 15%;"></td>
+        </tr>
+    </table>
+    <div class="garis-tipis"></div>
 
-    {{-- JUDUL DOKUMEN --}}
+    <!-- JUDUL DOKUMEN -->
     <div class="title-doc">
         DATA ORGANISASI KEMASYARAKATAN (ORMAS) & LSM
     </div>
-    <div style="text-align: center; font-size: 9pt; margin-bottom: 15px;">
-        Tanggal Cetak: {{ date('d F Y') }}
+    <div class="tgl-cetak">
+        Tanggal Cetak: {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
     </div>
 
-    {{-- TABEL DATA --}}
-    <table>
+    <!-- TABEL DATA -->
+    <table class="table-data">
         <thead>
             <tr>
-                <th style="width: 4%">No</th>
-                <th style="width: 25%">Nama Organisasi</th>
-                <th style="width: 15%">Ketua</th>
-                <th style="width: 10%">Bentuk</th>
-                <th style="width: 15%">Legalitas</th>
-                <th style="width: 20%">Alamat</th>
-                <th style="width: 11%">Status</th>
+                <th style="width: 4%">NO</th>
+                <th style="width: 25%">NAMA ORGANISASI</th>
+                <th style="width: 15%">KETUA</th>
+                <th style="width: 10%">BENTUK</th>
+                <th style="width: 15%">LEGALITAS</th>
+                <th style="width: 20%">ALAMAT</th>
+                <th style="width: 11%">STATUS</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($data as $index => $item)
+            @forelse($data as $index => $item)
             <tr>
-                <td style="text-align: center">{{ $index + 1 }}</td>
-                <td>
+                <td style="text-align: center;">{{ $index + 1 }}</td>
+                <td style="text-align: left;">
                     <strong style="text-transform: uppercase;">{{ $item->nama_organisasi }}</strong><br>
-                    <span style="font-size: 8pt; color: #444;">
+                    <span style="font-size: 9pt; color: #444;">
                         Anggota: {{ $item->jumlah_anggota ?? '-' }} Orang
                     </span>
                 </td>
-                <td>{{ $item->ketua }}</td>
+                <td style="text-align: left;">{{ $item->ketua }}</td>
                 <td style="text-align: center;">{{ $item->bentuk_organisasi }}</td>
-                <td>{{ $item->nomor_legalitas ?? '-' }}</td>
-                <td>{{ \Illuminate\Support\Str::limit($item->alamat_sekretariat, 100) }}</td>
+                <td style="text-align: left;">{{ $item->nomor_legalitas ?? '-' }}</td>
+                <td style="text-align: left;">
+                    {{ \Illuminate\Support\Str::limit($item->alamat_sekretariat, 100) }}
+                </td>
                 <td style="text-align: center;">
                     @if($item->status == 'aktif')
                     <span class="status-aktif">AKTIF</span>
@@ -179,17 +220,31 @@
                     @endif
                 </td>
             </tr>
-            @endforeach
+            @empty
+            <tr>
+                <td colspan="7" style="text-align: center; font-style: italic; padding: 15px;">Data Ormas & LSM tidak ditemukan.</td>
+            </tr>
+            @endforelse
         </tbody>
     </table>
 
-    {{-- TANDA TANGAN --}}
-    <div class="ttd-container">
-        <p>Banjarmasin, {{ now()->translatedFormat('d F Y') }}</p>
-        <p>Kepala Seksi Intelijen,</p>
-        <br><br><br>
-        <p style="font-weight: bold; text-decoration: underline; margin-bottom: 0;">Dimas Purnama Putra, S.H.,M.H</p>
-        <p style="margin-top: 2px;">Jaksa Madya NIP. 19850101 201001 1 001</p>
+    <!-- TANDA TANGAN -->
+    <div class="ttd-wrapper">
+        <div class="ttd-box">
+            <p style="margin: 0;">Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+            <p style="margin: 0; font-weight: bold;">Kepala Seksi Intelijen,</p>
+
+            <div style="margin: 15px 0;">
+                @php
+                $qrContent = "Dokumen Valid: Rekapitulasi ORMAS & LSM\nDicetak pada: " . \Carbon\Carbon::now()->format('d/m/Y H:i:s');
+                @endphp
+                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(90)->generate($qrContent)) !!} ">
+            </div>
+
+            <p style="margin: 0; font-weight: bold; text-decoration: underline;">Nama Kasi Intelijen</p>
+            <p style="margin: 0;">NIP. 1234567890</p>
+        </div>
+        <div class="clear"></div>
     </div>
 
 </body>

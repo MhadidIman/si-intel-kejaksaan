@@ -1,195 +1,250 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
+    <meta charset="UTF-8">
     <title>Laporan PAM SDO</title>
     <style>
-        /* PENGATURAN KERTAS & FONT */
+        /* --- PENGATURAN KERTAS & FONT --- */
+        @page {
+            size: A4 landscape;
+            /* Landscape karena kolom tabel cukup banyak */
+            margin: 1.5cm 2cm;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            font-size: 11pt;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 10pt;
             line-height: 1.3;
-            margin: 0;
-            padding: 0;
+            color: #000;
+            -webkit-print-color-adjust: exact;
         }
 
-        /* KOP SURAT YANG LEBIH RAPI */
-        .header-container {
+        /* --- KOP SURAT 3 KOLOM --- */
+        .kop-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-bottom: 3px solid black;
+        }
+
+        .kop-table td {
+            vertical-align: middle;
+            padding-bottom: 5px;
+        }
+
+        .teks-center {
             text-align: center;
-            position: relative;
-            margin-bottom: 20px;
-            border-bottom: 3px double black;
-            /* Garis ganda tebal tipis */
-            padding-bottom: 10px;
         }
 
-        .logo {
-            width: 85px;
-            /* Ukuran logo lebih proporsional */
-            position: absolute;
-            left: 0;
-            top: 5px;
-        }
-
-        .header-text {
-            margin-left: 0;
-            /* Bisa disesuaikan jika ingin offset dari logo */
-        }
-
-        .header-text h3 {
-            margin: 0;
+        .teks-center h1 {
             font-size: 14pt;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .header-text h2 {
-            margin: 2px 0;
-            font-size: 16pt;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .header-text p {
             margin: 0;
-            font-size: 9pt;
-            font-weight: normal;
+            font-weight: bold;
         }
 
-        /* JUDUL LAPORAN */
+        .teks-center h2 {
+            font-size: 16pt;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .teks-center p {
+            font-size: 9pt;
+            margin: 2px 0 0 0;
+            line-height: 1.2;
+        }
+
+        .garis-tipis {
+            border-top: 1px solid black;
+            margin-top: 2px;
+            margin-bottom: 20px;
+        }
+
+        /* --- JUDUL DOKUMEN --- */
         .title-doc {
             text-align: center;
             font-weight: bold;
             text-decoration: underline;
             font-size: 12pt;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
             text-transform: uppercase;
         }
 
-        /* TABEL DATA */
-        table {
+        .tgl-cetak {
+            text-align: center;
+            font-size: 10pt;
+            margin-bottom: 20px;
+        }
+
+        /* --- TABEL DATA --- */
+        .table-data {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
             font-size: 10pt;
+            table-layout: fixed;
         }
 
-        table,
-        th,
-        td {
+        .table-data th,
+        .table-data td {
             border: 1px solid black;
+            padding: 8px 6px;
         }
 
-        th {
-            background-color: #f2f2f2;
+        .table-data th {
             text-align: center;
             font-weight: bold;
-            padding: 8px 5px;
             vertical-align: middle;
-        }
-
-        td {
-            padding: 6px 8px;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        /* STATUS BADGE */
-        .status-badge {
-            font-weight: bold;
             text-transform: uppercase;
-            font-size: 8pt;
-            padding: 2px 0;
-            display: block;
+            background-color: transparent;
+            /* Formal look tanpa background abu-abu */
+        }
+
+        .table-data td {
+            vertical-align: top;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        /* --- STATUS BADGE --- */
+        .status-aman {
+            color: #16a34a;
+            /* Hijau */
+            font-weight: bold;
+        }
+
+        .status-ditindak {
+            color: #d97706;
+            /* Orange/Kuning */
+            font-weight: bold;
+        }
+
+        .status-diawasi {
+            color: #dc2626;
+            /* Merah */
+            font-weight: bold;
+        }
+
+        /* --- TANDA TANGAN --- */
+        .ttd-wrapper {
+            width: 100%;
+            margin-top: 40px;
+            display: inline-block;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .ttd-box {
+            float: right;
+            width: 300px;
             text-align: center;
         }
 
-        /* TANDA TANGAN */
-        .ttd-container {
-            float: right;
-            width: 40%;
-            text-align: center;
-            margin-top: 40px;
+        .clear {
+            clear: both;
         }
     </style>
 </head>
 
-<body>
+<body onload="window.print()">
 
-    {{-- KOP SURAT --}}
-    <div class="header-container">
-        <img src="{{ public_path('img/logo-kejaksaan.png') }}" class="logo">
-        <div class="header-text">
-            <h3>KEJAKSAAN REPUBLIK INDONESIA</h3>
-            <h3>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h3>
-            <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
-            <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
-            <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
-        </div>
-    </div>
+    <!-- KOP SURAT 3 KOLOM -->
+    <table class="kop-table">
+        <tr>
+            <td style="width: 15%; text-align: center;">
+                <img src="{{ asset('img/logo-kejaksaan.png') }}" style="width: 75px; height: auto;">
+            </td>
+            <td class="teks-center" style="width: 70%;">
+                <h1>KEJAKSAAN REPUBLIK INDONESIA</h1>
+                <h1>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h1>
+                <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
+                <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
+                <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
+            </td>
+            <td style="width: 15%;"></td>
+        </tr>
+    </table>
+    <div class="garis-tipis"></div>
 
-    {{-- JUDUL DOKUMEN --}}
+    <!-- JUDUL DOKUMEN -->
     <div class="title-doc">
         LAPORAN PENGAMANAN SUMBER DAYA ORGANISASI (PAM SDO)
     </div>
+    <div class="tgl-cetak">
+        Tanggal Cetak: {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
+    </div>
 
-    {{-- TABEL DATA --}}
-    <table>
+    <!-- TABEL DATA -->
+    <table class="table-data">
         <thead>
             <tr>
-                <th style="width: 5%">No</th>
-                <th style="width: 12%">Tanggal Input</th>
-                <th style="width: 20%">Identitas Pegawai</th>
-                <th style="width: 18%">Jabatan & Satker</th>
-                <th style="width: 25%">Permasalahan</th>
-                <th style="width: 12%">Status PAM</th>
-                <th style="width: 8%">Ket.</th>
+                <th style="width: 4%">NO</th>
+                <th style="width: 12%">TGL INPUT</th>
+                <th style="width: 19%">IDENTITAS PEGAWAI</th>
+                <th style="width: 18%">JABATAN & SATKER</th>
+                <th style="width: 25%">PERMASALAHAN</th>
+                <th style="width: 12%">STATUS</th>
+                <th style="width: 10%">KET</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($data as $index => $item)
+            @forelse($data as $index => $item)
             <tr>
-                <td style="text-align: center">{{ $index + 1 }}</td>
-                <td style="text-align: center">
-                    {{ \Carbon\Carbon::parse($item->created_at)->translatedFormat('d F Y') }}
+                <td style="text-align: center;">{{ $index + 1 }}</td>
+                <td style="text-align: center;">
+                    {{ \Carbon\Carbon::parse($item->created_at)->translatedFormat('d M Y') }}
                 </td>
-                <td>
+                <td style="text-align: left;">
                     <strong style="text-transform: uppercase;">{{ $item->nama_pegawai }}</strong><br>
-                    <span style="font-size: 9pt; color: #333;">NIP/NRP: {{ $item->nip_nrp ?? '-' }}</span>
+                    <span style="font-size: 9pt; color: #444;">
+                        NIP/NRP: {{ $item->nip_nrp ?? '-' }}
+                    </span>
                 </td>
-                <td>
+                <td style="text-align: left;">
                     {{ $item->pangkat_jabatan }}<br>
-                    <small><i>{{ $item->satuan_kerja }}</i></small>
+                    <span style="font-size: 9pt; font-style: italic; color: #444;">{{ $item->satuan_kerja }}</span>
                 </td>
-                <td>
+                <td style="text-align: justify;">
                     {{ \Illuminate\Support\Str::limit($item->permasalahan, 150) }}
                 </td>
                 <td style="text-align: center;">
-                    @php
-                    $statusText = match($item->status_pam) {
-                    'diawasi' => 'DIAWASI',
-                    'ditindak' => 'DITINDAK',
-                    'clear' => 'AMAN',
-                    default => strtoupper($item->status_pam)
-                    };
-                    @endphp
-                    <span class="status-badge">
-                        {{ $statusText }}
-                    </span>
+                    @if($item->status_pam == 'clear')
+                    <span class="status-aman">AMAN</span>
+                    @elseif($item->status_pam == 'ditindak')
+                    <span class="status-ditindak">DITINDAK</span>
+                    @else
+                    <span class="status-diawasi">DIAWASI</span>
+                    @endif
                 </td>
-                <td>{{ $item->keterangan ?? '-' }}</td>
+                <td style="text-align: center; font-size: 9pt;">
+                    {{ $item->keterangan ?? '-' }}
+                </td>
             </tr>
-            @endforeach
+            @empty
+            <tr>
+                <td colspan="7" style="text-align: center; font-style: italic; padding: 15px;">Data PAM SDO tidak ditemukan.</td>
+            </tr>
+            @endforelse
         </tbody>
     </table>
 
-    {{-- TANDA TANGAN --}}
-    <div class="ttd-container">
-        <p>Banjarmasin, {{ now()->translatedFormat('d F Y') }}</p>
-        <p>Kepala Seksi Intelijen,</p>
-        <br><br><br>
-        <p style="font-weight: bold; text-decoration: underline; margin-bottom: 0;">Dimas Purnama Putra, S.H.,M.H</p>
-        <p style="margin-top: 2px;">Jaksa Madya NIP. 19850101 201001 1 001</p>
+    <!-- TANDA TANGAN & QR CODE -->
+    <div class="ttd-wrapper">
+        <div class="ttd-box">
+            <p style="margin: 0;">Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+            <p style="margin: 0; font-weight: bold;">Kepala Seksi Intelijen,</p>
+
+            <div style="margin: 15px 0;">
+                @php
+                $qrContent = "Dokumen Valid: Rekapitulasi PAM SDO\nDicetak pada: " . \Carbon\Carbon::now()->format('d/m/Y H:i:s');
+                @endphp
+                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(90)->generate($qrContent)) !!} ">
+            </div>
+
+            <p style="margin: 0; font-weight: bold; text-decoration: underline;">Nama Kasi Intelijen</p>
+            <p style="margin: 0;">NIP. 1234567890</p>
+        </div>
+        <div class="clear"></div>
     </div>
 
 </body>
