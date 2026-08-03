@@ -234,23 +234,26 @@
         </tbody>
     </table>
 
-    <!-- TANDA TANGAN -->
+    <!-- TANDA TANGAN BESERTA QR CODE VALIDASI (REKAP WNA) -->
     <div class="ttd-wrapper">
-        <div class="ttd-box">
-            <p style="margin: 0;">Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
-            <p style="margin: 0; font-weight: bold;">Kepala Seksi Intelijen,</p>
+        <div class="ttd-box" style="float: right; width: 320px; text-align: center;">
+            <p style="margin: 0; font-size: 10pt;">Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+            <p style="margin: 0; font-weight: bold; font-size: 10pt; text-transform: uppercase;">Kepala Seksi Intelijen,</p>
 
-            <div style="margin: 15px 0;">
+            <!-- Area QR Code Validasi WNA -->
+            <div style="margin: 20px 0;">
                 @php
                 $qrContent = "Dokumen Valid: Rekapitulasi Pengawasan WNA\nDicetak pada: " . \Carbon\Carbon::now()->format('d/m/Y H:i:s');
                 @endphp
-                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(90)->generate($qrContent)) !!} ">
+                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(95)->generate($qrContent)) !!} " alt="QR Code Validasi">
             </div>
 
-            <p style="margin: 0; font-weight: bold; text-decoration: underline;">Nama Kasi Intelijen</p>
-            <p style="margin: 0;">NIP. 1234567890</p>
+            <!-- Identitas Penandatangan -->
+            <p style="margin: 0; font-weight: bold; text-decoration: underline; font-size: 10pt;">Raya Bimanta S.H., M.H</p>
+            <p style="margin: 2px 0 0 0; font-size: 10pt;">Jaksa Utama Muda (IV/c)</p>
+            <p style="margin: 0; font-size: 10pt;">NIP. 199001012020011001</p>
         </div>
-        <div class="clear"></div>
+        <div class="clear" style="clear: both;"></div>
     </div>
 
 </body>

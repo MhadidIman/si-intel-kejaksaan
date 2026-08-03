@@ -252,21 +252,27 @@
         Demikian laporan khusus ini dibuat untuk menjadi periksa dan mohon petunjuk Pimpinan lebih lanjut.
     </div>
 
-    <div style="width: 100%; margin-top: 50px;">
-        <div style="float: right; width: 300px; text-align: center;">
-            <p>Mengetahui,</p>
-            <p><strong>Kepala Seksi Intelijen</strong></p>
-            <div style="margin: 15px 0;">
+    <!-- TANDA TANGAN BESERTA QR CODE VALIDASI (LAPSUS SATUAN) -->
+    <div class="ttd-wrapper" style="width: 100%; margin-top: 50px;">
+        <div class="ttd-box" style="float: right; width: 320px; text-align: center;">
+            <p style="margin: 0; font-size: 10pt;">Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+            <p style="margin: 0; font-weight: bold; font-size: 10pt;">Mengetahui,</p>
+            <p style="margin: 0; font-weight: bold; font-size: 10pt; text-transform: uppercase;">Kepala Seksi Intelijen,</p>
+
+            <!-- Area QR Code (Variabel menggunakan $laporan->id sesuai bawaan) -->
+            <div style="margin: 20px 0;">
                 @php
                 $qrContent = route('verifikasi.dokumen', ['tipe' => 'lapsus', 'id' => $laporan->id]);
                 @endphp
-                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(100)->generate($qrContent)) !!} ">
+                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(95)->generate($qrContent)) !!} " alt="QR Code Validasi">
             </div>
 
-            <p><u>Nama Kasi Intelijen</u></p>
-            <p>NIP. 1234567890</p>
+            <!-- Identitas Penandatangan -->
+            <p style="margin: 0; font-weight: bold; text-decoration: underline; font-size: 10pt;">Raya Bimanta S.H., M.H</p>
+            <p style="margin: 2px 0 0 0; font-size: 10pt;">Jaksa Utama Muda (IV/c)</p>
+            <p style="margin: 0; font-size: 10pt;">NIP. 199001012020011001</p>
         </div>
-        <div style="clear: both;"></div>
+        <div class="clear" style="clear: both;"></div>
     </div>
 
     <div class="clear"></div>

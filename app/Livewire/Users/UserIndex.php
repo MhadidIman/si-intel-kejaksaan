@@ -17,8 +17,8 @@ class UserIndex extends Component
 
     // --- PROPERTI FORM ---
     public $name, $email, $password, $nip, $role = 'staff';
-    public $jabatan, $no_hp, $pangkat, $satuan_kerja = 'Kejari Banjarmasin'; // Tambahan
-    public $foto_profile, $foto_lama; // Tambahan untuk upload
+    public $jabatan, $no_hp, $pangkat, $satuan_kerja = 'Kejari Banjarmasin';
+    public $foto_profile, $foto_lama;
     public $user_id;
 
     // --- PROPERTI UI & MODAL ---
@@ -42,7 +42,6 @@ class UserIndex extends Component
         // 1. Logika untuk Tampilan Kelola Personil & Statistik Kinerja
         if ($this->viewMode === 'list' || $this->viewMode === 'stats') {
 
-            // MENGHAPUS 'lapdus' DARI withCount AGAR TIDAK ERROR (Lapdu milik masyarakat)
             $query = User::withCount([
                 'lapinhars',
                 'dpos',
@@ -121,8 +120,8 @@ class UserIndex extends Component
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:6',
             'role'     => 'required',
-            'nip'      => 'nullable|string|unique:users,nip', // Ubah jadi string agar aman jika ada karakter khusus
-            'foto_profile' => 'nullable|image|max:2048', // Maksimal 2MB
+            'nip'      => 'nullable|string|unique:users,nip',
+            'foto_profile' => 'nullable|image|max:2048',
         ]);
 
         $path = null;
@@ -149,6 +148,9 @@ class UserIndex extends Component
 
     public function edit($id)
     {
+        // PERBAIKAN 1: Bersihkan input file agar tidak bentrok dengan sisa upload sebelumnya
+        $this->reset('foto_profile');
+
         $user = User::findOrFail($id);
 
         $this->user_id = $id;
@@ -174,12 +176,15 @@ class UserIndex extends Component
             'role'  => 'required',
             'nip'   => 'nullable|string|unique:users,nip,' . $this->user_id,
             'foto_profile' => 'nullable|image|max:2048',
+            // PERBAIKAN 2: Pastikan validasi jalan saat mau mengganti password
+            'password' => 'nullable|min:6',
         ]);
 
         $user = User::findOrFail($this->user_id);
 
         $path = $user->foto_profile;
         if ($this->foto_profile) {
+            // Hapus foto lama jika ada
             if ($user->foto_profile && Storage::disk('public')->exists($user->foto_profile)) {
                 Storage::disk('public')->delete($user->foto_profile);
             }
@@ -217,7 +222,7 @@ class UserIndex extends Component
 
         $user = User::findOrFail($id);
 
-        // Hapus foto profile jika ada
+        // Hapus foto profile dari storage lokal sebelum user dihapus
         if ($user->foto_profile && Storage::disk('public')->exists($user->foto_profile)) {
             Storage::disk('public')->delete($user->foto_profile);
         }

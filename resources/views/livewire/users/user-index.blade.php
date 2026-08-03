@@ -139,7 +139,6 @@
                             <th class="px-2 py-4 text-center border-r border-slate-200">PAM SDO</th>
                             <th class="px-2 py-4 text-center border-r border-slate-200">JMS</th>
                             <th class="px-2 py-4 text-center border-r border-slate-200">RAWAN</th>
-                            <th class="px-2 py-4 text-center border-r border-slate-200">LAPDU</th>
                             <th class="px-4 py-4 text-center bg-emerald-100 text-emerald-900 font-black">TOTAL</th>
                         </tr>
                     </thead>
@@ -148,7 +147,7 @@
                         @php
                         $total = $user->dpos_count + $user->wnas_count + $user->ormas_count +
                         $user->pam_sdos_count + $user->jms_activities_count +
-                        $user->kerawanans_count + $user->lapdus_count + $user->lapinhars_count;
+                        $user->kerawanans_count + $user->lapinhars_count;
                         @endphp
                         <tr class="hover:bg-emerald-50/30 transition">
                             <td class="px-4 py-3 border-r border-slate-100 font-bold text-slate-900 text-xs">{{ $user->name }}</td>
@@ -346,18 +345,20 @@
                         </div>
                     </div>
 
-                    {{-- Upload Foto --}}
+                    {{-- Upload Foto DENGAN ALPINE.JS VALIDASI UKURAN --}}
                     <div class="space-y-2 mt-4">
-                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest">Foto Profile (Opsional)</label>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest">Foto Profile (Opsional - Maks 2MB)</label>
                         <div class="flex items-center gap-6 p-4 border-2 border-dashed border-slate-300 rounded-xl bg-slate-50 hover:border-emerald-300 transition-colors">
                             @if ($foto_profile)
-                            <img src="{{ $foto_profile->temporaryUrl() }}" class="w-16 h-16 object-cover rounded-full border-2 border-emerald-500 shadow-sm">
+                            <!-- Kita matikan sementara preview-nya -->
+                            <div class="w-16 h-16 bg-emerald-100 rounded-full border-2 border-emerald-500 flex items-center justify-center text-emerald-600 font-bold"><i class="fas fa-check"></i></div>
                             @elseif ($foto_lama)
                             <img src="{{ asset('storage/' . $foto_lama) }}" class="w-16 h-16 object-cover rounded-full border-2 border-slate-200 shadow-sm">
                             @else
                             <div class="w-16 h-16 bg-slate-200 rounded-full border-2 border-slate-300 flex items-center justify-center text-slate-400"><i class="fas fa-user text-xl"></i></div>
                             @endif
-                            <input wire:model="foto_profile" type="file" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-6 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-widest file:bg-emerald-600 file:text-white hover:file:bg-emerald-700 transition cursor-pointer shadow-sm">
+
+                            <<input type="file" wire:model="foto_profile" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-6 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-widest file:bg-emerald-600 file:text-white hover:file:bg-emerald-700 transition cursor-pointer shadow-sm">
                         </div>
                         @error('foto_profile') <span class="text-red-500 text-[10px] font-bold uppercase">{{ $message }}</span> @enderror
                     </div>
@@ -371,11 +372,11 @@
                         wire:loading.attr="disabled"
                         class="px-8 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold text-xs uppercase shadow-lg transition transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
 
-                        <span wire:loading wire:target="store, update">
-                            <i class="fas fa-spinner fa-spin"></i> Menyimpan...
+                        <span wire:loading wire:target="store, update, foto_profile">
+                            <i class="fas fa-spinner fa-spin"></i> Memproses...
                         </span>
 
-                        <span wire:loading.remove wire:target="store, update">
+                        <span wire:loading.remove wire:target="store, update, foto_profile">
                             <i class="fas fa-save"></i> {{ $isEditMode ? 'Simpan Perubahan' : 'Buat Personil Baru' }}
                         </span>
                     </button>

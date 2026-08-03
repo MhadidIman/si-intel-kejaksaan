@@ -198,23 +198,26 @@
         </tbody>
     </table>
 
-    <!-- TANDA TANGAN BESERTA QR CODE VALIDASI -->
+    <!-- TANDA TANGAN BESERTA QR CODE VALIDASI (REKAP LAPSUS) -->
     <div class="ttd-wrapper">
-        <div class="ttd-box">
-            <p style="margin: 0;">Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
-            <p style="margin: 0; font-weight: bold;">Kepala Seksi Intelijen,</p>
+        <div class="ttd-box" style="float: right; width: 320px; text-align: center;">
+            <p style="margin: 0; font-size: 10pt;">Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+            <p style="margin: 0; font-weight: bold; font-size: 10pt; text-transform: uppercase;">Kepala Seksi Intelijen,</p>
 
-            <div style="margin: 15px 0;">
+            <!-- Area QR Code Validasi LAPSUS -->
+            <div style="margin: 20px 0;">
                 @php
                 $qrContent = "Dokumen Valid: Rekapitulasi LAPSUS\nDicetak pada: " . \Carbon\Carbon::now()->format('d/m/Y H:i:s');
                 @endphp
-                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(90)->generate($qrContent)) !!} ">
+                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(95)->generate($qrContent)) !!} " alt="QR Code Validasi">
             </div>
 
-            <p style="margin: 0; font-weight: bold; text-decoration: underline;">Dimas Purnama Putra, S.H.,M.H</p>
-            <p style="margin: 0;">Jaksa Madya NIP. 19850101 201001 1 001</p>
+            <!-- Identitas Penandatangan -->
+            <p style="margin: 0; font-weight: bold; text-decoration: underline; font-size: 10pt;">Raya Bimanta S.H., M.H</p>
+            <p style="margin: 2px 0 0 0; font-size: 10pt;">Jaksa Utama Muda (IV/c)</p>
+            <p style="margin: 0; font-size: 10pt;">NIP. 199001012020011001</p>
         </div>
-        <div class="clear"></div>
+        <div class="clear" style="clear: both;"></div>
     </div>
 
 </body>

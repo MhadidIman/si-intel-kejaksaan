@@ -1,55 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
+    <meta charset="UTF-8">
     <title>Laporan Peta Kerawanan</title>
     <style>
-        /* PENGATURAN KERTAS & FONT */
+        /* --- PENGATURAN KERTAS & FONT --- */
+        @page {
+            size: A4 landscape;
+            /* Landscape untuk tabel rekap kerawanan */
+            margin: 1.5cm 2cm;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Times New Roman', Times, serif;
             font-size: 10pt;
             line-height: 1.3;
-            margin: 0;
-            padding: 0;
+            color: #000;
+            -webkit-print-color-adjust: exact;
         }
 
-        /* KOP SURAT (STANDAR RESMI) */
-        .header-container {
+        /* --- KOP SURAT 3 KOLOM --- */
+        .kop-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-bottom: 3px solid black;
+        }
+
+        .kop-table td {
+            vertical-align: middle;
+            padding-bottom: 5px;
+        }
+
+        .teks-center {
             text-align: center;
-            position: relative;
-            margin-bottom: 20px;
-            border-bottom: 3px double black;
-            padding-bottom: 10px;
         }
 
-        .logo {
-            width: 80px;
-            position: absolute;
-            left: 0;
-            top: 5px;
-        }
-
-        .header-text h3 {
-            margin: 0;
+        .teks-center h1 {
             font-size: 14pt;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .header-text h2 {
-            margin: 2px 0;
-            font-size: 16pt;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .header-text p {
             margin: 0;
-            font-size: 9pt;
-            font-weight: normal;
+            font-weight: bold;
         }
 
-        /* JUDUL DOKUMEN */
+        .teks-center h2 {
+            font-size: 16pt;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .teks-center p {
+            font-size: 9pt;
+            margin: 2px 0 0 0;
+            line-height: 1.2;
+        }
+
+        .garis-tipis {
+            border-top: 1px solid black;
+            margin-top: 2px;
+            margin-bottom: 20px;
+        }
+
+        /* --- JUDUL DOKUMEN --- */
         .title-doc {
             text-align: center;
             font-weight: bold;
@@ -59,33 +70,50 @@
             text-transform: uppercase;
         }
 
-        /* TABEL DATA */
-        table {
+        .sub-title {
+            text-align: center;
+            font-size: 10pt;
+            margin-bottom: 20px;
+        }
+
+        /* --- TABEL DATA (PERBAIKAN GARIS ATAS & BAWAH) --- */
+        /* --- TABEL DATA (JURUS ANTI HILANG GARIS) --- */
+        .table-data {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 9pt;
+            /* Ganti collapse menjadi separate agar browser tidak memakan garis atas */
+            border-collapse: separate !important;
+            border-spacing: 0 !important;
+            margin-top: 10px;
+            font-size: 10pt;
+            table-layout: fixed;
+            border-top: 1px solid #000 !important;
+            border-left: 1px solid #000 !important;
+            border-right: 1px solid #000 !important;
+            border-bottom: 1px solid #000 !important;
         }
 
-        table,
-        th,
-        td {
-            border: 1px solid black;
+        .table-data th,
+        .table-data td {
+            /* Berikan garis pada setiap sisi sel */
+            border: 1px solid #000 !important;
+            padding: 8px 6px;
         }
 
-        th {
-            background-color: #f2f2f2;
+        .table-data th {
             text-align: center;
             font-weight: bold;
-            padding: 8px 4px;
             vertical-align: middle;
             text-transform: uppercase;
+            background-color: #ffffff !important;
+            /* Paksa garis atas tebal khusus header */
+            border-top: 1.5px solid #000 !important;
+            border-bottom: 1.5px solid #000 !important;
         }
 
-        td {
-            padding: 6px 8px;
-            text-align: left;
+        .table-data td {
             vertical-align: top;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         /* STATUS BADGE */
@@ -93,7 +121,7 @@
             font-weight: bold;
             text-transform: uppercase;
             font-size: 8pt;
-            padding: 2px 5px;
+            padding: 4px 6px;
             border-radius: 3px;
             display: inline-block;
         }
@@ -116,68 +144,85 @@
             border: 1px solid #15803d;
         }
 
-        /* TANDA TANGAN */
-        .ttd-container {
+        /* --- TANDA TANGAN --- */
+        .ttd-wrapper {
+            width: 100%;
+            margin-top: 40px;
+            display: inline-block;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .ttd-box {
             float: right;
-            width: 35%;
+            width: 300px;
             text-align: center;
-            margin-top: 30px;
+        }
+
+        .clear {
+            clear: both;
         }
     </style>
 </head>
 
-<body>
+<body onload="window.print()">
 
-    {{-- KOP SURAT --}}
-    <div class="header-container">
-        <img src="{{ public_path('img/logo-kejaksaan.png') }}" class="logo">
-        <div class="header-text">
-            <h3>KEJAKSAAN REPUBLIK INDONESIA</h3>
-            <h3>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h3>
-            <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
-            <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
-            <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
-        </div>
-    </div>
+    <!-- KOP SURAT 3 KOLOM -->
+    <table class="kop-table">
+        <tr>
+            <td style="width: 15%; text-align: center;">
+                <img src="{{ asset('img/logo-kejaksaan.png') }}" style="width: 75px; height: auto;">
+            </td>
+            <td class="teks-center" style="width: 70%;">
+                <h1>KEJAKSAAN REPUBLIK INDONESIA</h1>
+                <h1>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h1>
+                <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
+                <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
+                <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
+            </td>
+            <td style="width: 15%;"></td>
+        </tr>
+    </table>
+    <div class="garis-tipis"></div>
 
-    {{-- JUDUL DOKUMEN --}}
+    <!-- JUDUL DOKUMEN -->
     <div class="title-doc">
         REKAPITULASI PEMETAAN DAERAH RAWAN (PETA KERAWANAN)
     </div>
-    <div style="text-align: center; font-size: 9pt; margin-bottom: 15px;">
-        Wilayah Hukum Kejaksaan Negeri Banjarmasin
+    <div class="sub-title">
+        Wilayah Hukum Kejaksaan Negeri Banjarmasin<br>
+        Tanggal Cetak: {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
     </div>
 
-    {{-- TABEL DATA --}}
-    <table>
+    <!-- TABEL DATA -->
+    <table class="table-data">
         <thead>
             <tr>
-                <th style="width: 4%">No</th>
-                <th style="width: 20%">Lokasi (Kecamatan)</th>
-                <th style="width: 15%">Bidang Intelijen</th>
-                <th style="width: 10%">Tingkat</th>
-                <th style="width: 31%">Potensi Ancaman</th>
-                <th style="width: 20%">Sumber Informasi</th>
+                <th style="width: 4%">NO</th>
+                <th style="width: 20%">LOKASI (KECAMATAN)</th>
+                <th style="width: 15%">BIDANG INTELIJEN</th>
+                <th style="width: 11%">TINGKAT</th>
+                <th style="width: 30%">POTENSI ANCAMAN</th>
+                <th style="width: 20%">SUMBER INFORMASI</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($data as $index => $row)
+            @forelse($data as $index => $row)
             <tr>
-                <td style="text-align: center">{{ $index + 1 }}</td>
+                <td style="text-align: center;">{{ $index + 1 }}</td>
 
-                {{-- Lokasi --}}
-                <td>
+                <!-- Lokasi -->
+                <td style="text-align: left;">
                     <strong style="text-transform: uppercase;">{{ $row->kecamatan }}</strong>
-                    {{-- Jika ada kolom desa, tampilkan. Jika tidak, hapus baris ini --}}
                     @if(!empty($row->desa))
-                    <br><span style="font-size: 8pt; color: #555;">Desa: {{ $row->desa }}</span>
+                    <br><span style="font-size: 8.5pt; color: #444;">Desa: {{ $row->desa }}</span>
                     @endif
                 </td>
 
-                {{-- Bidang --}}
-                <td>{{ $row->bidang }}</td>
+                <!-- Bidang -->
+                <td style="text-align: left;">{{ $row->bidang }}</td>
 
-                {{-- Tingkat Kerawanan --}}
+                <!-- Tingkat Kerawanan -->
                 <td style="text-align: center;">
                     @if(strtolower($row->tingkat_rawan) == 'tinggi')
                     <span class="badge tinggi">TINGGI</span>
@@ -188,29 +233,45 @@
                     @endif
                 </td>
 
-                {{-- Potensi Ancaman (Gunakan nl2br agar enter terbaca) --}}
+                <!-- Potensi Ancaman -->
                 <td style="text-align: justify;">
                     {{ \Illuminate\Support\Str::limit($row->potensi_ancaman, 200) }}
                 </td>
 
-                {{-- Sumber Info --}}
-                <td>
+                <!-- Sumber Info -->
+                <td style="text-align: left;">
                     {{ $row->sumber_informasi ?? 'Tertutup / Terbuka' }}
                 </td>
             </tr>
-            @endforeach
+            @empty
+            <tr>
+                <td colspan="6" style="text-align: center; font-style: italic; padding: 15px;">Data Peta Kerawanan tidak ditemukan.</td>
+            </tr>
+            @endforelse
         </tbody>
     </table>
 
-    {{-- TANDA TANGAN --}}
-    <div class="ttd-container">
-        <p>Banjarmasin, {{ now()->translatedFormat('d F Y') }}</p>
-        <p>Kepala Seksi Intelijen,</p>
-        <br><br><br>
-        <p style="font-weight: bold; text-decoration: underline; margin-bottom: 0;">Dimas Purnama Putra, S.H.,M.H</p>
-        <p style="margin-top: 2px;">Jaksa Madya NIP. 19850101 201001 1 001</p>
-    </div>
+    <!-- TANDA TANGAN BESERTA QR CODE VALIDASI (REKAP KERAWANAN) -->
+    <div class="ttd-wrapper">
+        <div class="ttd-box" style="float: right; width: 320px; text-align: center;">
+            <p style="margin: 0; font-size: 10pt;">Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+            <p style="margin: 0; font-weight: bold; font-size: 10pt; text-transform: uppercase;">Kepala Seksi Intelijen,</p>
 
+            <!-- Area QR Code Validasi Kerawanan -->
+            <div style="margin: 20px 0;">
+                @php
+                $qrContent = "Dokumen Valid: Rekapitulasi Peta Kerawanan\nDicetak pada: " . \Carbon\Carbon::now()->format('d/m/Y H:i:s');
+                @endphp
+                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(95)->generate($qrContent)) !!} " alt="QR Code Validasi">
+            </div>
+
+            <!-- Identitas Penandatangan -->
+            <p style="margin: 0; font-weight: bold; text-decoration: underline; font-size: 10pt;">Raya Bimanta S.H., M.H</p>
+            <p style="margin: 2px 0 0 0; font-size: 10pt;">Jaksa Utama Muda (IV/c)</p>
+            <p style="margin: 0; font-size: 10pt;">NIP. 199001012020011001</p>
+        </div>
+        <div class="clear" style="clear: both;"></div>
+    </div>
 </body>
 
 </html>

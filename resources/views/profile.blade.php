@@ -12,9 +12,16 @@
             <div class="absolute -right-10 -bottom-10 opacity-5 text-emerald-800 pointer-events-none">
                 <i class="fas fa-user text-[12rem]"></i>
             </div>
-            <div class="w-20 h-20 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-3xl shadow-inner shrink-0 border border-emerald-100">
+
+            {{-- PERBAIKAN: Menampilkan Foto Profil untuk Masyarakat --}}
+            <div class="w-20 h-20 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-3xl shadow-inner shrink-0 border border-emerald-100 overflow-hidden">
+                @if(auth()->user()->foto_profile)
+                <img src="{{ asset('storage/' . auth()->user()->foto_profile) }}" class="w-full h-full object-cover">
+                @else
                 <i class="fas fa-user-shield"></i>
+                @endif
             </div>
+
             <div class="text-center md:text-left grow">
                 <div class="flex flex-col md:flex-row md:items-center gap-2 mb-2">
                     <h2 class="text-xl font-black text-slate-800">{{ auth()->user()->name }}</h2>
@@ -77,14 +84,14 @@
 
                     $user = auth()->user();
 
-                    // Hapus foto lama dari storage jika ada
-                    if ($user->foto_profil) {
-                        \Illuminate\Support\Facades\Storage::disk('public')->delete($user->foto_profil);
+                    // PERBAIKAN TYPO: Hapus foto lama dari storage jika ada (foto_profil -> foto_profile)
+                    if ($user->foto_profile) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->delete($user->foto_profile);
                     }
 
-                    // Simpan foto baru dan update database
+                    // PERBAIKAN TYPO: Simpan foto baru dan update database
                     $path = $this->photo->store('profil', 'public');
-                    $user->foto_profil = $path;
+                    $user->foto_profile = $path;
                     $user->save();
 
                     $this->dispatch('profile-updated'); // Refresh UI
@@ -108,9 +115,9 @@
                     {{-- BLOK FOTO PROFIL INTERAKTIF --}}
                     <div class="relative w-28 h-28 rounded-2xl border-2 border-emerald-500/40 overflow-hidden shadow-[0_0_20px_rgba(16,185,129,0.2)] shrink-0 bg-slate-900 group">
 
-                        {{-- Tampilkan Foto atau Ikon Default --}}
-                        @if(auth()->user()->foto_profil)
-                        <img src="{{ asset('storage/' . auth()->user()->foto_profil) }}" class="w-full h-full object-cover">
+                        {{-- PERBAIKAN TYPO: Tampilkan Foto atau Ikon Default --}}
+                        @if(auth()->user()->foto_profile)
+                        <img src="{{ asset('storage/' . auth()->user()->foto_profile) }}" class="w-full h-full object-cover">
                         @else
                         <div class="w-full h-full flex items-center justify-center text-emerald-500/50">
                             <i class="fas fa-user-tie text-5xl"></i>

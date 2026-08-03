@@ -327,24 +327,27 @@
     </div>
     @endif
 
-    <!-- TANDA TANGAN -->
+    <!-- TANDA TANGAN BESERTA QR CODE VALIDASI (WNA SATUAN) -->
     <div class="ttd-container">
-        <div class="ttd-box">
-            <p style="margin: 0;">Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
-            <p style="margin: 0; font-weight: bold;">Mengetahui,</p>
-            <p style="margin: 0; font-weight: bold;">Kepala Seksi Intelijen</p>
+        <div class="ttd-box" style="float: right; width: 320px; text-align: center;">
+            <p style="margin: 0; font-size: 10pt;">Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+            <p style="margin: 0; font-weight: bold; font-size: 10pt;">Mengetahui,</p>
+            <p style="margin: 0; font-weight: bold; font-size: 10pt; text-transform: uppercase;">Kepala Seksi Intelijen,</p>
 
-            <div style="margin: 10px 0;">
+            <!-- Area QR Code (Fungsi Route Verifikasi Dipertahankan) -->
+            <div style="margin: 20px 0;">
                 @php
                 $qrContent = route('verifikasi.dokumen', ['tipe' => 'wna', 'id' => $item->id]);
                 @endphp
-                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(90)->generate($qrContent)) !!} ">
+                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(95)->generate($qrContent)) !!} " alt="QR Code Validasi">
             </div>
 
-            <p style="margin: 0; font-weight: bold; text-decoration: underline;">NAMA KEPALA SEKSI INTELIJEN</p>
-            <p style="margin: 0;">Jaksa Madya / NIP. 198XXXXXXXXXXXXXX</p>
+            <!-- Identitas Penandatangan -->
+            <p style="margin: 0; font-weight: bold; text-decoration: underline; font-size: 10pt;">Raya Bimanta S.H., M.H</p>
+            <p style="margin: 2px 0 0 0; font-size: 10pt;">Jaksa Utama Muda (IV/c)</p>
+            <p style="margin: 0; font-size: 10pt;">NIP. 199001012020011001</p>
         </div>
-        <div class="clear"></div>
+        <div class="clear" style="clear: both;"></div>
     </div>
 
     <div class="rahasia-bottom">RAHASIA</div>

@@ -12,7 +12,6 @@ use App\Models\Ormas;
 use App\Models\PamSdo;
 use App\Models\JmsActivity;
 use App\Models\Kerawanan;
-use App\Models\Lapdu;
 
 class ReportController extends Controller
 {
@@ -121,27 +120,14 @@ class ReportController extends Controller
         return view('reports.kerawanan-satuan-pdf', compact('data'));
     }
 
-    // ==========================================================
-    // 8. MODUL PENGADUAN MASYARAKAT (LAPDU)
-    // ==========================================================
-    public function cetakLapdu()
-    {
-        $data = Lapdu::orderBy('created_at', 'desc')->get();
-        return view('reports.lapdu-pdf', compact('data'));
-    }
 
-    public function cetakLapduSatuan($id)
-    {
-        $data = Lapdu::findOrFail($id);
-        return view('reports.lapdu-satuan-pdf', compact('data'));
-    }
 
     // ==========================================================
     // 9. Cetak Statistik Kinerja Staff
     // ==========================================================
     public function cetakUserStats()
     {
-        $data = User::where('role', '!=', 'admin')
+        $data = User::whereNotIn('role', ['admin', 'masyarakat']) // Mengecualikan admin dan masyarakat
             ->withCount([
                 'lapinhars',
                 'dpos',
@@ -149,8 +135,7 @@ class ReportController extends Controller
                 'ormas',
                 'pamSdos',
                 'jmsActivities',
-                'kerawanans',
-                'lapdus'
+                'kerawanans'
             ])
             ->orderBy('name', 'asc')
             ->get();

@@ -8,7 +8,6 @@
         /* --- PENGATURAN KERTAS & FONT --- */
         @page {
             size: A4 landscape;
-            /* Landscape karena kolom tabel cukup banyak */
             margin: 1.5cm 2cm;
         }
 
@@ -76,19 +75,31 @@
             margin-bottom: 20px;
         }
 
-        /* --- TABEL DATA --- */
+        /* --- TABEL DATA (SUPER OVERRIDE UNTUK CETAK PDF) --- */
         .table-data {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
             font-size: 10pt;
             table-layout: fixed;
+            border: 1px solid black !important;
+            border-bottom: 1px solid black !important;
         }
 
         .table-data th,
         .table-data td {
-            border: 1px solid black;
+            border: 1px solid black !important;
             padding: 8px 6px;
+        }
+
+        /* Trik Khusus: Memaksa sel pada baris terakhir untuk menebalkan garis bawahnya */
+        .table-data tbody tr:last-child td {
+            border-bottom: 1.5px solid black !important;
+        }
+
+        /* Trik Khusus: Mencegah browser memotong garis saat ganti halaman */
+        .table-data tr {
+            page-break-inside: avoid !important;
         }
 
         .table-data th {
@@ -97,7 +108,6 @@
             vertical-align: middle;
             text-transform: uppercase;
             background-color: transparent;
-            /* Formal look tanpa background abu-abu */
         }
 
         .table-data td {
@@ -109,19 +119,16 @@
         /* --- STATUS BADGE --- */
         .status-aman {
             color: #16a34a;
-            /* Hijau */
             font-weight: bold;
         }
 
         .status-ditindak {
             color: #d97706;
-            /* Orange/Kuning */
             font-weight: bold;
         }
 
         .status-diawasi {
             color: #dc2626;
-            /* Merah */
             font-weight: bold;
         }
 
@@ -228,23 +235,26 @@
         </tbody>
     </table>
 
-    <!-- TANDA TANGAN & QR CODE -->
+    <!-- TANDA TANGAN BESERTA QR CODE VALIDASI (REKAP PAM SDO) -->
     <div class="ttd-wrapper">
-        <div class="ttd-box">
-            <p style="margin: 0;">Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
-            <p style="margin: 0; font-weight: bold;">Kepala Seksi Intelijen,</p>
+        <div class="ttd-box" style="float: right; width: 320px; text-align: center;">
+            <p style="margin: 0; font-size: 10pt;">Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+            <p style="margin: 0; font-weight: bold; font-size: 10pt; text-transform: uppercase;">Kepala Seksi Intelijen,</p>
 
-            <div style="margin: 15px 0;">
+            <!-- Area QR Code Validasi PAM SDO -->
+            <div style="margin: 20px 0;">
                 @php
                 $qrContent = "Dokumen Valid: Rekapitulasi PAM SDO\nDicetak pada: " . \Carbon\Carbon::now()->format('d/m/Y H:i:s');
                 @endphp
-                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(90)->generate($qrContent)) !!} ">
+                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(95)->generate($qrContent)) !!} " alt="QR Code Validasi">
             </div>
 
-            <p style="margin: 0; font-weight: bold; text-decoration: underline;">Nama Kasi Intelijen</p>
-            <p style="margin: 0;">NIP. 1234567890</p>
+            <!-- Identitas Penandatangan -->
+            <p style="margin: 0; font-weight: bold; text-decoration: underline; font-size: 10pt;">Raya Bimanta S.H., M.H</p>
+            <p style="margin: 2px 0 0 0; font-size: 10pt;">Jaksa Utama Muda (IV/c)</p>
+            <p style="margin: 0; font-size: 10pt;">NIP. 199001012020011001</p>
         </div>
-        <div class="clear"></div>
+        <div class="clear" style="clear: both;"></div>
     </div>
 
 </body>
