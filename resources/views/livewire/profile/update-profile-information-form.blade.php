@@ -64,7 +64,7 @@ new class extends Component
 
 <section class="font-sans">
     <header class="mb-6">
-        <h2 class="text-lg font-black text-slate-900 uppercase tracking-tight">
+        <h2 class="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tight">
             {{ __('Informasi Profil') }}
         </h2>
         <p class="mt-1 text-xs text-slate-500 font-medium">
@@ -76,13 +76,13 @@ new class extends Component
         {{-- FIELD UMUM (BERLAKU UNTUK SEMUA ROLE) --}}
         <div>
             <x-input-label for="name" :value="__('Nama Lengkap')" class="text-xs font-bold text-slate-700 uppercase tracking-wider" />
-            <x-text-input wire:model="name" id="name" name="name" type="text" class="block mt-1 w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm" required autofocus autocomplete="name" />
+            <x-text-input wire:model="name" id="name" name="name" type="text" class="block mt-1 w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
         <div>
             <x-input-label for="email" :value="__('Email')" class="text-xs font-bold text-slate-700 uppercase tracking-wider" />
-            <x-text-input wire:model="email" id="email" name="email" type="email" class="block mt-1 w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm" required autocomplete="username" />
+            <x-text-input wire:model="email" id="email" name="email" type="email" class="block mt-1 w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm" required autocomplete="username" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
             @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! auth()->user()->hasVerifiedEmail())
@@ -97,7 +97,7 @@ new class extends Component
 
         <div>
             <x-input-label for="no_hp" :value="__('Nomor HP / WhatsApp')" class="text-xs font-bold text-slate-700 uppercase tracking-wider" />
-            <x-text-input wire:model="no_hp" id="no_hp" name="no_hp" type="text" class="block mt-1 w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm font-mono" required />
+            <x-text-input wire:model="no_hp" id="no_hp" name="no_hp" type="text" class="block mt-1 w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm font-mono" required />
             <x-input-error class="mt-2" :messages="$errors->get('no_hp')" />
         </div>
 
@@ -113,32 +113,32 @@ new class extends Component
 
         <div>
             <x-input-label for="jabatan" :value="__('Pekerjaan / Profesi')" class="text-xs font-bold text-slate-700 uppercase tracking-wider" />
-            <x-text-input wire:model="jabatan" id="jabatan" name="jabatan" type="text" class="block mt-1 w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm" placeholder="Contoh: Wiraswasta, Karyawan Swasta" />
+            <x-text-input wire:model="jabatan" id="jabatan" name="jabatan" type="text" class="block mt-1 w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm" placeholder="Contoh: Wiraswasta, Karyawan Swasta" />
             <x-input-error class="mt-2" :messages="$errors->get('jabatan')" />
         </div>
         @else
         {{-- ATRIBUT KHUSUS AKUN INTERNAL (ADMIN / STAFF) --}}
         <div>
             <x-input-label for="nip" :value="__('NIP (Nomor Induk Pegawai)')" class="text-xs font-bold text-slate-700 uppercase tracking-wider" />
-            <x-text-input wire:model="nip" id="nip" name="nip" type="text" class="block mt-1 w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm font-mono" />
+            <x-text-input wire:model="nip" id="nip" name="nip" type="text" class="block mt-1 w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm font-mono" />
             <x-input-error class="mt-2" :messages="$errors->get('nip')" />
         </div>
 
         <div>
             <x-input-label for="pangkat" :value="__('Pangkat / Golongan')" class="text-xs font-bold text-slate-700 uppercase tracking-wider" />
-            <x-text-input wire:model="pangkat" id="pangkat" name="pangkat" type="text" class="block mt-1 w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm" placeholder="Contoh: Penata Muda (III/a)" />
+            <x-text-input wire:model="pangkat" id="pangkat" name="pangkat" type="text" class="block mt-1 w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm" placeholder="Contoh: Penata Muda (III/a)" />
             <x-input-error class="mt-2" :messages="$errors->get('pangkat')" />
         </div>
 
         <div>
             <x-input-label for="jabatan" :value="__('Jabatan Dinas')" class="text-xs font-bold text-slate-700 uppercase tracking-wider" />
-            <x-text-input wire:model="jabatan" id="jabatan" name="jabatan" type="text" class="block mt-1 w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm" placeholder="Contoh: Jaksa Fungsional, Staff Intelijen" />
+            <x-text-input wire:model="jabatan" id="jabatan" name="jabatan" type="text" class="block mt-1 w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm" placeholder="Contoh: Jaksa Fungsional, Staff Intelijen" />
             <x-input-error class="mt-2" :messages="$errors->get('jabatan')" />
         </div>
 
         <div>
             <x-input-label for="satuan_kerja" :value="__('Satuan Kerja')" class="text-xs font-bold text-slate-700 uppercase tracking-wider" />
-            <x-text-input wire:model="satuan_kerja" id="satuan_kerja" name="satuan_kerja" type="text" class="block mt-1 w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm" />
+            <x-text-input wire:model="satuan_kerja" id="satuan_kerja" name="satuan_kerja" type="text" class="block mt-1 w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm" />
             <x-input-error class="mt-2" :messages="$errors->get('satuan_kerja')" />
         </div>
         @endif

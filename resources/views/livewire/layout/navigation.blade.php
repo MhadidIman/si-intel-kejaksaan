@@ -204,6 +204,14 @@ new class extends Component
                 </div>
                 @endif
 
+                {{-- THEME TOGGLE BUTTON (DESKTOP) --}}
+                <div class="mr-4 flex items-center">
+                    <button type="button" onclick="toggleTheme()" class="text-slate-400 hover:text-emerald-400 focus:outline-none transition-colors">
+                        <i class="fas fa-moon text-xl theme-toggle-dark-icon hidden"></i>
+                        <i class="fas fa-sun text-xl theme-toggle-light-icon hidden"></i>
+                    </button>
+                </div>
+
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center gap-3 px-3 py-2 border border-slate-700 hover:border-emerald-500 text-sm font-black rounded-full text-white bg-slate-800 hover:text-emerald-400 focus:outline-none transition ease-in-out duration-150 shadow-sm">
@@ -244,6 +252,12 @@ new class extends Component
             </div>
 
             <div class="-me-2 flex items-center lg:hidden gap-4">
+                {{-- THEME TOGGLE BUTTON (MOBILE) --}}
+                <button type="button" onclick="toggleTheme()" class="text-slate-400 hover:text-emerald-400 focus:outline-none transition-colors">
+                    <i class="fas fa-moon text-xl theme-toggle-dark-icon hidden"></i>
+                    <i class="fas fa-sun text-xl theme-toggle-light-icon hidden"></i>
+                </button>
+
                 @if(auth()->user()->isAdmin())
                 <button @click="open = ! open" class="relative p-2 text-slate-400 hover:text-emerald-400 focus:outline-none transition-colors">
                     <i class="fas fa-bell text-xl"></i>

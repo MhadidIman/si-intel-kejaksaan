@@ -172,15 +172,114 @@
     </style>
 </head>
 
-<body>
+<body onload="window.print()">
 
     <div class="rahasia">RAHASIA</div>
+
+    @if($type === 'sprintug')
+    {{-- ================================================================ --}}
+    {{-- LAYOUT SURAT PERINTAH TUGAS (SPRINTUG) --}}
+    {{-- ================================================================ --}}
+    
+    {{-- KOP SURAT SPRINTUG --}}
+    <table class="kop-table">
+        <tr>
+            <td class="logo-cell">
+                @php
+                    $logoPath = public_path('img/logo-kejaksaan.png');
+                    $logoData = base64_encode(file_get_contents($logoPath));
+                    $logoBase64 = 'data:image/png;base64,' . $logoData;
+                @endphp
+                <img src="{{ $logoBase64 }}" class="logo-img">
+            </td>
+            <td class="teks-cell">
+                <h1>KEJAKSAAN REPUBLIK INDONESIA</h1>
+                <h1>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h1>
+                <h2>KEJAKSAAN NEGERI BANJARMASIN</h2>
+                <p>Jalan Brig Jend H. Hasan Basri No. 3 Banjarmasin</p>
+                <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
+            </td>
+        </tr>
+    </table>
+    <div class="garis-kop-ganda"></div>
+
+    <div class="judul" style="margin-bottom: 2px;">SURAT PERINTAH TUGAS</div>
+    <div style="text-align: center; font-weight: bold; margin-bottom: 30px; font-size: 11pt;">NOMOR: {{ $data->nomor_sprintug ?? 'PRINT-..../..../..../....' }}</div>
+
+    <table style="width: 100%; border:none; margin-bottom: 20px;">
+        <tr>
+            <td style="width: 15%; vertical-align: top; font-weight: bold; padding-bottom: 15px;">DASAR</td>
+            <td style="width: 3%; vertical-align: top; padding-bottom: 15px;">:</td>
+            <td style="width: 82%; text-align: justify; padding-bottom: 15px;">
+                Laporan Pengaduan dari Masyarakat an. <strong>{{ $data->nama_pelapor ?? 'Anonim' }}</strong> tanggal {{ $data->created_at ? \Carbon\Carbon::parse($data->created_at)->translatedFormat('d F Y') : '-' }} perihal dugaan indikasi {{ str_replace('_', ' ', $data->kategori_laporan) }} terkait perkara: <em>"{{ $data->judul_laporan }}"</em>.
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" style="text-align: center; font-weight: bold; padding: 20px 0 15px 0; font-size: 12pt; text-decoration: underline;">MEMERINTAHKAN:</td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; font-weight: bold; padding-bottom: 15px;">KEPADA</td>
+            <td style="vertical-align: top; padding-bottom: 15px;">:</td>
+            <td style="padding-bottom: 15px;">
+                <ol style="margin: 0; padding-left: 15px;">
+                    <li style="margin-bottom: 8px;">
+                        Nama &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: Tim Satuan Intelijen Kejaksaan<br>
+                        Pangkat &nbsp;: -<br>
+                        Jabatan &nbsp;&nbsp;: Penyelidik / Petugas Lapangan
+                    </li>
+                </ol>
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; font-weight: bold; padding-bottom: 15px;">UNTUK</td>
+            <td style="vertical-align: top; padding-bottom: 15px;">:</td>
+            <td style="text-align: justify;">
+                <ol style="margin: 0; padding-left: 15px;">
+                    <li style="margin-bottom: 5px;">Melakukan Operasi Intelijen (Pengumpulan Data dan Pengumpulan Keterangan / Pulbaket) terhadap Pihak Terlapor atas nama <strong>{{ $data->nama_terlapor }}</strong> ({{ $data->jabatan_terlapor ?? '-' }}) terkait Laporan Pengaduan tersebut di atas.</li>
+                    <li style="margin-bottom: 5px;">Melaporkan hasil pelaksanaannya kepada Kepala Kejaksaan Negeri Banjarmasin secara berjenjang melalui Kepala Seksi Intelijen segera setelah tugas selesai dilaksanakan.</li>
+                    <li style="margin-bottom: 5px;">Melaksanakan perintah ini dengan seksama dan penuh rasa tanggung jawab.</li>
+                </ol>
+            </td>
+        </tr>
+    </table>
+
+    <div class="ttd-wrapper" style="margin-top: 40px;">
+        <div class="ttd-container">
+            <p style="margin: 0;">Dikeluarkan di : Banjarmasin</p>
+            <p style="margin: 0; border-bottom: 1px solid #000; padding-bottom: 5px; display: inline-block;">Pada Tanggal &nbsp;&nbsp;: {{ $data->tanggal_sprintug ? \Carbon\Carbon::parse($data->tanggal_sprintug)->translatedFormat('d F Y') : '-' }}</p>
+            <p style="margin-top: 10px; font-weight: bold; text-transform: uppercase;">Kepala Seksi Intelijen,</p>
+
+            <!-- Area QR Code -->
+            <div style="margin: 20px 0;">
+                @php
+                $qrContent = route('verifikasi.dokumen', ['tipe' => 'lapdu', 'id' => $data->id]);
+                @endphp
+                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(95)->generate($qrContent)) !!} " alt="QR Code Validasi">
+            </div>
+
+            <!-- Identitas Penandatangan -->
+            <p style="margin: 0; font-weight: bold; text-decoration: underline; font-size: 10pt;">Raya Bimanta S.H., M.H</p>
+            <p style="margin: 2px 0 0 0; font-size: 10pt;">Jaksa Utama Muda (IV/c)</p>
+            <p style="margin: 0; font-size: 10pt;">NIP. 199001012020011001</p>
+        </div>
+        <div class="clear"></div>
+    </div>
+
+    @else
+    {{-- ================================================================ --}}
+    {{-- LAYOUT TANDA TERIMA / KARTU PENERUS DISPOSISI (EXISTING) --}}
+    {{-- ================================================================ --}}
 
     {{-- KOP SURAT --}}
     <table class="kop-table">
         <tr>
             <td class="logo-cell">
-                <img src="{{ public_path('img/logo-kejaksaan.png') }}" class="logo-img">
+                @php
+                    $logoPath = public_path('img/logo-kejaksaan.png');
+                    $logoData = base64_encode(file_get_contents($logoPath));
+                    $logoBase64 = 'data:image/png;base64,' . $logoData;
+                @endphp
+                <img src="{{ $logoBase64 }}" class="logo-img">
             </td>
             <td class="teks-cell">
                 <h1>KEJAKSAAN REPUBLIK INDONESIA</h1>
@@ -264,6 +363,8 @@
         </div>
         <div class="clear"></div>
     </div>
+
+    @endif
 
 </body>
 

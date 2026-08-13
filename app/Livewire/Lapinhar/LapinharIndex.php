@@ -11,6 +11,10 @@ use Carbon\Carbon;
 
 class LapinharIndex extends Component
 {
+
+    public $isDeleteOpen = false;
+    public $deleteId = null;
+
     use WithPagination;
 
     // Properti Data
@@ -146,8 +150,16 @@ class LapinharIndex extends Component
         $this->closeModal();
     }
 
-    public function delete($id)
+    
+    public function confirmDelete($id)
     {
+        $this->deleteId = $id;
+        $this->isDeleteOpen = true;
+    }
+
+    public function delete()
+    {
+        $id = $this->deleteId;
         // REVISI KEAMANAN: Pastikan hanya admin yang bisa hapus dari backend
         if (Auth::user()->role !== 'admin') {
             session()->flash('error', 'Akses Ditolak! Anda bukan admin.');
@@ -156,6 +168,8 @@ class LapinharIndex extends Component
 
         Lapinhar::findOrFail($id)->delete();
         session()->flash('message', 'Data dihapus.');
+        $this->isDeleteOpen = false;
+        $this->isDeleteOpen = false;
     }
 
     public function closeModal()

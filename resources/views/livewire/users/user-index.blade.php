@@ -1,16 +1,16 @@
-<div class="py-10 bg-[#f8fafc] min-h-screen font-sans">
+<div class="py-10 bg-slate-50 dark:bg-slate-900/50 dark:bg-slate-900 transition-colors duration-300 min-h-screen font-sans">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
         {{-- HEADER SECTION --}}
         <div class="flex flex-col md:flex-row justify-between items-end gap-4">
             <div>
-                <h2 class="text-3xl font-black text-slate-800 tracking-tight uppercase">
+                <h2 class="text-3xl font-black text-slate-800 dark:text-slate-100 tracking-tight uppercase">
                     @if($viewMode === 'list')
                     Manajemen <span class="text-emerald-600">Personil</span>
                     @elseif($viewMode === 'stats')
                     Bank Data <span class="text-blue-600">Kinerja Staff</span>
                     @else
-                    Log <span class="text-slate-600">Keamanan Sistem</span>
+                    Log <span class="text-slate-600 dark:text-slate-300">Keamanan Sistem</span>
                     @endif
                 </h2>
                 <p class="text-slate-500 text-xs font-medium mt-1 uppercase tracking-widest">
@@ -49,7 +49,7 @@
 
         {{-- MAIN CONTENT --}}
         @if(!$showForm)
-        <div class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+        <div class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 dark:border-slate-700 overflow-hidden">
 
             {{-- Search Bar & Filter Info --}}
             <div class="p-6 border-b border-slate-50 bg-slate-50/50 flex flex-col md:flex-row gap-4 justify-between items-center">
@@ -57,7 +57,7 @@
                     <i class="fas fa-search absolute left-4 top-3.5 text-slate-400"></i>
                     <input wire:model.live="search" type="text" class="pl-10 w-full rounded-xl border-slate-200 bg-white text-sm font-bold text-slate-700 focus:border-emerald-500 focus:ring-emerald-500/20 placeholder-slate-400 transition shadow-sm" placeholder="Cari personil...">
                 </div>
-                <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-white px-4 py-2 rounded-lg border border-slate-100 shadow-sm flex items-center gap-2">
+                <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-white px-4 py-2 rounded-lg border border-slate-100 dark:border-slate-700 shadow-sm flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     Tampilan: {{ $viewMode === 'list' ? 'Daftar Akun' : ($viewMode === 'stats' ? 'Statistik Data' : 'Riwayat Aktifitas') }}
                 </div>
@@ -67,7 +67,7 @@
             {{-- TABEL 1: KELOLA AKUN --}}
             <div class="overflow-x-auto">
                 <table class="w-full text-left">
-                    <thead class="bg-white text-slate-400 uppercase text-[10px] font-black tracking-widest border-b border-slate-100">
+                    <thead class="bg-white text-slate-400 uppercase text-[10px] font-black tracking-widest border-b border-slate-100 dark:border-slate-700">
                         <tr>
                             <th class="px-6 py-5">Personil</th>
                             <th class="px-6 py-5">Jabatan & Pangkat</th>
@@ -77,7 +77,7 @@
                     </thead>
                     <tbody class="divide-y divide-slate-50">
                         @forelse($users as $user)
-                        <tr class="hover:bg-slate-50/80 transition group">
+                        <tr class="hover:bg-slate-50 dark:bg-slate-900/50/80 transition group">
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-4">
                                     <div class="w-10 h-10 rounded-xl overflow-hidden bg-emerald-50 text-emerald-600 flex items-center justify-center font-black border border-emerald-100 group-hover:border-emerald-300 transition-all shadow-sm">
@@ -88,7 +88,7 @@
                                         @endif
                                     </div>
                                     <div>
-                                        <p class="font-bold text-slate-800 text-sm group-hover:text-emerald-700 transition">{{ $user->name }}</p>
+                                        <p class="font-bold text-slate-800 dark:text-slate-100 text-sm group-hover:text-emerald-700 transition">{{ $user->name }}</p>
                                         <p class="text-[10px] text-slate-400 font-mono">NIP: {{ $user->nip ?? '-' }}</p>
                                     </div>
                                 </div>
@@ -109,7 +109,7 @@
                             <td class="px-6 py-4 text-center">
                                 <div class="flex justify-center gap-2">
                                     <button wire:click="edit({{ $user->id }})" class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition border border-blue-100"><i class="fas fa-edit text-xs"></i></button>
-                                    <button wire:confirm="Hapus user ini?" wire:click="delete({{ $user->id }})" class="w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition border border-red-100"><i class="fas fa-trash text-xs"></i></button>
+                                    <button wire:click="confirmDelete({{ $item->id ?? $user->id ?? $selectedLapdu->id ?? $dpo->id }})" class="w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition border border-red-100"><i class="fas fa-trash text-xs"></i></button>
                                 </div>
                             </td>
                         </tr>
@@ -121,7 +121,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="px-6 py-4 border-t border-slate-50 bg-slate-50/30">
+            <div class="px-6 py-4 border-t border-slate-50 bg-slate-50 dark:bg-slate-900/50/30">
                 {{ $users->links() }}
             </div>
 
@@ -150,21 +150,21 @@
                         $user->kerawanans_count + $user->lapinhars_count;
                         @endphp
                         <tr class="hover:bg-emerald-50/30 transition">
-                            <td class="px-4 py-3 border-r border-slate-100 font-bold text-slate-900 text-xs">{{ $user->name }}</td>
-                            <td class="px-2 py-3 text-center border-r border-slate-100 text-xs font-bold text-slate-800">{{ $user->lapinhars_count }}</td>
-                            <td class="px-2 py-3 text-center border-r border-slate-100 text-xs font-bold text-slate-800">{{ $user->dpos_count }}</td>
-                            <td class="px-2 py-3 text-center border-r border-slate-100 text-xs font-bold text-slate-800">{{ $user->wnas_count }}</td>
-                            <td class="px-2 py-3 text-center border-r border-slate-100 text-xs font-bold text-slate-800">{{ $user->ormas_count }}</td>
-                            <td class="px-2 py-3 text-center border-r border-slate-100 text-xs font-bold text-slate-800">{{ $user->pam_sdos_count }}</td>
-                            <td class="px-2 py-3 text-center border-r border-slate-100 text-xs font-bold text-slate-800">{{ $user->jms_activities_count }}</td>
-                            <td class="px-2 py-3 text-center border-r border-slate-100 text-xs font-bold text-slate-800">{{ $user->kerawanans_count }}</td>
+                            <td class="px-4 py-3 border-r border-slate-100 dark:border-slate-700 font-bold text-slate-900 dark:text-white text-xs">{{ $user->name }}</td>
+                            <td class="px-2 py-3 text-center border-r border-slate-100 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-100">{{ $user->lapinhars_count }}</td>
+                            <td class="px-2 py-3 text-center border-r border-slate-100 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-100">{{ $user->dpos_count }}</td>
+                            <td class="px-2 py-3 text-center border-r border-slate-100 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-100">{{ $user->wnas_count }}</td>
+                            <td class="px-2 py-3 text-center border-r border-slate-100 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-100">{{ $user->ormas_count }}</td>
+                            <td class="px-2 py-3 text-center border-r border-slate-100 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-100">{{ $user->pam_sdos_count }}</td>
+                            <td class="px-2 py-3 text-center border-r border-slate-100 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-100">{{ $user->jms_activities_count }}</td>
+                            <td class="px-2 py-3 text-center border-r border-slate-100 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-100">{{ $user->kerawanans_count }}</td>
                             <td class="px-4 py-3 text-center bg-emerald-50 text-emerald-700 font-black text-sm">{{ $total }}</td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
-            <div class="px-6 py-4 border-t border-slate-50 bg-slate-50/30">
+            <div class="px-6 py-4 border-t border-slate-50 bg-slate-50 dark:bg-slate-900/50/30">
                 {{ $users->links() }}
             </div>
 
@@ -183,11 +183,11 @@
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         @forelse($logs as $log)
-                        <tr class="hover:bg-slate-50 transition">
+                        <tr class="hover:bg-slate-50 dark:bg-slate-900/50 transition">
                             <td class="px-6 py-4 text-xs font-mono text-slate-500 italic">{{ $log->created_at->format('d/m/Y H:i:s') }}</td>
-                            <td class="px-6 py-4"><span class="font-bold text-slate-900 text-xs">{{ $log->user->name ?? 'Sistem' }}</span></td>
+                            <td class="px-6 py-4"><span class="font-bold text-slate-900 dark:text-white text-xs">{{ $log->user->name ?? 'Sistem' }}</span></td>
                             <td class="px-6 py-4">
-                                <span class="px-2 py-1 rounded-md {{ $log->activity == 'Login' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600' }} text-[10px] font-black uppercase tracking-tighter">
+                                <span class="px-2 py-1 rounded-md {{ $log->activity == 'Login' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600 dark:text-slate-300' }} text-[10px] font-black uppercase tracking-tighter">
                                     {{ $log->activity }}
                                 </span>
                             </td>
@@ -202,7 +202,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="px-6 py-4 border-t border-slate-50 bg-slate-50/30">
+            <div class="px-6 py-4 border-t border-slate-50 bg-slate-50 dark:bg-slate-900/50/30">
                 {{ $logs->links() }}
             </div>
             @endif
@@ -211,7 +211,7 @@
 
         {{-- FORM MODAL (DIREVISI: DROPDOWN PANGKAT & JABATAN INTEL) --}}
         @if($showForm)
-        <div class="bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden max-w-4xl mx-auto animate-fade-in-up">
+        <div class="bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 dark:border-slate-700 overflow-hidden max-w-4xl mx-auto animate-fade-in-up">
             <div class="bg-gradient-to-r from-emerald-600 to-teal-500 px-8 py-6 flex justify-between items-center text-white">
                 <div>
                     <h3 class="font-black text-xl uppercase tracking-widest italic">{{ $isEditMode ? 'Edit Personil' : 'Registrasi Personil' }}</h3>
@@ -228,12 +228,12 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-500 uppercase">Nama Lengkap <span class="text-red-500">*</span></label>
-                            <input wire:model="name" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white transition">
+                            <input wire:model="name" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 dark:bg-slate-900/50 focus:bg-white transition">
                             @error('name') <span class="text-red-500 text-[10px] font-bold italic">{{ $message }}</span> @enderror
                         </div>
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-500 uppercase">NIP</label>
-                            <input wire:model="nip" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white transition" placeholder="NIP Pegawai">
+                            <input wire:model="nip" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 dark:bg-slate-900/50 focus:bg-white transition" placeholder="NIP Pegawai">
                             @error('nip') <span class="text-red-500 text-[10px] font-bold italic">{{ $message }}</span> @enderror
                         </div>
                     </div>
@@ -245,11 +245,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-500 uppercase">Satuan Kerja</label>
-                            <input wire:model="satuan_kerja" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white" placeholder="Contoh: Kejari Banjarmasin">
+                            <input wire:model="satuan_kerja" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 dark:bg-slate-900/50 focus:bg-white" placeholder="Contoh: Kejari Banjarmasin">
                         </div>
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-500 uppercase">Kontak/WA</label>
-                            <input wire:model="no_hp" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white">
+                            <input wire:model="no_hp" type="text" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 dark:bg-slate-900/50 focus:bg-white">
                         </div>
                     </div>
 
@@ -258,7 +258,7 @@
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-500 uppercase">Jabatan (Divisi Intelijen)</label>
                             <div class="relative">
-                                <select wire:model="jabatan" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white appearance-none transition cursor-pointer text-sm">
+                                <select wire:model="jabatan" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 dark:bg-slate-900/50 focus:bg-white appearance-none transition cursor-pointer text-sm">
                                     <option value="">-- Pilih Jabatan --</option>
                                     <optgroup label="Struktural Kejaksaan Negeri">
                                         <option value="Kepala Kejaksaan Negeri">Kepala Kejaksaan Negeri</option>
@@ -283,7 +283,7 @@
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-500 uppercase">Pangkat / Golongan</label>
                             <div class="relative">
-                                <select wire:model="pangkat" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white appearance-none transition cursor-pointer text-sm">
+                                <select wire:model="pangkat" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 dark:bg-slate-900/50 focus:bg-white appearance-none transition cursor-pointer text-sm">
                                     <option value="">-- Pilih Pangkat / Golongan --</option>
                                     <optgroup label="Kepangkatan Jaksa">
                                         <option value="Jaksa Utama (IV/e)">Jaksa Utama (IV/e)</option>
@@ -316,13 +316,13 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-500 uppercase">Email Login <span class="text-red-500">*</span></label>
-                            <input wire:model="email" type="email" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white">
+                            <input wire:model="email" type="email" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 dark:bg-slate-900/50 focus:bg-white">
                             @error('email') <span class="text-red-500 text-[10px] font-bold italic">{{ $message }}</span> @enderror
                         </div>
                         <div class="space-y-2">
                             <label class="text-[11px] font-bold text-slate-500 uppercase">Role / Otoritas <span class="text-red-500">*</span></label>
                             <div class="relative">
-                                <select wire:model="role" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white appearance-none cursor-pointer">
+                                <select wire:model="role" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 dark:bg-slate-900/50 focus:bg-white appearance-none cursor-pointer">
                                     <option value="staff">STAFF INTELIJEN</option>
                                     <option value="admin">ADMINISTRATOR</option>
                                 </select>
@@ -339,7 +339,7 @@
                                 <span class="text-red-500">*</span>
                                 @endif
                             </label>
-                            <input wire:model="password" type="password" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 focus:bg-white" placeholder="*******">
+                            <input wire:model="password" type="password" class="w-full rounded-xl border-slate-200 font-bold text-slate-700 focus:border-emerald-500 focus:ring-0 bg-slate-50 dark:bg-slate-900/50 focus:bg-white" placeholder="*******">
                             <p class="text-[10px] text-slate-400">Minimal 6 karakter</p>
                             @error('password') <span class="text-red-500 text-[10px] font-bold italic">{{ $message }}</span> @enderror
                         </div>
@@ -348,7 +348,7 @@
                     {{-- Upload Foto DENGAN ALPINE.JS VALIDASI UKURAN --}}
                     <div class="space-y-2 mt-4">
                         <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest">Foto Profile (Opsional - Maks 2MB)</label>
-                        <div class="flex items-center gap-6 p-4 border-2 border-dashed border-slate-300 rounded-xl bg-slate-50 hover:border-emerald-300 transition-colors">
+                        <div class="flex items-center gap-6 p-4 border-2 border-dashed border-slate-300 rounded-xl bg-slate-50 dark:bg-slate-900/50 hover:border-emerald-300 transition-colors">
                             @if ($foto_profile)
                             <!-- Kita matikan sementara preview-nya -->
                             <div class="w-16 h-16 bg-emerald-100 rounded-full border-2 border-emerald-500 flex items-center justify-center text-emerald-600 font-bold"><i class="fas fa-check"></i></div>
@@ -365,8 +365,8 @@
 
                 </div>
 
-                <div class="pt-6 flex justify-end gap-3 border-t border-slate-100">
-                    <button type="button" wire:click="closeModal" class="px-6 py-3 rounded-xl border border-slate-200 text-slate-500 font-bold text-xs uppercase transition hover:bg-slate-50">Batal</button>
+                <div class="pt-6 flex justify-end gap-3 border-t border-slate-100 dark:border-slate-700">
+                    <button type="button" wire:click="closeModal" class="px-6 py-3 rounded-xl border border-slate-200 text-slate-500 font-bold text-xs uppercase transition hover:bg-slate-50 dark:bg-slate-900/50">Batal</button>
 
                     <button type="submit"
                         wire:loading.attr="disabled"
@@ -384,5 +384,31 @@
             </form>
         </div>
         @endif
+        {{-- ============================================================== --}}
+        {{-- MODAL HAPUS DATA                                               --}}
+        {{-- ============================================================== --}}
+        @if($isDeleteOpen)
+        <div class="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4 transition-opacity">
+            <div class="bg-white w-full max-w-sm rounded-[2rem] shadow-2xl p-8 relative animate-fade-in-up border border-slate-100 dark:border-slate-700 text-center">
+
+                <div class="w-20 h-20 bg-red-50 text-red-500 border-4 border-red-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                    <i class="fas fa-exclamation-triangle text-3xl animate-pulse"></i>
+                </div>
+
+                <h3 class="text-xl font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest mb-2">Hapus Data?</h3>
+                <p class="text-xs text-slate-500 font-medium leading-relaxed mb-8">Data ini akan dihapus secara permanen dan tidak dapat dikembalikan. Lanjutkan?</p>
+
+                <div class="flex flex-col gap-3">
+                    <button wire:click="delete" class="w-full py-3.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-black uppercase text-xs tracking-widest transition-all shadow-lg shadow-red-500/30 flex items-center justify-center gap-2">
+                        <i class="fas fa-trash-alt"></i> Ya, Hapus Permanen
+                    </button>
+                    <button wire:click="$set('isDeleteOpen', false)" class="w-full py-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold uppercase text-xs tracking-widest transition-all">
+                        Batal
+                    </button>
+                </div>
+            </div>
+        </div>
+        @endif
+
     </div>
 </div>

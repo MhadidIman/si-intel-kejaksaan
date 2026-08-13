@@ -57,13 +57,13 @@ new #[Layout('layouts.guest')] class extends Component
     <div class="w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-16 lg:px-24 py-12">
 
         <div class="mb-10 text-center lg:text-left">
-            <h2 class="text-3xl font-black text-slate-800 tracking-tight">Registrasi Pelapor</h2>
+            <h2 class="text-3xl font-black text-slate-800 dark:text-slate-100 tracking-tight">Registrasi Pelapor</h2>
             <p class="text-slate-500 text-sm mt-2 font-medium">Buat akun untuk mengajukan Laporan Pengaduan (Lapdu) dan memantau perkembangannya.</p>
         </div>
 
         <form wire:submit="register" class="space-y-5">
             {{-- DATA IDENTITAS KTP --}}
-            <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 space-y-4">
+            <div class="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 space-y-4">
                 <h3 class="text-[10px] font-black uppercase tracking-widest text-emerald-600 border-b border-slate-200 pb-2"><i class="fas fa-id-card mr-1"></i> 1. Identitas Sesuai KTP</h3>
 
                 <div>
@@ -86,7 +86,7 @@ new #[Layout('layouts.guest')] class extends Component
             </div>
 
             {{-- DATA KONTAK --}}
-            <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 space-y-4">
+            <div class="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 space-y-4">
                 <h3 class="text-[10px] font-black uppercase tracking-widest text-emerald-600 border-b border-slate-200 pb-2"><i class="fas fa-address-book mr-1"></i> 2. Data Kontak & Login</h3>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -104,7 +104,7 @@ new #[Layout('layouts.guest')] class extends Component
             </div>
 
             {{-- KEAMANAN AKUN --}}
-            <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 space-y-4">
+            <div class="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-700 space-y-4">
                 <h3 class="text-[10px] font-black uppercase tracking-widest text-emerald-600 border-b border-slate-200 pb-2"><i class="fas fa-lock mr-1"></i> 3. Keamanan Akun</h3>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

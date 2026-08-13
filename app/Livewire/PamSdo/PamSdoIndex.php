@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Auth;
 
 class PamSdoIndex extends Component
 {
+
+    public $isDeleteOpen = false;
+    public $deleteId = null;
+
     use WithPagination, WithFileUploads;
 
     // Form Variables
@@ -164,11 +168,20 @@ class PamSdoIndex extends Component
         $this->closeModal();
     }
 
-    public function delete($id)
+    
+    public function confirmDelete($id)
     {
+        $this->deleteId = $id;
+        $this->isDeleteOpen = true;
+    }
+
+    public function delete()
+    {
+        $id = $this->deleteId;
         // KODE KEAMANAN: HANYA ADMIN YANG BISA MENGHAPUS
         if (Auth::user()->role !== 'admin') {
             session()->flash('message', 'Akses Ditolak! Hanya Admin yang berhak menghapus data.');
+        $this->isDeleteOpen = false;
             return;
         }
 
@@ -178,6 +191,8 @@ class PamSdoIndex extends Component
         }
         $data->delete();
         session()->flash('message', 'Data dihapus.');
+        $this->isDeleteOpen = false;
+        $this->isDeleteOpen = false;
     }
 
     public function closeModal()

@@ -237,8 +237,12 @@
     <table class="kop-table">
         <tr>
             <td style="width: 15%; text-align: center;">
-                <!-- Pemanggilan Logo menggunakan asset() -->
-                <img src="{{ asset('img/logo-kejaksaan.png') }}" style="width: 75px; height: auto;">
+                @php
+                    $logoPath = public_path('img/logo-kejaksaan.png');
+                    $logoData = base64_encode(file_get_contents($logoPath));
+                    $logoBase64 = 'data:image/png;base64,' . $logoData;
+                @endphp
+                <img src="{{ $logoBase64 }}" style="width: 75px; height: auto;">
             </td>
             <td class="teks-center" style="width: 70%;">
                 <h1>KEJAKSAAN REPUBLIK INDONESIA</h1>

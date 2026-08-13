@@ -106,11 +106,16 @@
     </style>
 </head>
 
-<body>
+<body onload="window.print()">
 
     {{-- KOP SURAT --}}
     <div class="header-container">
-        <img src="{{ public_path('img/logo-kejaksaan.png') }}" class="logo">
+        @php
+            $logoPath = public_path('img/logo-kejaksaan.png');
+            $logoData = base64_encode(file_get_contents($logoPath));
+            $logoBase64 = 'data:image/png;base64,' . $logoData;
+        @endphp
+        <img src="{{ $logoBase64 }}" class="logo">
         <div class="header-text">
             <h3>KEJAKSAAN REPUBLIK INDONESIA</h3>
             <h3>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h3>
@@ -189,13 +194,24 @@
         </tbody>
     </table>
 
-    {{-- TANDA TANGAN --}}
-    <div class="ttd-container">
-        <p>Banjarmasin, {{ now()->translatedFormat('d F Y') }}</p>
-        <p>Kepala Seksi Intelijen,</p>
-        <br><br><br>
-        <p style="font-weight: bold; text-decoration: underline; margin-bottom: 0;">Dimas Purnama Putra, S.H.,M.H</p>
-        <p style="margin-top: 2px;">Jaksa Madya NIP. 19850101 201001 1 001</p>
+    {{-- TANDA TANGAN BESERTA QR CODE VALIDASI (REKAP LAPDU) --}}
+    <div class="ttd-container" style="float: right; width: 320px; text-align: center; margin-top: 30px;">
+        <p style="margin: 0; font-size: 10pt;">Banjarmasin, {{ now()->translatedFormat('d F Y') }}</p>
+        <p style="margin: 0; font-weight: bold; font-size: 10pt; text-transform: uppercase;">Kepala Seksi Intelijen,</p>
+
+        <!-- Area QR Code Validasi LAPDU -->
+        <div style="margin: 20px 0;">
+            @php
+            // Membuat isi QR Code khusus untuk Rekapitulasi Data
+            $qrContent = "Dokumen Valid: Rekapitulasi LAPDU\nDicetak pada: " . \Carbon\Carbon::now()->format('d/m/Y H:i:s');
+            @endphp
+            <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(95)->generate($qrContent)) !!} " alt="QR Code Validasi">
+        </div>
+
+        <!-- Identitas Penandatangan -->
+        <p style="margin: 0; font-weight: bold; text-decoration: underline; font-size: 10pt;">Raya Bimanta S.H., M.H</p>
+        <p style="margin: 2px 0 0 0; font-size: 10pt;">Jaksa Utama Muda (IV/c)</p>
+        <p style="margin: 0; font-size: 10pt;">NIP. 199001012020011001</p>
     </div>
 
 </body>

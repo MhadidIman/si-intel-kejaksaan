@@ -51,7 +51,7 @@ new #[Layout('layouts.guest')] class extends Component // Menggunakan layout pub
             <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 mb-6 lg:hidden shadow-inner border border-emerald-100">
                 <i class="fas fa-shield-alt text-3xl"></i>
             </div>
-            <h2 class="text-3xl font-black text-slate-800 tracking-tight">Masuk Layanan Publik</h2>
+            <h2 class="text-3xl font-black text-slate-800 dark:text-slate-100 tracking-tight">Masuk Layanan Publik</h2>
             <p class="text-slate-500 text-sm mt-2 font-medium">Gunakan email dan kata sandi yang Anda daftarkan untuk masuk dan memantau status pengaduan.</p>
         </div>
 
@@ -60,7 +60,7 @@ new #[Layout('layouts.guest')] class extends Component // Menggunakan layout pub
 
         <form wire:submit="login" class="space-y-5">
 
-            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-5">
+            <div class="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 space-y-5">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1.5" for="email">Alamat Email <span class="text-red-500">*</span></label>
                     <input wire:model="email" id="email" type="email" placeholder="email@contoh.com" required autofocus autocomplete="username"
@@ -86,7 +86,7 @@ new #[Layout('layouts.guest')] class extends Component // Menggunakan layout pub
             <div class="flex items-center px-1">
                 <label class="flex items-center cursor-pointer group">
                     <input wire:model="remember" type="checkbox" class="w-4 h-4 text-emerald-600 bg-white border-slate-300 rounded focus:ring-emerald-500 focus:ring-2 transition cursor-pointer">
-                    <span class="ml-2 text-xs font-bold text-slate-600 group-hover:text-emerald-600 transition">Ingat Saya di Perangkat Ini</span>
+                    <span class="ml-2 text-xs font-bold text-slate-600 dark:text-slate-300 group-hover:text-emerald-600 transition">Ingat Saya di Perangkat Ini</span>
                 </label>
             </div>
 

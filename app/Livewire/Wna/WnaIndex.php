@@ -13,6 +13,10 @@ use Carbon\Carbon;
 
 class WnaIndex extends Component
 {
+
+    public $isDeleteOpen = false;
+    public $deleteId = null;
+
     use WithPagination, WithFileUploads;
 
     // VARIABEL DISESUAIKAN DENGAN DATABASE
@@ -166,10 +170,19 @@ class WnaIndex extends Component
         $this->closeModal();
     }
 
-    public function delete($id)
+    
+    public function confirmDelete($id)
     {
+        $this->deleteId = $id;
+        $this->isDeleteOpen = true;
+    }
+
+    public function delete()
+    {
+        $id = $this->deleteId;
         if (Auth::user()->role !== 'admin') {
             session()->flash('message', 'Akses Ditolak! Hanya Admin yang berhak menghapus data.');
+        $this->isDeleteOpen = false;
             return;
         }
 
@@ -179,6 +192,7 @@ class WnaIndex extends Component
         }
         $wna->delete();
         session()->flash('message', 'Data WNA dihapus.');
+        $this->isDeleteOpen = false;
     }
 
     public function closeModal()

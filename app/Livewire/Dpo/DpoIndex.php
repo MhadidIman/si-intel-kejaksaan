@@ -13,6 +13,10 @@ use Carbon\Carbon;
 
 class DpoIndex extends Component
 {
+
+    public $isDeleteOpen = false;
+    public $deleteId = null;
+
     use WithPagination, WithFileUploads;
 
     // Variables Form
@@ -167,11 +171,20 @@ class DpoIndex extends Component
         $this->closeModal();
     }
 
-    public function delete($id)
+    
+    public function confirmDelete($id)
     {
+        $this->deleteId = $id;
+        $this->isDeleteOpen = true;
+    }
+
+    public function delete()
+    {
+        $id = $this->deleteId;
         // KODE KEAMANAN: HANYA ADMIN YANG BISA MENGHAPUS
         if (Auth::user()->role !== 'admin') {
             session()->flash('message', 'Akses Ditolak! Hanya Admin yang berhak menghapus data.');
+        $this->isDeleteOpen = false;
             return;
         }
 
@@ -181,6 +194,7 @@ class DpoIndex extends Component
         }
         $dpo->delete();
         session()->flash('message', 'Data DPO dihapus.');
+        $this->isDeleteOpen = false;
     }
 
     public function closeModal()

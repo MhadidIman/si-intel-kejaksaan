@@ -4,47 +4,46 @@
 <head>
     <title>Rekapitulasi Kinerja Staff</title>
     <style>
-        /* PENGATURAN DASAR */
+        /* PENGATURAN DASAR & FONT TIMES NEW ROMAN */
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Times New Roman", Times, serif;
             font-size: 10pt;
             line-height: 1.3;
             margin: 0;
             padding: 0;
         }
 
-        /* KOP SURAT MENGGUNAKAN TABEL (DIJAMIN TIDAK TABRAKAN) */
+        /* KOP SURAT (TABEL 3 KOLOM AGAR LOGO DEKAT & TEKS PRESISI TENGAH) */
         .kop-table {
             width: 100%;
             border-collapse: collapse;
-            border: none;
-            border-bottom: 3px double black;
-            padding-bottom: 10px;
+            border-bottom: 4px double black;
+            padding-bottom: 8px;
             margin-bottom: 20px;
         }
 
         .kop-table td {
-            border: none !important;
-            padding: 0;
+            border: none;
+            vertical-align: middle;
         }
 
         .header-text h3 {
             margin: 0;
-            font-size: 13pt;
+            font-size: 14pt;
             text-transform: uppercase;
             font-weight: bold;
         }
 
         .header-text h2 {
             margin: 2px 0;
-            font-size: 15pt;
+            font-size: 16pt;
             text-transform: uppercase;
             font-weight: bold;
         }
 
         .header-text p {
             margin: 0;
-            font-size: 8.5pt;
+            font-size: 10pt;
             font-weight: normal;
         }
 
@@ -75,7 +74,7 @@
         .data-table th {
             background-color: #f2f2f2;
             padding: 8px 4px;
-            font-size: 8.5pt;
+            font-size: 9pt;
             text-transform: uppercase;
             font-weight: bold;
             text-align: center;
@@ -84,7 +83,7 @@
         .data-table td {
             padding: 6px;
             text-align: center;
-            font-size: 9pt;
+            font-size: 9.5pt;
         }
 
         .text-left {
@@ -115,13 +114,16 @@
 </head>
 
 <body onload="window.print()">
-    {{-- KOP SURAT MENGGUNAKAN TABEL --}}
+
+    {{-- KOP SURAT SESUAI GAMBAR REFERENSI --}}
     <table class="kop-table">
         <tr>
-            <td style="width: 90px; text-align: left; vertical-align: middle;">
-                <img src="{{ asset('img/logo-kejaksaan.png') }}" style="width: 75px;" alt="Logo Kejaksaan">
+            <!-- Kolom Kiri: Logo Kejaksaan (Diatur lebarnya agar tidak terlalu jauh) -->
+            <td style="width: 18%; text-align: right; padding-right: 15px;">
+                <img src="{{ asset('img/logo-kejaksaan.png') }}" style="width: 80px;" alt="Logo Kejaksaan">
             </td>
-            <td style="text-align: center; vertical-align: middle;">
+            <!-- Kolom Tengah: Teks Presisi di Tengah -->
+            <td style="width: 64%; text-align: center;">
                 <div class="header-text">
                     <h3>KEJAKSAAN REPUBLIK INDONESIA</h3>
                     <h3>KEJAKSAAN TINGGI KALIMANTAN SELATAN</h3>
@@ -130,12 +132,14 @@
                     <p>Telp. (0511) 3300402 Website: kejari-banjarmasin.go.id</p>
                 </div>
             </td>
+            <!-- Kolom Kanan: Penyeimbang (Kosong) -->
+            <td style="width: 18%;"></td>
         </tr>
     </table>
 
     {{-- JUDUL DOKUMEN --}}
     <div class="title-doc">REKAPITULASI KINERJA INPUT DATA STAFF INTELIJEN</div>
-    <div style="text-align: center; font-size: 9pt; margin-bottom: 10px;">
+    <div style="text-align: center; font-size: 10pt; margin-bottom: 10px;">
         Tanggal Cetak: {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
     </div>
 
@@ -183,8 +187,8 @@
     {{-- TANDA TANGAN BESERTA QR CODE VALIDASI (USER STATS ADMIN) --}}
     <div class="ttd-wrapper">
         <div class="ttd-container">
-            <p style="margin: 0; font-size: 10pt;">Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
-            <p style="margin: 0; font-weight: bold; font-size: 10pt; text-transform: uppercase;">Kepala Seksi Intelijen,</p>
+            <p style="margin: 0; font-size: 11pt;">Banjarmasin, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+            <p style="margin: 0; font-weight: bold; font-size: 11pt; text-transform: uppercase;">Kepala Seksi Intelijen,</p>
 
             <!-- Area QR Code Validasi User Stats -->
             <div style="margin: 20px 0;">
@@ -195,9 +199,9 @@
             </div>
 
             <!-- Identitas Penandatangan -->
-            <p style="margin: 0; font-weight: bold; text-decoration: underline; font-size: 10pt;">Raya Bimanta S.H., M.H</p>
-            <p style="margin: 2px 0 0 0; font-size: 10pt;">Jaksa Utama Muda (IV/c)</p>
-            <p style="margin: 0; font-size: 10pt;">NIP. 199001012020011001</p>
+            <p style="margin: 0; font-weight: bold; text-decoration: underline; font-size: 11pt;">Raya Bimanta S.H., M.H</p>
+            <p style="margin: 2px 0 0 0; font-size: 11pt;">Jaksa Utama Muda (IV/c)</p>
+            <p style="margin: 0; font-size: 11pt;">NIP. 199001012020011001</p>
         </div>
         <div class="clear" style="clear: both;"></div>
     </div>

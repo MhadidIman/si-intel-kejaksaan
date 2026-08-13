@@ -117,4 +117,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Lapdu::class);
     }
+
+    public function lapsuses()
+    {
+        return $this->hasMany(Lapsus::class);
+    }
 }

@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-slate-50 font-sans pb-24 selection:bg-emerald-500 selection:text-white">
+<div class="min-h-screen bg-slate-50 dark:bg-slate-900/50 font-sans pb-24 selection:bg-emerald-500 selection:text-white">
 
     {{-- BANNER ATAS --}}
     <div class="bg-emerald-700 pt-10 pb-32 relative overflow-hidden">
@@ -27,10 +27,10 @@
             <div class="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 shadow-inner">
                 <i class="fas fa-check-double"></i>
             </div>
-            <h2 class="text-3xl font-black text-slate-800 tracking-tight mb-2">Laporan Berhasil Terkirim!</h2>
+            <h2 class="text-3xl font-black text-slate-800 dark:text-slate-100 tracking-tight mb-2">Laporan Berhasil Terkirim!</h2>
             <p class="text-slate-500 mb-8 max-w-lg mx-auto">Pengaduan Anda telah masuk ke dalam sistem Intelijen Kejaksaan dan sedang mengantre untuk diverifikasi oleh petugas.</p>
 
-            <div class="bg-slate-50 border border-slate-200 p-6 rounded-2xl max-w-md mx-auto mb-8 relative overflow-hidden">
+            <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 p-6 rounded-2xl max-w-md mx-auto mb-8 relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-2 h-full bg-emerald-500"></div>
                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Nomor Tiket Anda</p>
                 <p class="text-2xl font-mono font-black text-emerald-700 tracking-widest">{{ $nomorTiket }}</p>
@@ -46,10 +46,10 @@
 
             {{-- CARD 1: IDENTITAS PELAPOR --}}
             <div class="bg-white rounded-3xl shadow-lg shadow-slate-200/40 border border-slate-200 overflow-hidden">
-                <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center gap-3">
+                <div class="px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-700 flex items-center gap-3">
                     <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-inner"><i class="fas fa-user-shield text-sm"></i></div>
                     <div>
-                        <h3 class="font-black text-slate-800">Bagian I: Identitas Pelapor</h3>
+                        <h3 class="font-black text-slate-800 dark:text-slate-100">Bagian I: Identitas Pelapor</h3>
                         <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Data Diri & Proteksi Keamanan</p>
                     </div>
                 </div>
@@ -73,7 +73,7 @@
                             <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">NIK / No. KTP <span class="text-red-500">*</span></label>
                             <input wire:model="nik" type="text" maxlength="16"
                                 {{ Auth::user()->nik ? 'readonly' : '' }}
-                                class="w-full border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm font-mono transition {{ Auth::user()->nik ? 'bg-slate-200 text-slate-500 cursor-not-allowed' : 'bg-slate-50' }}"
+                                class="w-full border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm font-mono transition {{ Auth::user()->nik ? 'bg-slate-200 text-slate-500 cursor-not-allowed' : 'bg-slate-50 dark:bg-slate-900/50' }}"
                                 placeholder="16 Digit NIK Anda">
                             @error('nik') <span class="text-[10px] text-red-500 font-bold mt-1 block">{{ $message }}</span> @enderror
                         </div>
@@ -81,29 +81,29 @@
                             <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Alamat Email <span class="text-red-500">*</span></label>
                             <input wire:model="email_pelapor" type="email"
                                 {{ Auth::user()->email ? 'readonly' : '' }}
-                                class="w-full border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm font-mono transition {{ Auth::user()->email ? 'bg-slate-200 text-slate-500 cursor-not-allowed' : 'bg-slate-50' }}"
+                                class="w-full border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm font-mono transition {{ Auth::user()->email ? 'bg-slate-200 text-slate-500 cursor-not-allowed' : 'bg-slate-50 dark:bg-slate-900/50' }}"
                                 placeholder="email@contoh.com">
                             @error('email_pelapor') <span class="text-[10px] text-red-500 font-bold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         <div>
                             <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Nomor HP/WhatsApp Aktif <span class="text-red-500">*</span></label>
                             {{-- Ubah type="text" menjadi type="number" di bawah ini --}}
-                            <input wire:model="no_hp_pelapor" type="number" class="w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm font-mono transition" placeholder="08xxxxxxxxxx">
+                            <input wire:model="no_hp_pelapor" type="number" class="w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm font-mono transition" placeholder="08xxxxxxxxxx">
                             @error('no_hp_pelapor') <span class="text-[10px] text-red-500 font-bold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         <div>
                             <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Tempat Lahir</label>
-                            <input wire:model="tempat_lahir" type="text" class="w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm transition" placeholder="Kota/Kabupaten">
+                            <input wire:model="tempat_lahir" type="text" class="w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm transition" placeholder="Kota/Kabupaten">
                             @error('tempat_lahir') <span class="text-[10px] text-red-500 font-bold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         <div>
                             <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Tanggal Lahir</label>
-                            <input wire:model="tanggal_lahir" type="date" class="w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm transition">
+                            <input wire:model="tanggal_lahir" type="date" class="w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm transition">
                             @error('tanggal_lahir') <span class="text-[10px] text-red-500 font-bold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         <div>
                             <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Jenis Kelamin</label>
-                            <select wire:model="jenis_kelamin" class="w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm transition">
+                            <select wire:model="jenis_kelamin" class="w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm transition">
                                 <option value="">Pilih Jenis Kelamin</option>
                                 <option value="L">Laki-laki</option>
                                 <option value="P">Perempuan</option>
@@ -112,14 +112,14 @@
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Pekerjaan/Profesi</label>
-                            <input wire:model="pekerjaan" type="text" class="w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm transition" placeholder="Contoh: Wiraswasta">
+                            <input wire:model="pekerjaan" type="text" class="w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm transition" placeholder="Contoh: Wiraswasta">
                             @error('pekerjaan') <span class="text-[10px] text-red-500 font-bold mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
                         {{-- UPLOAD FOTO KTP --}}
                         <div class="md:col-span-2">
                             <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Upload Foto KTP (Untuk Validasi) @if(!$is_anonim) <span class="text-red-500">*</span> @endif</label>
-                            <div class="w-full relative border-2 border-dashed border-slate-300 rounded-2xl p-4 text-center hover:bg-slate-50 hover:border-emerald-500 transition-colors cursor-pointer" onclick="document.getElementById('ktp-upload').click()">
+                            <div class="w-full relative border-2 border-dashed border-slate-300 rounded-2xl p-4 text-center hover:bg-slate-50 dark:bg-slate-900/50 hover:border-emerald-500 transition-colors cursor-pointer" onclick="document.getElementById('ktp-upload').click()">
                                 <input id="ktp-upload" wire:model="foto_ktp" type="file" class="hidden" accept="image/png, image/jpeg, image/jpg">
 
                                 <div wire:loading.remove wire:target="foto_ktp">
@@ -143,7 +143,7 @@
 
                         <div class="md:col-span-2">
                             <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Alamat Domisili <span class="text-red-500">*</span></label>
-                            <textarea wire:model="alamat_pelapor" rows="2" class="w-full bg-slate-50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm transition" placeholder="Tulis alamat lengkap Anda saat ini..."></textarea>
+                            <textarea wire:model="alamat_pelapor" rows="2" class="w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl text-sm transition" placeholder="Tulis alamat lengkap Anda saat ini..."></textarea>
                             @error('alamat_pelapor') <span class="text-[10px] text-red-500 font-bold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                     </div>
@@ -152,10 +152,10 @@
 
             {{-- CARD 2: IDENTITAS TERLAPOR --}}
             <div class="bg-white rounded-3xl shadow-lg shadow-slate-200/40 border border-slate-200 overflow-hidden">
-                <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center gap-3">
+                <div class="px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-700 flex items-center gap-3">
                     <div class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center shadow-inner"><i class="fas fa-user-ninja text-sm"></i></div>
                     <div>
-                        <h3 class="font-black text-slate-800">Bagian II: Pihak Terlapor</h3>
+                        <h3 class="font-black text-slate-800 dark:text-slate-100">Bagian II: Pihak Terlapor</h3>
                         <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Orang / Pejabat / Pihak yang Diduga Melanggar</p>
                     </div>
                 </div>
@@ -163,22 +163,22 @@
                 <div class="p-6 sm:p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Nama Lengkap Terlapor <span class="text-red-500">*</span></label>
-                        <input wire:model="nama_terlapor" type="text" class="w-full bg-slate-50 border-slate-200 focus:border-red-400 focus:ring-red-400 rounded-xl text-sm transition" placeholder="Nama asli atau inisial yang jelas">
+                        <input wire:model="nama_terlapor" type="text" class="w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-red-400 focus:ring-red-400 rounded-xl text-sm transition" placeholder="Nama asli atau inisial yang jelas">
                         @error('nama_terlapor') <span class="text-[10px] text-red-500 font-bold mt-1 block">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Jabatan / Instansi <span class="text-red-500">*</span></label>
-                        <input wire:model="jabatan_terlapor" type="text" class="w-full bg-slate-50 border-slate-200 focus:border-red-400 focus:ring-red-400 rounded-xl text-sm transition" placeholder="Contoh: Kepala Desa X / Pegawai Dinas Y">
+                        <input wire:model="jabatan_terlapor" type="text" class="w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-red-400 focus:ring-red-400 rounded-xl text-sm transition" placeholder="Contoh: Kepala Desa X / Pegawai Dinas Y">
                         @error('jabatan_terlapor') <span class="text-[10px] text-red-500 font-bold mt-1 block">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Nomor Kontak Terlapor <span class="text-slate-400">(Opsional)</span></label>
-                        <input wire:model="kontak_terlapor" type="text" class="w-full bg-slate-50 border-slate-200 focus:border-red-400 focus:ring-red-400 rounded-xl text-sm font-mono transition" placeholder="Jika diketahui">
+                        <input wire:model="kontak_terlapor" type="text" class="w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-red-400 focus:ring-red-400 rounded-xl text-sm font-mono transition" placeholder="Jika diketahui">
                         @error('kontak_terlapor') <span class="text-[10px] text-red-500 font-bold mt-1 block">{{ $message }}</span> @enderror
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Alamat / Lokasi Kantor Terlapor <span class="text-slate-400">(Opsional)</span></label>
-                        <textarea wire:model="alamat_terlapor" rows="2" class="w-full bg-slate-50 border-slate-200 focus:border-red-400 focus:ring-red-400 rounded-xl text-sm transition" placeholder="Tempat terlapor bekerja atau berdomisili..."></textarea>
+                        <textarea wire:model="alamat_terlapor" rows="2" class="w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-red-400 focus:ring-red-400 rounded-xl text-sm transition" placeholder="Tempat terlapor bekerja atau berdomisili..."></textarea>
                         @error('alamat_terlapor') <span class="text-[10px] text-red-500 font-bold mt-1 block">{{ $message }}</span> @enderror
                     </div>
                 </div>
@@ -186,10 +186,10 @@
 
             {{-- CARD 3: SUBSTANSI KASUS (5W+1H) --}}
             <div class="bg-white rounded-3xl shadow-lg shadow-slate-200/40 border border-slate-200 overflow-hidden">
-                <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center gap-3">
+                <div class="px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-700 flex items-center gap-3">
                     <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shadow-inner"><i class="fas fa-gavel text-sm"></i></div>
                     <div>
-                        <h3 class="font-black text-slate-800">Bagian III: Uraian Pengaduan (5W+1H)</h3>
+                        <h3 class="font-black text-slate-800 dark:text-slate-100">Bagian III: Uraian Pengaduan (5W+1H)</h3>
                         <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Kronologi, Tempat, dan Waktu Peristiwa</p>
                     </div>
                 </div>
@@ -198,7 +198,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Kategori Dugaan Pelanggaran <span class="text-red-500">*</span></label>
-                            <select wire:model="kategori_laporan" class="w-full bg-slate-50 border-slate-200 focus:border-amber-500 focus:ring-amber-500 rounded-xl text-sm transition">
+                            <select wire:model="kategori_laporan" class="w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-amber-500 focus:ring-amber-500 rounded-xl text-sm transition">
                                 <option value="">-- Pilih Klasifikasi Kasus --</option>
                                 <option value="tipikor">Tindak Pidana Korupsi (Tipikor)</option>
                                 <option value="pungli_gratifikasi">Penyalahgunaan Wewenang / Pungli / Gratifikasi</option>
@@ -211,22 +211,22 @@
                         </div>
                         <div>
                             <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Judul Laporan / Perkara <span class="text-red-500">*</span></label>
-                            <input wire:model="judul_laporan" type="text" class="w-full bg-slate-50 border-slate-200 focus:border-amber-500 focus:ring-amber-500 rounded-xl text-sm transition" placeholder="Cth: Dugaan Korupsi Proyek Jembatan Desa X">
+                            <input wire:model="judul_laporan" type="text" class="w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-amber-500 focus:ring-amber-500 rounded-xl text-sm transition" placeholder="Cth: Dugaan Korupsi Proyek Jembatan Desa X">
                             @error('judul_laporan') <span class="text-[10px] text-red-500 font-bold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         <div>
                             <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Waktu Kejadian (Tempus) <span class="text-red-500">*</span></label>
-                            <input wire:model="waktu_kejadian" type="date" class="w-full bg-slate-50 border-slate-200 focus:border-amber-500 focus:ring-amber-500 rounded-xl text-sm transition">
+                            <input wire:model="waktu_kejadian" type="date" class="w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-amber-500 focus:ring-amber-500 rounded-xl text-sm transition">
                             @error('waktu_kejadian') <span class="text-[10px] text-red-500 font-bold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         <div>
                             <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Lokasi Kejadian (Locus) <span class="text-red-500">*</span></label>
-                            <input wire:model="tempat_kejadian" type="text" class="w-full bg-slate-50 border-slate-200 focus:border-amber-500 focus:ring-amber-500 rounded-xl text-sm transition" placeholder="Cth: Kantor Kecamatan X / Proyek Jalan Y">
+                            <input wire:model="tempat_kejadian" type="text" class="w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-amber-500 focus:ring-amber-500 rounded-xl text-sm transition" placeholder="Cth: Kantor Kecamatan X / Proyek Jalan Y">
                             @error('tempat_kejadian') <span class="text-[10px] text-red-500 font-bold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Uraian Kronologi Lengkap <span class="text-red-500">*</span></label>
-                            <textarea wire:model="uraian_pengaduan" rows="5" class="w-full bg-slate-50 border-slate-200 focus:border-amber-500 focus:ring-amber-500 rounded-xl text-sm transition" placeholder="Ceritakan kronologi kejadian secara rinci: Bagaimana hal tersebut terjadi? Siapa saja yang terlibat? Mengapa hal tersebut Anda curigai melanggar hukum?"></textarea>
+                            <textarea wire:model="uraian_pengaduan" rows="5" class="w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 focus:border-amber-500 focus:ring-amber-500 rounded-xl text-sm transition" placeholder="Ceritakan kronologi kejadian secara rinci: Bagaimana hal tersebut terjadi? Siapa saja yang terlibat? Mengapa hal tersebut Anda curigai melanggar hukum?"></textarea>
                             @error('uraian_pengaduan') <span class="text-[10px] text-red-500 font-bold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                     </div>
@@ -235,10 +235,10 @@
 
             {{-- CARD 4: BUKTI & DISCLAIMER --}}
             <div class="bg-white rounded-3xl shadow-lg shadow-slate-200/40 border border-slate-200 overflow-hidden">
-                <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center gap-3">
+                <div class="px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-700 flex items-center gap-3">
                     <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shadow-inner"><i class="fas fa-file-invoice text-sm"></i></div>
                     <div>
-                        <h3 class="font-black text-slate-800">Bagian IV: Bukti Dukung & Deklarasi</h3>
+                        <h3 class="font-black text-slate-800 dark:text-slate-100">Bagian IV: Bukti Dukung & Deklarasi</h3>
                         <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Lampirkan Bukti Awal & Pernyataan Hukum</p>
                     </div>
                 </div>
@@ -247,13 +247,13 @@
                     <div>
                         <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-3">Upload Bukti Dokumen/Media Tambahan <span class="text-red-500">*</span></label>
 
-                        <div class="w-full relative border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center hover:bg-slate-50 hover:border-emerald-500 transition-colors cursor-pointer" onclick="document.getElementById('file-upload').click()">
+                        <div class="w-full relative border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center hover:bg-slate-50 dark:bg-slate-900/50 hover:border-emerald-500 transition-colors cursor-pointer" onclick="document.getElementById('file-upload').click()">
                             <input id="file-upload" wire:model="bukti_dukung" type="file" class="hidden" accept=".pdf,.jpg,.jpeg,.png,.mp4,.mp3">
 
                             <div wire:loading.remove wire:target="bukti_dukung">
                                 @if($bukti_dukung)
                                 <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3 shadow-inner"><i class="fas fa-file-check"></i></div>
-                                <p class="text-sm font-bold text-slate-800 truncate px-4">{{ $bukti_dukung->getClientOriginalName() }}</p>
+                                <p class="text-sm font-bold text-slate-800 dark:text-slate-100 truncate px-4">{{ $bukti_dukung->getClientOriginalName() }}</p>
                                 <p class="text-[10px] text-emerald-600 font-bold uppercase tracking-widest mt-1">Berkas Berhasil Dipilih</p>
                                 @else
                                 <div class="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center text-2xl mx-auto mb-3 shadow-inner"><i class="fas fa-cloud-upload-alt"></i></div>
@@ -270,14 +270,14 @@
                         @error('bukti_dukung') <span class="text-[10px] text-red-500 font-bold mt-2 block text-center">{{ $message }}</span> @enderror
                     </div>
 
-                    <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl">
+                    <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 p-5 rounded-2xl">
                         <label class="flex items-start cursor-pointer group">
                             <div class="flex items-center h-5">
                                 <input wire:model="disclaimer" type="checkbox" class="w-5 h-5 text-emerald-600 bg-white border-slate-300 rounded focus:ring-emerald-500 focus:ring-2 transition cursor-pointer">
                             </div>
                             <div class="ml-3 text-xs">
-                                <span class="font-black text-slate-800 block mb-1 uppercase tracking-wider group-hover:text-emerald-700 transition">Pernyataan Tanggung Jawab Hukum <span class="text-red-500">*</span></span>
-                                <span class="text-slate-600 font-medium leading-relaxed">
+                                <span class="font-black text-slate-800 dark:text-slate-100 block mb-1 uppercase tracking-wider group-hover:text-emerald-700 transition">Pernyataan Tanggung Jawab Hukum <span class="text-red-500">*</span></span>
+                                <span class="text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
                                     Dengan mencentang kotak ini, saya menyatakan bahwa seluruh informasi dan bukti yang saya lampirkan adalah <strong>BENAR</strong>. Apabila di kemudian hari terbukti laporan ini adalah fiktif/fitnah, saya bersedia mempertanggungjawabkannya sesuai dengan ketentuan hukum yang berlaku.
                                 </span>
                             </div>
@@ -302,7 +302,7 @@
     {{-- PUSAT BANTUAN & FAQ (HELPDESK) --}}
     {{-- ========================================== --}}
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 mb-12 animate-fade-in-up relative z-20">
-        <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden">
+        <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 dark:border-slate-700 overflow-hidden">
 
             {{-- Header Helpdesk --}}
             <div class="bg-slate-900 px-8 py-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b-4 border-blue-500 relative overflow-hidden">
@@ -319,13 +319,13 @@
 
                 {{-- KIRI: FAQ (Frequently Asked Questions) --}}
                 <div class="space-y-6">
-                    <h3 class="text-lg font-black text-slate-800 uppercase tracking-widest border-b-2 border-emerald-500 pb-2 inline-block">
+                    <h3 class="text-lg font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest border-b-2 border-emerald-500 pb-2 inline-block">
                         <i class="fas fa-question-circle text-emerald-500 mr-2"></i> F.A.Q
                     </h3>
 
                     <div class="space-y-4">
                         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-emerald-300 hover:shadow-md transition duration-300">
-                            <h4 class="font-bold text-slate-800 text-sm flex items-start gap-2">
+                            <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm flex items-start gap-2">
                                 <i class="fas fa-user-shield text-emerald-500 mt-0.5"></i>
                                 Apakah identitas saya aman?
                             </h4>
@@ -335,7 +335,7 @@
                         </div>
 
                         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-emerald-300 hover:shadow-md transition duration-300">
-                            <h4 class="font-bold text-slate-800 text-sm flex items-start gap-2">
+                            <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm flex items-start gap-2">
                                 <i class="fas fa-clock text-emerald-500 mt-0.5"></i>
                                 Berapa lama laporan diproses?
                             </h4>
@@ -345,7 +345,7 @@
                         </div>
 
                         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-emerald-300 hover:shadow-md transition duration-300">
-                            <h4 class="font-bold text-slate-800 text-sm flex items-start gap-2">
+                            <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm flex items-start gap-2">
                                 <i class="fas fa-file-alt text-emerald-500 mt-0.5"></i>
                                 Bukti apa yang harus dilampirkan?
                             </h4>
@@ -358,10 +358,10 @@
 
                 {{-- KANAN: KONTAK ALTERNATIF --}}
                 <div class="space-y-6">
-                    <h3 class="text-lg font-black text-slate-800 uppercase tracking-widest border-b-2 border-blue-500 pb-2 inline-block">
+                    <h3 class="text-lg font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest border-b-2 border-blue-500 pb-2 inline-block">
                         <i class="fas fa-phone-alt text-blue-500 mr-2"></i> Kontak Alternatif
                     </h3>
-                    <p class="text-sm text-slate-600 leading-relaxed">
+                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                         Jika Anda mengalami kesulitan menggunakan formulir online, Anda juga dapat menyampaikan laporan melalui jalur komunikasi resmi kami di bawah ini:
                     </p>
 
@@ -371,7 +371,7 @@
                                 <i class="fab fa-whatsapp text-2xl"></i>
                             </div>
                             <div>
-                                <h4 class="font-bold text-slate-800 text-sm uppercase tracking-wider">Hotline / WhatsApp</h4>
+                                <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm uppercase tracking-wider">Hotline / WhatsApp</h4>
                                 <p class="text-emerald-700 font-black text-lg tracking-wide mt-1">0812-XXXX-XXXX</p>
                                 <p class="text-xs text-slate-500 font-medium mt-1">Layanan 24 Jam (Hanya Chat)</p>
                             </div>
@@ -382,7 +382,7 @@
                                 <i class="fas fa-envelope text-xl"></i>
                             </div>
                             <div>
-                                <h4 class="font-bold text-slate-800 text-sm uppercase tracking-wider">Email Dinas Resmi</h4>
+                                <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm uppercase tracking-wider">Email Dinas Resmi</h4>
                                 <p class="text-blue-700 font-bold mt-1">pengaduan@kejaksaan.go.id</p>
                             </div>
                         </div>
@@ -392,7 +392,7 @@
                                 <i class="fas fa-map-marker-alt text-xl"></i>
                             </div>
                             <div>
-                                <h4 class="font-bold text-slate-800 text-sm uppercase tracking-wider">Alamat Kantor</h4>
+                                <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm uppercase tracking-wider">Alamat Kantor</h4>
                                 <p class="text-sm text-slate-700 mt-2 leading-relaxed font-medium">
                                     Pelayanan Terpadu Satu Pintu (PTSP) Kejaksaan Negeri<br>
                                     Jl. Brigjen H. Hasan Basri No.3, Banjarmasin, Kalimantan Selatan

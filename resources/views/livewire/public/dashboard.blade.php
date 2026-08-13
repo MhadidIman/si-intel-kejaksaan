@@ -6,7 +6,7 @@ use function Livewire\Volt\layout;
 layout('layouts.public');
 ?>
 
-<div class="min-h-screen bg-slate-50 font-sans selection:bg-emerald-500 selection:text-white">
+<div class="min-h-screen bg-slate-50 dark:bg-slate-900/50 font-sans selection:bg-emerald-500 selection:text-white">
 
     {{-- 1. HERO SECTION (Wajah Utama Dashboard Publik) --}}
     <section class="relative overflow-hidden bg-gradient-to-br from-emerald-900 via-emerald-800 to-slate-900">
@@ -35,7 +35,7 @@ layout('layouts.public');
             </p>
 
             <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="{{ route('publik.lapor') }}" wire:navigate class="px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-900 rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-lg shadow-amber-500/30 hover:-translate-y-1 flex items-center justify-center gap-2 group">
+                <a href="{{ route('publik.lapor') }}" wire:navigate class="px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-900 dark:text-white rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-lg shadow-amber-500/30 hover:-translate-y-1 flex items-center justify-center gap-2 group">
                     <i class="fas fa-shield-alt group-hover:scale-110 transition-transform"></i> Buat Laporan Sekarang
                 </a>
                 <a href="#panduan" class="px-8 py-4 bg-emerald-800/50 hover:bg-emerald-700/80 text-white border border-emerald-500/50 rounded-2xl font-bold text-sm uppercase tracking-wider transition-all backdrop-blur-sm flex items-center justify-center gap-2">
@@ -50,7 +50,7 @@ layout('layouts.public');
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
                 <span class="text-[10px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 px-3 py-1 rounded-md border border-emerald-100">Standar Operasional</span>
-                <h3 class="text-3xl md:text-4xl font-black text-slate-800 tracking-tight uppercase mt-4">SOP & Alur Pengaduan</h3>
+                <h3 class="text-3xl md:text-4xl font-black text-slate-800 dark:text-slate-100 tracking-tight uppercase mt-4">SOP & Alur Pengaduan</h3>
                 <div class="w-24 h-1.5 bg-amber-500 mx-auto mt-6 rounded-full"></div>
             </div>
 
@@ -60,37 +60,37 @@ layout('layouts.public');
 
                 {{-- Step 1 --}}
                 <div class="relative z-10 text-center group hover:-translate-y-2 transition-transform duration-300">
-                    <div class="w-24 h-24 mx-auto bg-white border-4 border-slate-100 group-hover:border-blue-500 rounded-2xl rotate-3 group-hover:rotate-0 flex items-center justify-center text-3xl text-slate-400 group-hover:text-blue-500 shadow-xl shadow-slate-200/50 transition-all duration-300 mb-6">
+                    <div class="w-24 h-24 mx-auto bg-white border-4 border-slate-100 dark:border-slate-700 group-hover:border-blue-500 rounded-2xl rotate-3 group-hover:rotate-0 flex items-center justify-center text-3xl text-slate-400 group-hover:text-blue-500 shadow-xl shadow-slate-200/50 transition-all duration-300 mb-6">
                         <i class="fas fa-laptop-house"></i>
                     </div>
-                    <h4 class="font-black text-slate-800 text-lg mb-2">1. Laporan Masuk</h4>
+                    <h4 class="font-black text-slate-800 dark:text-slate-100 text-lg mb-2">1. Laporan Masuk</h4>
                     <p class="text-xs text-slate-500 leading-relaxed px-4 font-medium">Masyarakat mengirimkan laporan beserta bukti awal melalui portal SI-INTEL.</p>
                 </div>
 
                 {{-- Step 2 --}}
                 <div class="relative z-10 text-center group hover:-translate-y-2 transition-transform duration-300">
-                    <div class="w-24 h-24 mx-auto bg-white border-4 border-slate-100 group-hover:border-amber-500 rounded-2xl -rotate-3 group-hover:rotate-0 flex items-center justify-center text-3xl text-slate-400 group-hover:text-amber-500 shadow-xl shadow-slate-200/50 transition-all duration-300 mb-6">
+                    <div class="w-24 h-24 mx-auto bg-white border-4 border-slate-100 dark:border-slate-700 group-hover:border-amber-500 rounded-2xl -rotate-3 group-hover:rotate-0 flex items-center justify-center text-3xl text-slate-400 group-hover:text-amber-500 shadow-xl shadow-slate-200/50 transition-all duration-300 mb-6">
                         <i class="fas fa-clipboard-check"></i>
                     </div>
-                    <h4 class="font-black text-slate-800 text-lg mb-2">2. Verifikasi Data</h4>
+                    <h4 class="font-black text-slate-800 dark:text-slate-100 text-lg mb-2">2. Verifikasi Data</h4>
                     <p class="text-xs text-slate-500 leading-relaxed px-4 font-medium">Admin Intelijen menelaah kelengkapan syarat formil dan materil pengaduan.</p>
                 </div>
 
                 {{-- Step 3 --}}
                 <div class="relative z-10 text-center group hover:-translate-y-2 transition-transform duration-300">
-                    <div class="w-24 h-24 mx-auto bg-white border-4 border-slate-100 group-hover:border-purple-500 rounded-2xl rotate-3 group-hover:rotate-0 flex items-center justify-center text-3xl text-slate-400 group-hover:text-purple-500 shadow-xl shadow-slate-200/50 transition-all duration-300 mb-6">
+                    <div class="w-24 h-24 mx-auto bg-white border-4 border-slate-100 dark:border-slate-700 group-hover:border-purple-500 rounded-2xl rotate-3 group-hover:rotate-0 flex items-center justify-center text-3xl text-slate-400 group-hover:text-purple-500 shadow-xl shadow-slate-200/50 transition-all duration-300 mb-6">
                         <i class="fas fa-user-secret"></i>
                     </div>
-                    <h4 class="font-black text-slate-800 text-lg mb-2">3. Telaahan Intelijen</h4>
+                    <h4 class="font-black text-slate-800 dark:text-slate-100 text-lg mb-2">3. Telaahan Intelijen</h4>
                     <p class="text-xs text-slate-500 leading-relaxed px-4 font-medium">Penerbitan Surat Perintah Tugas (Sprintug) Operasi Intelijen oleh pimpinan.</p>
                 </div>
 
                 {{-- Step 4 --}}
                 <div class="relative z-10 text-center group hover:-translate-y-2 transition-transform duration-300">
-                    <div class="w-24 h-24 mx-auto bg-white border-4 border-slate-100 group-hover:border-emerald-500 rounded-2xl -rotate-3 group-hover:rotate-0 flex items-center justify-center text-3xl text-slate-400 group-hover:text-emerald-500 shadow-xl shadow-slate-200/50 transition-all duration-300 mb-6">
+                    <div class="w-24 h-24 mx-auto bg-white border-4 border-slate-100 dark:border-slate-700 group-hover:border-emerald-500 rounded-2xl -rotate-3 group-hover:rotate-0 flex items-center justify-center text-3xl text-slate-400 group-hover:text-emerald-500 shadow-xl shadow-slate-200/50 transition-all duration-300 mb-6">
                         <i class="fas fa-gavel"></i>
                     </div>
-                    <h4 class="font-black text-slate-800 text-lg mb-2">4. Tindak Lanjut</h4>
+                    <h4 class="font-black text-slate-800 dark:text-slate-100 text-lg mb-2">4. Tindak Lanjut</h4>
                     <p class="text-xs text-slate-500 leading-relaxed px-4 font-medium">Penyerahan hasil operasi ke bidang tindak pidana khusus/umum atau instansi terkait.</p>
                 </div>
             </div>
@@ -98,38 +98,38 @@ layout('layouts.public');
     </section>
 
     {{-- 3. EDUKASI (SYARAT & PERLINDUNGAN HUKUM) --}}
-    <section class="py-24 bg-slate-50 border-t border-slate-200">
+    <section class="py-24 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
 
                 {{-- Syarat Formil & Materil --}}
-                <div class="bg-white rounded-[2rem] p-8 md:p-10 shadow-xl shadow-slate-200/50 border border-slate-100 transition-all hover:shadow-2xl hover:shadow-slate-200/60">
-                    <div class="flex items-center gap-5 mb-8 border-b border-slate-100 pb-6">
+                <div class="bg-white rounded-[2rem] p-8 md:p-10 shadow-xl shadow-slate-200/50 border border-slate-100 dark:border-slate-700 transition-all hover:shadow-2xl hover:shadow-slate-200/60">
+                    <div class="flex items-center gap-5 mb-8 border-b border-slate-100 dark:border-slate-700 pb-6">
                         <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-2xl shrink-0 shadow-inner border border-amber-200"><i class="fas fa-list-check"></i></div>
                         <div>
-                            <h3 class="font-black text-slate-800 text-xl tracking-tight">Kriteria Kelayakan Laporan</h3>
+                            <h3 class="font-black text-slate-800 dark:text-slate-100 text-xl tracking-tight">Kriteria Kelayakan Laporan</h3>
                             <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-1">Syarat Formil & Materil</p>
                         </div>
                     </div>
                     <ul class="space-y-6">
-                        <li class="flex items-start gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
+                        <li class="flex items-start gap-4 p-4 rounded-2xl hover:bg-slate-50 dark:bg-slate-900/50 transition-colors border border-transparent hover:border-slate-100 dark:border-slate-700">
                             <div class="mt-1 shrink-0"><i class="fas fa-check-circle text-xl text-emerald-500 drop-shadow-sm"></i></div>
                             <div>
-                                <strong class="text-sm font-black text-slate-800 block mb-1">Identitas Jelas (Formil)</strong>
+                                <strong class="text-sm font-black text-slate-800 dark:text-slate-100 block mb-1">Identitas Jelas (Formil)</strong>
                                 <p class="text-xs text-slate-500 leading-relaxed font-medium">Pelapor mencantumkan NIK dan kontak yang dapat dihubungi. Identitas dijamin <strong>dirahasiakan sepenuhnya</strong> dalam laporan lapangan.</p>
                             </div>
                         </li>
-                        <li class="flex items-start gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
+                        <li class="flex items-start gap-4 p-4 rounded-2xl hover:bg-slate-50 dark:bg-slate-900/50 transition-colors border border-transparent hover:border-slate-100 dark:border-slate-700">
                             <div class="mt-1 shrink-0"><i class="fas fa-check-circle text-xl text-emerald-500 drop-shadow-sm"></i></div>
                             <div>
-                                <strong class="text-sm font-black text-slate-800 block mb-1">Uraian Kejadian 5W+1H (Materil)</strong>
+                                <strong class="text-sm font-black text-slate-800 dark:text-slate-100 block mb-1">Uraian Kejadian 5W+1H (Materil)</strong>
                                 <p class="text-xs text-slate-500 leading-relaxed font-medium">Menjelaskan secara terperinci Siapa yang dilaporkan, Apa yang terjadi, Kapan, Di mana, Mengapa, dan Bagaimana modus operandi-nya.</p>
                             </div>
                         </li>
-                        <li class="flex items-start gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
+                        <li class="flex items-start gap-4 p-4 rounded-2xl hover:bg-slate-50 dark:bg-slate-900/50 transition-colors border border-transparent hover:border-slate-100 dark:border-slate-700">
                             <div class="mt-1 shrink-0"><i class="fas fa-check-circle text-xl text-emerald-500 drop-shadow-sm"></i></div>
                             <div>
-                                <strong class="text-sm font-black text-slate-800 block mb-1">Alat Bukti Awal (Materil)</strong>
+                                <strong class="text-sm font-black text-slate-800 dark:text-slate-100 block mb-1">Alat Bukti Awal (Materil)</strong>
                                 <p class="text-xs text-slate-500 leading-relaxed font-medium">Wajib melampirkan dokumen pendukung, foto, video, rekaman suara, atau kuitansi otentik yang menguatkan dugaan pelanggaran.</p>
                             </div>
                         </li>

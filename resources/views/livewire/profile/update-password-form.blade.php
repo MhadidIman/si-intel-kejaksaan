@@ -35,7 +35,7 @@ new class extends Component
 
 <section>
     <header class="mb-6">
-        <h2 class="text-lg font-black text-slate-900 uppercase tracking-widest">
+        <h2 class="text-lg font-black text-slate-900 dark:text-white uppercase tracking-widest">
             {{ __('Perbarui Password') }}
         </h2>
         <p class="mt-1 text-sm text-slate-500">
@@ -47,7 +47,7 @@ new class extends Component
         <div class="space-y-2">
             <x-input-label for="update_password_current_password" :value="__('Password Saat Ini')" class="!text-xs !font-black !text-slate-500 !uppercase !tracking-widest" />
             <x-text-input wire:model="current_password" id="update_password_current_password" name="current_password" type="password"
-                class="mt-1 block w-full !rounded-xl !border-2 !border-slate-200 !bg-slate-50 focus:!border-amber-500 focus:!ring-0 font-bold text-slate-800"
+                class="mt-1 block w-full !rounded-xl !border-2 !border-slate-200 !bg-slate-50 dark:bg-slate-900/50 focus:!border-amber-500 focus:!ring-0 font-bold text-slate-800 dark:text-slate-100"
                 autocomplete="current-password" />
             <x-input-error :messages="$errors->get('current_password')" class="mt-2" />
         </div>
@@ -55,7 +55,7 @@ new class extends Component
         <div class="space-y-2">
             <x-input-label for="update_password_password" :value="__('Password Baru')" class="!text-xs !font-black !text-slate-500 !uppercase !tracking-widest" />
             <x-text-input wire:model="password" id="update_password_password" name="password" type="password"
-                class="mt-1 block w-full !rounded-xl !border-2 !border-slate-200 !bg-slate-50 focus:!border-amber-500 focus:!ring-0 font-bold text-slate-800"
+                class="mt-1 block w-full !rounded-xl !border-2 !border-slate-200 !bg-slate-50 dark:bg-slate-900/50 focus:!border-amber-500 focus:!ring-0 font-bold text-slate-800 dark:text-slate-100"
                 autocomplete="new-password" />
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
@@ -63,7 +63,7 @@ new class extends Component
         <div class="space-y-2">
             <x-input-label for="update_password_password_confirmation" :value="__('Konfirmasi Password')" class="!text-xs !font-black !text-slate-500 !uppercase !tracking-widest" />
             <x-text-input wire:model="password_confirmation" id="update_password_password_confirmation" name="password_confirmation" type="password"
-                class="mt-1 block w-full !rounded-xl !border-2 !border-slate-200 !bg-slate-50 focus:!border-amber-500 focus:!ring-0 font-bold text-slate-800"
+                class="mt-1 block w-full !rounded-xl !border-2 !border-slate-200 !bg-slate-50 dark:bg-slate-900/50 focus:!border-amber-500 focus:!ring-0 font-bold text-slate-800 dark:text-slate-100"
                 autocomplete="new-password" />
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>

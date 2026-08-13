@@ -44,6 +44,12 @@ new class extends Component
                 <i class="fas fa-search text-emerald-600"></i> Lacak Status
             </a>
 
+            {{-- Theme Toggle Button (Desktop) --}}
+            <button type="button" onclick="toggleTheme()" class="hidden sm:flex items-center justify-center p-2 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-emerald-700 transition">
+                <i class="fas fa-moon text-lg theme-toggle-dark-icon hidden"></i>
+                <i class="fas fa-sun text-lg theme-toggle-light-icon hidden"></i>
+            </button>
+
             {{-- Dropdown Profil & Logout (Desktop & Mobile) --}}
             @auth
             <div class="relative ml-1 sm:ml-2" x-data="{ open: false }" @click.outside="open = false">
@@ -83,6 +89,12 @@ new class extends Component
                 </div>
             </div>
             @endauth
+
+            {{-- Theme Toggle Button (Mobile) --}}
+            <button type="button" onclick="toggleTheme()" class="sm:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-emerald-700 transition flex items-center justify-center">
+                <i class="fas fa-moon text-xl theme-toggle-dark-icon hidden"></i>
+                <i class="fas fa-sun text-xl theme-toggle-light-icon hidden"></i>
+            </button>
 
             {{-- Tombol Hamburger Khusus Mobile --}}
             <button @click="mobileMenuOpen = !mobileMenuOpen" class="sm:hidden p-2 ml-1 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-emerald-700 transition flex items-center justify-center">

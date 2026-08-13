@@ -35,7 +35,7 @@ new #[Layout('layouts.guest')] class extends Component
     }
 }; ?>
 
-<div class="min-h-screen w-full flex flex-col items-center justify-center bg-[#f8fafc] px-4 sm:px-6 relative overflow-hidden font-sans">
+<div class="min-h-screen w-full flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900/50 dark:bg-slate-900 transition-colors duration-300 px-4 sm:px-6 relative overflow-hidden font-sans">
 
     {{-- Latar Belakang Modern --}}
     <div class="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none"></div>
@@ -43,7 +43,7 @@ new #[Layout('layouts.guest')] class extends Component
 
     <div class="w-full max-w-lg relative z-10 animate-fade-in-up">
 
-        <div class="bg-white p-8 sm:p-12 rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden text-center">
+        <div class="bg-white p-8 sm:p-12 rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-slate-100 dark:border-slate-700 relative overflow-hidden text-center">
 
             {{-- Garis Dekorasi --}}
             <div class="absolute top-0 left-0 w-full h-[4px] bg-gradient-to-r from-emerald-500 to-cyan-500"></div>
@@ -61,7 +61,7 @@ new #[Layout('layouts.guest')] class extends Component
             </div>
 
             {{-- Judul & Deskripsi --}}
-            <h2 class="text-2xl font-black text-slate-800 tracking-tight mb-3">Verifikasi Email Anda</h2>
+            <h2 class="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight mb-3">Verifikasi Email Anda</h2>
 
             <p class="text-sm text-slate-500 leading-relaxed mb-8">
                 Terima kasih telah mendaftar di <strong>Portal SI-INTEL Kejaksaan</strong>! Sebelum Anda dapat mulai membuat laporan pengaduan, kami perlu memastikan alamat email Anda valid. Silakan periksa kotak masuk Anda dan klik tautan verifikasi yang telah kami kirimkan.
@@ -94,7 +94,7 @@ new #[Layout('layouts.guest')] class extends Component
                     </span>
                 </button>
 
-                <div class="pt-4 border-t border-slate-100 mt-6 flex justify-center">
+                <div class="pt-4 border-t border-slate-100 dark:border-slate-700 mt-6 flex justify-center">
                     <button wire:click="logout" class="text-[11px] font-bold text-red-500 uppercase tracking-wider hover:text-red-700 transition flex items-center gap-1.5 px-4 py-2 rounded-lg hover:bg-red-50">
                         <i class="fas fa-sign-out-alt"></i> Logout Akun Ini
                     </button>

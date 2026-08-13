@@ -79,7 +79,7 @@ new #[Layout('layouts.guest')] class extends Component
                 <div class="space-y-2">
                     <label for="nip" class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center justify-between">
                         <span>Nomor Induk Pegawai (NIP)</span>
-                        <span class="text-slate-600 font-mono font-normal">Required</span>
+                        <span class="text-slate-600 dark:text-slate-300 font-mono font-normal">Required</span>
                     </label>
                     <div class="relative group">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-emerald-400 transition-colors">
@@ -92,19 +92,30 @@ new #[Layout('layouts.guest')] class extends Component
                     <x-input-error :messages="$errors->get('form.nip')" class="mt-2" />
                 </div>
 
-                {{-- INPUT PASSWORD --}}
-                <div class="space-y-2">
+                {{-- INPUT PASSWORD DENGAN FITUR SHOW/HIDE MATA (ALPINE.JS) --}}
+                <div class="space-y-2" x-data="{ show: false }">
                     <label for="password" class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center justify-between">
                         <span>Kata Sandi (Enkripsi)</span>
-                        <span class="text-slate-600 font-mono font-normal">Encrypted</span>
+                        <span class="text-slate-600 dark:text-slate-300 font-mono font-normal">Encrypted</span>
                     </label>
                     <div class="relative group">
+                        {{-- Icon Kiri (Gembok) --}}
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-emerald-400 transition-colors">
                             <i class="fas fa-lock text-sm"></i>
                         </div>
-                        <input wire:model="form.password" id="password" type="password" name="password" required autocomplete="current-password"
-                            class="block w-full rounded-xl border border-slate-800 bg-slate-950/50 text-white font-bold focus:border-emerald-500 focus:bg-slate-950 focus:ring-4 focus:ring-emerald-500/10 transition-all py-3.5 pl-11 pr-4 shadow-inner placeholder-slate-600 text-xs tracking-widest"
+
+                        {{-- Input Password (Tipe Berubah Dinamis via Alpine) --}}
+                        {{-- Note: class pr-12 ditambahkan agar teks tidak nabrak tombol mata --}}
+                        <input wire:model="form.password" id="password" :type="show ? 'text' : 'password'" name="password" required autocomplete="current-password"
+                            class="block w-full rounded-xl border border-slate-800 bg-slate-950/50 text-white font-bold focus:border-emerald-500 focus:bg-slate-950 focus:ring-4 focus:ring-emerald-500/10 transition-all py-3.5 pl-11 pr-12 shadow-inner placeholder-slate-600 text-xs tracking-widest"
                             placeholder="••••••••••••">
+
+                        {{-- Tombol Mata Kanan (Toggle Show/Hide) --}}
+                        <div class="absolute inset-y-0 right-0 pr-4 flex items-center">
+                            <button type="button" @click="show = !show" class="text-slate-500 hover:text-emerald-400 focus:outline-none transition-colors" tabindex="-1">
+                                <i class="fas text-sm" :class="show ? 'fa-eye-slash' : 'fa-eye'"></i>
+                            </button>
+                        </div>
                     </div>
                     <x-input-error :messages="$errors->get('form.password')" class="mt-2" />
                 </div>
@@ -139,7 +150,7 @@ new #[Layout('layouts.guest')] class extends Component
 
         {{-- COPYRIGHT SUB-PANEL --}}
         <div class="mt-6 text-center">
-            <p class="text-[10px] text-slate-600 font-bold uppercase tracking-widest">&copy; 2026 Tim Keamanan Data Intelijen Kejari Banjarmasin</p>
+            <p class="text-[10px] text-slate-600 dark:text-slate-300 font-bold uppercase tracking-widest">&copy; {{ date('Y') }} Tim Keamanan Data Intelijen Kejari Banjarmasin</p>
         </div>
 
     </div>

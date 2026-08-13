@@ -34,6 +34,8 @@ class Lapdu extends Model
         'uraian_pengaduan',
         'bukti_dukung',
         'status_laporan',
+        'nomor_sprintug',
+        'tanggal_sprintug',
     ];
 
     protected $casts = [

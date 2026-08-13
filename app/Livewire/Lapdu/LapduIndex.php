@@ -4,6 +4,7 @@ namespace App\Livewire\Lapdu;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads;
 use App\Models\Lapdu;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
@@ -13,7 +14,12 @@ use Illuminate\Support\Facades\Log;
 
 class LapduIndex extends Component
 {
+
+    public $isDeleteOpen = false;
+    public $deleteId = null;
+
     use WithPagination;
+    use WithFileUploads;
 
     public $search = '';
     public $filterStatus = '';
@@ -23,6 +29,14 @@ class LapduIndex extends Component
 
     public $nomor_sprintug = '';
     public $tanggal_sprintug = '';
+
+    // PROPERTI FORM INPUT
+    public $showForm = false;
+    public $nama_pelapor, $is_anonim = false, $nik, $email_pelapor, $tempat_lahir, $tanggal_lahir;
+    public $jenis_kelamin, $pekerjaan, $foto_ktp, $alamat_pelapor, $no_hp_pelapor;
+    public $nama_terlapor, $jabatan_terlapor, $alamat_terlapor, $kontak_terlapor;
+    public $kategori_laporan, $judul_laporan, $waktu_kejadian, $tempat_kejadian, $uraian_pengaduan;
+    public $bukti_dukung;
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -44,8 +58,14 @@ class LapduIndex extends Component
         $this->selectedLapduId = $id;
         $lapdu = Lapdu::findOrFail($id);
 
-        $this->nomor_sprintug = $lapdu->nomor_sprintug ?? '';
-        $this->tanggal_sprintug = $lapdu->tanggal_sprintug ?? '';
+        if (empty($lapdu->nomor_sprintug)) {
+            $bulanRomawi = ['01' => 'I', '02' => 'II', '03' => 'III', '04' => 'IV', '05' => 'V', '06' => 'VI', '07' => 'VII', '08' => 'VIII', '09' => 'IX', '10' => 'X', '11' => 'XI', '12' => 'XII'];
+            $this->nomor_sprintug = "PRINT-" . str_pad($lapdu->id, 3, '0', STR_PAD_LEFT) . "/M.3.10/Dek.1/" . $bulanRomawi[date('m')] . "/" . date('Y');
+            $this->tanggal_sprintug = date('Y-m-d');
+        } else {
+            $this->nomor_sprintug = $lapdu->nomor_sprintug;
+            $this->tanggal_sprintug = $lapdu->tanggal_sprintug;
+        }
 
         $this->showDetailModal = true;
     }
@@ -54,6 +74,86 @@ class LapduIndex extends Component
     {
         $this->showDetailModal = false;
         $this->selectedLapduId = null;
+    }
+
+    public function create()
+    {
+        $this->clearForm();
+        $this->showForm = true;
+    }
+
+    public function clearForm()
+    {
+        $this->reset([
+            'nama_pelapor', 'is_anonim', 'nik', 'email_pelapor', 'tempat_lahir', 'tanggal_lahir',
+            'jenis_kelamin', 'pekerjaan', 'foto_ktp', 'alamat_pelapor', 'no_hp_pelapor',
+            'nama_terlapor', 'jabatan_terlapor', 'alamat_terlapor', 'kontak_terlapor',
+            'kategori_laporan', 'judul_laporan', 'waktu_kejadian', 'tempat_kejadian', 
+            'uraian_pengaduan', 'bukti_dukung'
+        ]);
+        $this->is_anonim = false;
+    }
+
+    public function closeModal()
+    {
+        $this->showForm = false;
+        $this->clearForm();
+    }
+
+    public function store()
+    {
+        $this->validate([
+            'nama_pelapor' => 'required',
+            'no_hp_pelapor' => 'required',
+            'nama_terlapor' => 'required',
+            'kategori_laporan' => 'required',
+            'judul_laporan' => 'required',
+            'waktu_kejadian' => 'required',
+            'tempat_kejadian' => 'required',
+            'uraian_pengaduan' => 'required',
+        ]);
+
+        $fotoKtpPath = null;
+        if ($this->foto_ktp) {
+            $fotoKtpPath = $this->foto_ktp->store('lapdu/ktp', 'public');
+        }
+
+        $buktiDukungPath = null;
+        if ($this->bukti_dukung) {
+            $buktiDukungPath = $this->bukti_dukung->store('lapdu/bukti', 'public');
+        }
+
+        // Generate Nomor Tiket
+        $nomorTiket = 'LAPDU-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -4));
+
+        Lapdu::create([
+            'nomor_tiket' => $nomorTiket,
+            'nama_pelapor' => $this->is_anonim ? 'Anonim' : $this->nama_pelapor,
+            'is_anonim' => $this->is_anonim,
+            'nik' => $this->is_anonim ? null : $this->nik,
+            'email_pelapor' => $this->email_pelapor,
+            'tempat_lahir' => $this->tempat_lahir,
+            'tanggal_lahir' => $this->tanggal_lahir,
+            'jenis_kelamin' => $this->jenis_kelamin,
+            'pekerjaan' => $this->pekerjaan,
+            'foto_ktp' => $fotoKtpPath,
+            'alamat_pelapor' => $this->alamat_pelapor,
+            'no_hp_pelapor' => $this->no_hp_pelapor,
+            'nama_terlapor' => $this->nama_terlapor,
+            'jabatan_terlapor' => $this->jabatan_terlapor,
+            'alamat_terlapor' => $this->alamat_terlapor,
+            'kontak_terlapor' => $this->kontak_terlapor,
+            'kategori_laporan' => $this->kategori_laporan,
+            'judul_laporan' => $this->judul_laporan,
+            'waktu_kejadian' => $this->waktu_kejadian,
+            'tempat_kejadian' => $this->tempat_kejadian,
+            'uraian_pengaduan' => $this->uraian_pengaduan,
+            'bukti_dukung' => $buktiDukungPath,
+            'status_laporan' => 'menunggu',
+        ]);
+
+        session()->flash('message', 'Pengaduan manual berhasil ditambahkan dengan Tiket: ' . $nomorTiket);
+        $this->closeModal();
     }
 
     // Fungsi Notifikasi Email HTML
@@ -145,8 +245,16 @@ class LapduIndex extends Component
         session()->flash('message', 'Status berhasil diperbarui dan notifikasi dikirim ke Pelapor.');
     }
 
-    public function eliminasiLapdu($id)
+    
+    public function confirmDelete($id)
     {
+        $this->deleteId = $id;
+        $this->isDeleteOpen = true;
+    }
+
+    public function eliminasiLapdu()
+    {
+        $id = $this->deleteId;
         if (!auth()->user()->isAdmin()) {
             session()->flash('error', 'Otorisasi ditolak. Anda tidak memiliki akses menghapus data arsip.');
             return;
@@ -162,6 +270,7 @@ class LapduIndex extends Component
         $this->tutupDetail();
 
         session()->flash('message', 'Dokumen pengaduan berhasil dieliminasi dari database sistem keamanan.');
+        $this->isDeleteOpen = false;
     }
 
     public function render()

@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Storage;
 
 class UserIndex extends Component
 {
+
+    public $isDeleteOpen = false;
+    public $deleteId = null;
+
     use WithPagination, WithFileUploads;
 
     // --- PROPERTI FORM ---
@@ -213,8 +217,16 @@ class UserIndex extends Component
         $this->closeModal();
     }
 
-    public function delete($id)
+    
+    public function confirmDelete($id)
     {
+        $this->deleteId = $id;
+        $this->isDeleteOpen = true;
+    }
+
+    public function delete()
+    {
+        $id = $this->deleteId;
         if ($id == auth()->id()) {
             session()->flash('error', 'Keamanan: Anda tidak diperbolehkan menghapus akun sendiri.');
             return;
@@ -229,6 +241,7 @@ class UserIndex extends Component
 
         $user->delete();
         session()->flash('message', 'Akun personil telah dihapus dari sistem.');
+        $this->isDeleteOpen = false;
     }
 
     public function closeModal()

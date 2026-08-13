@@ -12,6 +12,7 @@ use App\Models\Ormas;
 use App\Models\PamSdo;
 use App\Models\JmsActivity;
 use App\Models\Kerawanan;
+use App\Models\Lapdu;
 
 class ReportController extends Controller
 {
@@ -121,6 +122,23 @@ class ReportController extends Controller
     }
 
 
+
+    // ==========================================================
+    // 8. MODUL LAPDU (LAPORAN PENGADUAN)
+    // ==========================================================
+    public function cetakLapdu()
+    {
+        $data = Lapdu::orderBy('created_at', 'desc')->get();
+        return view('reports.lapdu-pdf', compact('data'));
+    }
+
+    public function cetakLapduSatuan(Request $request, $id)
+    {
+        $data = Lapdu::findOrFail($id);
+        $type = $request->query('type', 'tanda_terima'); // Bisa 'tanda_terima' atau 'sprintug'
+        
+        return view('reports.lapdu-satuan-pdf', compact('data', 'type'));
+    }
 
     // ==========================================================
     // 9. Cetak Statistik Kinerja Staff
