@@ -357,7 +357,15 @@
         <div class="ttd-container">
             <p>Banjarmasin, {{ now()->translatedFormat('d F Y') }}</p>
             <p>Petugas Penerima,</p>
-            <br><br><br>
+            
+            <!-- Area QR Code -->
+            <div style="margin: 20px 0;">
+                @php
+                $qrContent = route('verifikasi.dokumen', ['tipe' => 'lapdu', 'id' => $data->id]);
+                @endphp
+                <img src="data:image/svg+xml;base64, {!! base64_encode(QrCode::format('svg')->size(95)->generate($qrContent)) !!} " alt="QR Code Validasi">
+            </div>
+            
             <p style="text-decoration: underline; font-weight: bold; margin-bottom: 0;">{{ auth()->user()->name }}</p>
             <p style="margin-top: 2px;">NIP. {{ auth()->user()->nip ?? '-' }}</p>
         </div>
